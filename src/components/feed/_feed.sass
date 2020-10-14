@@ -1,0 +1,89 @@
+$grey: #786F52
+$purple: #715AFF
+$red: #FF5A5F
+$black: #011C27
+$white: #F2F4FF
+
+
+#feed
+	background: $grey
+	display: grid
+	grid-template-columns: 1fr 1fr
+	grid-template-rows: auto repeat(auto, auto)
+	height: 3em
+
+#sortOptions
+	background: white
+	grid-column: 1/2
+	width: 100%
+	div
+		align-items: center
+		border-bottom: 1px solid $grey
+		display: flex
+		padding: 1em 0 
+		width: 100%
+		i
+			margin: 0 1em
+		span
+			font-size: 0.8em
+			font-weight: 700
+	.dropDownContainer
+		align-items: start
+		background: white
+		border: none
+		flex-direction: column
+		padding: 0
+		position: absolute
+		width: 50%
+		div
+			border: none
+
+
+#displayOptions
+	background: white
+	grid-column: 2/3
+	width: 100%
+	div
+		align-items: center
+		border-bottom: 1px solid $grey
+		display: flex
+		justify-content: flex-end
+		padding: 1em 0 
+		width: 100%
+		i
+			margin: 0 1em 0 0
+		span
+			font-size: 0.8em
+			font-weight: 700
+	.dropDownContainer
+		background: white
+		border: none
+		flex-direction: column
+		justify-content: flex-end
+		padding: 0
+		position: absolute
+		width: 50%
+		div
+			border: none
+			width: 100%
+			i
+				margin: 0 1em
+
+
+
+
+@media only screen and (min-width: 920px)
+	#feed
+		grid-row: 3/4
+		grid-column: 2/6
+
+	#sortOptions
+		width: 100%
+		.dropDownContainer
+			width: 25%
+
+	#displayOptions
+		width: 100%
+		.dropDownContainer
+			width: 25%
+			

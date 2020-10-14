@@ -1,0 +1,38 @@
+$grey: #786F52
+$purple: #715AFF
+$red: #FF5A5F
+$black: #011C27
+$white: #F2F4FF
+
+@use '_header'
+@use '_mobileNav'
+
+*
+	margin: 0
+	padding: 0
+	box-sizing: border-box
+	font-family: Roboto
+
+.container
+	align-items: center
+	display: flex
+	justify-content: center
+
+#AppContainer
+	background: $white
+	height: 100vh
+
+
+.menuOverLay
+	background: $black
+	height: calc(100vh - 3em)
+	position: absolute
+	width: 100%
+
+@media only screen and (min-width: 920px)
+
+	#AppContainer
+		display: grid
+		grid-template-rows: auto 1fr 1fr
+		grid-template-columns: repeat(8, 1fr)
+		height: 100%
