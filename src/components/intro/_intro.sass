@@ -1,0 +1,78 @@
+$grey: #786F52
+$purple: #715AFF
+$red: #FF5A5F
+$black: #011C27
+$white: #F2F4FF
+
+
+#intro
+	display: grid
+	grid-template-columns: repeat(8, 1fr)
+	#trendingIntro
+		display: none
+
+#communityHeader
+	grid-column: 1/9
+
+
+@media only screen and (min-width: 920px)
+	#intro
+		display: grid
+		grid-column: 1/9
+		grid-rows: 2/3
+		height: 100%
+
+
+	#trendingIntro
+		align-items: start
+		display: flex !important
+		flex-wrap: wrap
+		padding: 1em 1em 0 1em
+		grid-column: 1/9
+		width: 100%
+		span
+			font-weight: 700
+			font-size: .9em
+			letter-spacing: .8px
+			width: 100%
+		div
+			height: calc(100% - 1em)
+			justify-content: flex-start
+			width: 100%
+			div
+				border: solid 1px black
+				border-radius: 10px
+				position: relative
+				overflow: hidden
+				margin-right: .5em
+				max-height: 200px 
+				z-index: 1
+				&::before
+					background-image: linear-gradient(0deg,#000,rgba(0,0,0,1) 25%,rgba(0,0,0,.75) 50%,rgba(0,0,0,.50) 75%,rgba(0,0,0,.25))
+					content: ''
+					position: absolute
+					opacity: 0.6
+					height: 100%
+					width: 100%
+					z-index: 2
+				.trendingText
+					bottom: 1em
+					color: white
+					display: inline-block
+					padding: 1em
+					position: absolute
+					width: 100%
+					z-index: 3
+					p
+						font-weight: 400
+				img
+					background: white
+					height: 100%
+					width: 100%
+			div:nth-of-type(4)
+				margin-right: 0
+			
+
+@media only screen and (min-width: 1200px)
+	#trendingIntro
+		grid-column: 2/8

@@ -13,6 +13,12 @@ $white: #F2F4FF
 	box-sizing: border-box
 	font-family: Roboto
 
+html
+	height: 100%
+
+body
+	height: 100%
+
 .container
 	align-items: center
 	display: flex
@@ -20,7 +26,8 @@ $white: #F2F4FF
 
 #AppContainer
 	background: $white
-	height: 100vh
+	min-height: 100vh
+	height: 100%
 
 
 .menuOverLay
@@ -29,10 +36,23 @@ $white: #F2F4FF
 	position: absolute
 	width: 100%
 
+#mobileViewToggle
+	background: white
+	justify-content: space-around
+	span
+		font-weight: 700
+		letter-spacing: 1px
+		padding: 1em
+		text-align: center
+		width: 100%
+
+.mobileViewChoice
+	border-bottom: 2px solid $purple
+
 @media only screen and (min-width: 920px)
 
 	#AppContainer
 		display: grid
-		grid-template-rows: auto 1fr 1fr
+		grid-template-rows: auto 40vh auto auto
 		grid-template-columns: repeat(8, 1fr)
 		height: 100%

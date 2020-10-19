@@ -4,22 +4,15 @@ $red: #FF5A5F
 $black: #011C27
 $white: #F2F4FF
 
-
-#feed
-	background: $grey
-	display: grid
-	grid-template-columns: 1fr 1fr
-	grid-template-rows: auto repeat(auto, auto)
-	height: 3em
-
-#sortOptions
+@mixin sorting-Dropdown
 	background: white
-	grid-column: 1/2
+	max-height: 3em
 	width: 100%
 	div
 		align-items: center
 		border-bottom: 1px solid $grey
 		display: flex
+		justify-content: flex-end
 		padding: 1em 0 
 		width: 100%
 		i
@@ -27,6 +20,7 @@ $white: #F2F4FF
 		span
 			font-size: 0.8em
 			font-weight: 700
+			margin: 0
 	.dropDownContainer
 		align-items: start
 		background: white
@@ -34,40 +28,38 @@ $white: #F2F4FF
 		flex-direction: column
 		padding: 0
 		position: absolute
-		width: 50%
+		width: 33%
+		z-index: 2
 		div
 			border: none
+
+#feed
+	background: $white
+	height: auto
+	min-height: 100vh
+	position: relative
+	.feedHeader
+		display: none
+
+
+#sortOptions
+	@include sorting-Dropdown
+	div
+		justify-content: flex-start
+
+#sortOptionsCont
+	@include sorting-Dropdown
+	div
+		justify-content: flex-start
+	.dropDownContainer
+		padding: 0 .5em
+
 
 
 #displayOptions
-	background: white
-	grid-column: 2/3
-	width: 100%
-	div
-		align-items: center
-		border-bottom: 1px solid $grey
-		display: flex
-		justify-content: flex-end
-		padding: 1em 0 
-		width: 100%
-		i
-			margin: 0 1em 0 0
-		span
-			font-size: 0.8em
-			font-weight: 700
+	@include sorting-Dropdown
 	.dropDownContainer
-		background: white
-		border: none
-		flex-direction: column
-		justify-content: flex-end
-		padding: 0
-		position: absolute
-		width: 50%
-		div
-			border: none
-			width: 100%
-			i
-				margin: 0 1em
+		right: 0
 
 
 
@@ -75,15 +67,34 @@ $white: #F2F4FF
 @media only screen and (min-width: 920px)
 	#feed
 		grid-row: 3/4
-		grid-column: 2/6
+		grid-column: 1/6
+		padding-left: 1em
+		.feedHeader
+			display: block
+			margin: 1em 0 .5em 0
+
 
 	#sortOptions
-		width: 100%
-		.dropDownContainer
-			width: 25%
+		border-top-left-radius: 5px
+		border-bottom-left-radius: 5px
+		div
+			border: none
+
+
+	#sortOptionsCont
+		div
+			border: none
+
 
 	#displayOptions
-		width: 100%
-		.dropDownContainer
-			width: 25%
+		border-top-right-radius: 5px
+		border-bottom-right-radius: 5px
+		div
+			border: none
+
+
+
+@media only screen and (min-width: 1200px)
+	#feed 
+		grid-column: 2/6
 			

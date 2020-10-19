@@ -5,52 +5,62 @@ $black: #011C27
 $white: #F2F4FF
 
 .post
-	background: $white
+	background: white
 	border-top: solid 1px grey
 	border-bottom: solid 1px grey
 	grid-column: 1/3
 	display: grid
 	grid-template-rows: auto auto auto auto
-	padding: .5em
+	padding: .5em 
 
 .postInfo
 	align-items: center
 	grid-row: 1/2
+	justify-content: space-between
 	width: 100%
 	span
 		font-weight: 700
+		font-size: .8em
 		letter-spacing: 1px
 		margin: .5em
-	span:nth-of-type(2)
-		font-weight: 400
 	span:nth-of-type(3)
-		display: none
 		margin-right: auto
+	span:nth-of-type(4)
+		display: none
+		margin-left: auto
 	.joinCommunity
-		display: none
+		color: blue
+		border-bottom: 1px solid blue
+		display: inline
+		margin: .5em
+		padding: 0 .1em
 	.joinedCommunity
-		display: none
+		color: $grey
+		display: inline
+		font-weight: 400
+		margin: .5em
+		padding: 0 .1em
 	img
 		background: black
 		border-radius: 50%
 		height: 2em
 		width: 2em
 	i
-		margin: 0 .5em 0 auto
+		margin: 0 .5em 0 .5em
 		transform: rotate(90deg)
 
 .postContent
 	grid-row: 2/3
-	justify-content: flex-end
+	justify-content: flex-start
 	padding: .5em 0 
 	p
-		font-size: 1.2em
+		font-size: 1.1em
 		letter-spacing: .8px
 		width: auto
 
 	img
 		align-self: start
-		justify-self: flex-end
+		margin-left: auto
 		width: 5em
 
 .postMenu
@@ -66,28 +76,110 @@ $white: #F2F4FF
 .enlargedPostImg
 	grid-row: 3/4
 	img
+		height: auto
+		max-height: 100%
 		width: 100%
-.postMeta
-	grid-row: 4/5
-	padding: .5em 0
+
+
+#postMeta
+	#interactionWindow
+		align-items: center
+		display: flex
+		flex-direction: row
+		grid-row: 3/4
+		justify-content: flex-start
+		div
+			align-items: center
+			margin: 0 .5em
+			i
+				font-size: 24px
+			span
+				font-size: .9em
+				font-weight: 600
+				margin: .25em .25em
+
+
+
+#reactionsWindow, #reactionsDisplay
+	margin: .5em auto .5em 0
+	padding: .25em
+	div
+		align-items: center
+		display: flex
+		margin:  0 .25em
+		i
+			font-size: 24px
+			margin: 0
+		span
+			font-weight: 600
+
+#reactionsWindow
+	justify-content: space-between
+	width: 100%
+	div:nth-of-type(1)
+		i
+			padding-right: 7.25px
+
+
 
 @media only screen and (min-width: 576px)
 	.postInfo
-		span:nth-of-type(3)
+		span:nth-of-type(4)
 			display: inline
 			font-weight: 400
-		.joinCommunity
-			color: blue
-			border-bottom: 1px solid blue
-			display: inline
-			margin: .5em
-			padding: 0 .1em
-		.joinedCommunity
-			color: $grey
-			display: inline
-			font-weight: 400
-			margin: .5em
-			padding: 0 .1em
 
 @media only screen and (min-width: 920px)
+	.post
+		border: none
+		border-radius: 5px
+		grid-template-columns: auto 1fr
+		margin: 1em 0 
+		padding: .5em .25em 0 .25em
+
+
 	.postInfo
+		grid-column: 2/3
+
+	.postContent
+		grid-column: 2/3
+
+	#postMeta
+		grid-column: 2/3
+		grid-row: 4/5
+		justify-content: flex-start
+
+	#interactionWindow
+		align-items: center
+		display: flex
+		grid-column: 1/2
+		grid-row: 1/5
+		flex-direction: column
+		justify-content: flex-start
+		div:nth-of-type(2)
+			margin: auto .5em .8em .5em 
+		div
+			flex-direction: column
+			margin: 0 .5em
+			i
+				font-size: 24px
+			span
+				font-size: .9em
+				font-weight: 600
+				margin: .25em 0
+
+	#reactionsWindow, #reactionsDisplay
+		margin: .5em 0
+		padding: .25em
+		div
+			display: flex
+			margin:  0 .5em
+			i
+				font-size: 24px
+				margin: 0 .25em
+			span
+				font-weight: 600
+		div:nth-of-type(1)
+			margin-left: .5em
+			i
+				margin: 0
+
