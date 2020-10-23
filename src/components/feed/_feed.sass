@@ -2,99 +2,63 @@ $grey: #786F52
 $purple: #715AFF
 $red: #FF5A5F
 $black: #011C27
-$white: #F2F4FF
+$gloomyBlue: #D0D2D4
 
-@mixin sorting-Dropdown
-	background: white
-	max-height: 3em
-	width: 100%
-	div
-		align-items: center
-		border-bottom: 1px solid $grey
-		display: flex
-		justify-content: flex-end
-		padding: 1em 0 
-		width: 100%
-		i
-			margin: 0 1em
-		span
-			font-size: 0.8em
-			font-weight: 700
-			margin: 0
-	.dropDownContainer
-		align-items: start
-		background: white
-		border: none
-		flex-direction: column
-		padding: 0
-		position: absolute
-		width: 33%
-		z-index: 2
-		div
-			border: none
-
-#feed
-	background: $white
+.feed
+	background: $gloomyBlue
 	height: auto
-	min-height: 100vh
+	padding-bottom: 1em
 	position: relative
 	.feedHeader
 		display: none
 
 
-#sortOptions
-	@include sorting-Dropdown
+.pageSelectorContainer
+	justify-content: space-between
+	margin-top: 1em
+	p
+		background: $purple
+		letter-spacing: 1px
+		padding: .5em 1em 
+		text-align: center
+		width: 33%
+	.feedSeeMore
+		border-radius: 5px
+		color: white
+		font-weight: 700
+		margin: auto
+
+.profileFeedSort
+	background: white
+	border-radius: 5px
+	justify-content: space-around
+	max-height: 3em
 	div
-		justify-content: flex-start
-
-#sortOptionsCont
-	@include sorting-Dropdown
-	div
-		justify-content: flex-start
-	.dropDownContainer
-		padding: 0 .5em
-
-
-
-#displayOptions
-	@include sorting-Dropdown
-	.dropDownContainer
-		right: 0
-
-
+		border-bottom: transparent solid 2px
+		padding: 1em 1em 1em .5em
+		text-align: center
+		width: 100%
+		i
+			margin-right: .5em
+	.profileFeedChoice
+		border-bottom: blue solid 2px
 
 
 @media only screen and (min-width: 920px)
-	#feed
+	.feed
 		grid-row: 3/4
-		grid-column: 1/6
+		grid-column: 1/9
 		padding-left: 1em
 		.feedHeader
 			display: block
 			margin: 1em 0 .5em 0
 
-
-	#sortOptions
-		border-top-left-radius: 5px
-		border-bottom-left-radius: 5px
-		div
-			border: none
-
-
-	#sortOptionsCont
-		div
-			border: none
-
-
-	#displayOptions
-		border-top-right-radius: 5px
-		border-bottom-right-radius: 5px
-		div
-			border: none
-
+	.feedGlobalPage
+		margin-top: 1em
+		grid-row: 2/4 !important
 
 
 @media only screen and (min-width: 1200px)
-	#feed 
-		grid-column: 2/6
+	.feed 
+		grid-column: 2/9
 			

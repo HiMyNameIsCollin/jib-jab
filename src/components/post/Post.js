@@ -1,34 +1,68 @@
 import React, { useState, useEffect } from 'react'
 import './_post.sass'
 
-const PostInfo = ({postInfoIsOpen, openPostInfo, userLoggedIn, openEnlargedWindow}) => {
+const Post = ({user, windowWidth, Link, postType, pageType}) => {
+
+const PostInfo = () => {
 	return(
 		<div className='container postInfo'>
 			<img src='https://robohash.org/4' alt="Community img"/>
-			<span> Community name</span>
 			{
-				userLoggedIn ?
+				pageType !== 'communityPage' && postType !== 'enlarged' ?
+				<span className='postInfoCommunityName'><Link className='link' to='/community'> Community name</Link></span>:
+				null
+			}
+			
+			{
+				user.userName !== '' ?
 				<span class='joinCommunity'> Join </span> :
 				null
 			}
-			<span> 5hrs </span>
-			<span> /u/Users name </span>
-			<i onClick={() => {
-				openPostInfo(!postInfoIsOpen)
-				openEnlargedWindow(false)
-			}}className="fas fa-bars"></i>
+			<span className='postInfoTimePosted'> 5hrs </span>
+			{
+				pageType === 'communityPage' && windowWidth <= 576 ?
+				<span className='postInfoUserName'><Link className='link' to='/user'> /u/Users name </Link></span> :
+				null
+			}
+			{
+				windowWidth > 576 ?
+				<span className='postInfoUserName'><Link className='link' to='/user'> /u/Users name </Link></span> :
+				null
+			}
+			{
+				postType !== 'enlarged' ?
+				<i onClick={() => {
+					openPostInfo(!postInfoIsOpen)
+					openEnlargedWindow(false)
+				}}className="fas fa-bars"></i> :
+				null
+			}
 		</div>
 	)
 }
 
 
-const PostContent = ({enlargedImgOpen, openEnlargedWindow}) => {
+const PostContent = () => {
 	return(
 		<div className='container postContent'>
-			<p> orem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem orem lorem lorem lorem lorem lorem lorem lorem lorem  </p>
-			<img onClick={() => {
-				openEnlargedWindow(!enlargedImgOpen)
-			}} src='https://robohash.org/3' alt='Post image' />
+			<p>
+				{
+					postType === 'enlarged' ? 
+					'orem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem orem lorem lorem lorem lorem lorem lorem lorem lorem' :
+					<Link to='/community/post' className='link'> orem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem orem lorem lorem lorem lorem lorem lorem lorem lorem 
+					</Link> 
+				}
+				
+			</p>
+			{
+			 	 postType === 'enlarged' ? 
+			 	 null :
+			 	 user.settings.feedType === 'list' ?
+				<img onClick={() => {
+					openEnlargedWindow(!enlargedImgOpen)
+				}} src='https://robohash.org/3' alt='Post image' /> :
+				null
+			}
 		</div> 
 	)
 }
@@ -41,17 +75,25 @@ const PostMenu = () => {
 				<span> Share </span>
 			</div>
 			<div>
-				<i className="fas fa-bars"></i>
-				<span> User name's profile </span>
+				<Link to='/user' className='link'>
+					<i className="fas fa-bars"></i>
+					<span> User name's profile </span>
+				</Link>
 			</div>
-			<div>
-				<i className="fas fa-bars"></i>
-				<span> Save</span>
-			</div>
-			<div>
-				<i className="fas fa-bars"></i>
-				<span> Report</span>
-			</div>
+			{
+				user.userName !== '' ?
+				<React.Fragment>
+					<div>
+						<i className="fas fa-bars"></i>
+						<span> Save</span>
+					</div>
+					<div>
+						<i className="fas fa-bars"></i>
+						<span> Report</span>
+					</div>
+				</React.Fragment> :
+				null
+			}
 		</div>
 	)
 }
@@ -59,39 +101,55 @@ const PostMenu = () => {
 const EnlargedPostImg = () => {
 	return(
 		<div className='container enlargedPostImg'>
-			<img src='https://robohash.org/3' alt='Enlarged post image'/>
+			<Link to='/community/name/post' className='link'>
+				<img src='https://robohash.org/3' alt='Enlarged post image'/>
+			</Link>
+		</div>
+	)
+}
+
+const EnlargedPostText = () => {
+	return(
+		<div className='container enlargedPostText' >
+		<span> Post tag </span> 
+		<p> This is where a user can input: fact, hot takes, shit post, or whatever else. This is where a user can input: fact, hot takes, shit post, or whatever else. This is where a user can input: fact, hot takes, shit post, or whatever else. This is where a user can input: fact, hot takes, shit post, or whatever else. </p>
 		</div>
 	)
 }
 
 
-
 const InteractionWindow =() => {
 	return(
-		<div className='container' id='interactionWindow'>
+		<div className='container interactionWindow'>
 			<div className='container'>
 				<i class="fas fa-arrow-circle-up"></i>
 				<span> 24.7k</span>
 				<i class="fas fa-arrow-circle-down"></i>
 			</div>
 			<div className='container'>
-				<span> 100</span>
+			{
+				postType !== 'enlargedPost' ?
+				<span> 100</span> :
+				null
+			}
+				
 				<i class="far fa-comment-dots"></i>
 			</div>
 		</div>
 	)
 }
 
-const PostMeta= ({windowWidth}) => {
+const PostMeta= () => {
 
 	const [reactionIsOpen, openReactions] = useState(false)
 
 	const ReactionsDisplay = ({reactionIsOpen, openReactions}) => {
 
 		return(
-			<div id='reactionsDisplay' className='container'>
+			<div className='container reactionsDisplay'>
 				<div>
 					<i onClick={() => openReactions(!reactionIsOpen)} class="far fa-meh"></i>
+					<span> 0</span>
 				</div>
 				<div>
 					<i class="far fa-smile-beam"></i>
@@ -105,9 +163,9 @@ const PostMeta= ({windowWidth}) => {
 		)
 	}
 
-	const ReactionsWindow = ({reactionIsOpen, openReactions}) => {
+	const ReactionsWindow = () => {
 		return(
-			<div id='reactionsWindow' className='container'>
+			<div className='container reactionsWindow'>
 				<div>
 					<i onClick={() => openReactions(!reactionIsOpen)} class="fas fa-times"></i>
 				</div>
@@ -136,7 +194,7 @@ const PostMeta= ({windowWidth}) => {
 	}
 
 	return(
-		<div className='container' id='postMeta'>
+		<div className='container postMeta'>
 		{
 			reactionIsOpen ?
 			<ReactionsWindow reactionIsOpen={reactionIsOpen} openReactions={openReactions}  />:
@@ -153,32 +211,50 @@ const PostMeta= ({windowWidth}) => {
 	)
 }
 
-const Post = ({userLoggedIn, windowWidth}) => {
 
 	const [postInfoIsOpen, openPostInfo] = useState(false)
 	const [enlargedImgOpen, openEnlargedWindow] = useState(false)
 
+	useEffect(() => {
+		if(user.settings.feedType === 'card'){
+			openEnlargedWindow(true)
+		} else if (user.settings.feedType === 'list'){
+			openEnlargedWindow(false)
+		}
+	},[user])
+
+	useEffect(() => {
+		if(postType === 'enlarged'){
+			openEnlargedWindow(true)
+		}
+	},[])
+
 	return(
 		<div className='post'>
-			<PostInfo postInfoIsOpen={postInfoIsOpen} openPostInfo={openPostInfo} userLoggedIn={userLoggedIn} openEnlargedWindow={openEnlargedWindow}/>
+			<PostInfo Link={Link} postInfoIsOpen={postInfoIsOpen} openPostInfo={openPostInfo} user={user} openEnlargedWindow={openEnlargedWindow}/>
 			{
 				postInfoIsOpen ?
 				<PostMenu/> :
 				<React.Fragment>
-					<PostContent enlargedImgOpen={enlargedImgOpen} openEnlargedWindow={openEnlargedWindow}/> 
-					<PostMeta  windowWidth={windowWidth}/>
+					<PostContent Link={Link} enlargedImgOpen={enlargedImgOpen} openEnlargedWindow={openEnlargedWindow} user={user}/> 
+					<PostMeta  user={user} windowWidth={windowWidth}/>
 				</React.Fragment>
 			}
 			{
 				enlargedImgOpen ?
 				<EnlargedPostImg /> :
 				null
+			}	
+			{
+				postType === 'enlarged' ?
+				<EnlargedPostText /> :
+				null
 			}
-		{
-			windowWidth > 920 ?
-			<InteractionWindow /> :
-			null
-		}
+			{
+				windowWidth > 920 ?
+				<InteractionWindow /> :
+				null
+			}
 		</div>
 	)
 }

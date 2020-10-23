@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import MobileNav from '../components/mobileNav/MobileNav'
 import Intro from '../components/intro/Intro'
 import Feed from '../components/feed/Feed'
-import DesktopWidgetContainer from '../components/desktopWidgetContainer/DesktopWidgetContainer'
+import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 
-const FrontPage = ({userLoggedIn, navIsOpen, windowWidth}) => {
+const FrontPage = ({user, setUser, windowWidth, Link}) => {
 
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 
 	return(
 		<React.Fragment>
-			<Intro type={'frontPage'} windowWidth={windowWidth} />
-			{
-				navIsOpen ?
-				<div class='menuOverLay'>
-					<MobileNav userLoggedIn={userLoggedIn} />
-				</div> :
-				null
-			}
+			<Intro pageType={'frontPage'} windowWidth={windowWidth} />
 			{
 				windowWidth <= 920 ?
-				<div id='mobileViewToggle' className='container'>
+				<div className='container mobileViewToggle'>
 					<span onClick={() => setMobileView(true)} className={mobileViewIsFeed ? 'mobileViewChoice' : null}> Feed </span>
 					<span onClick={() => setMobileView(false)} className={!mobileViewIsFeed ? 'mobileViewChoice' : null}> About </span>
 				</div> :
@@ -30,12 +22,22 @@ const FrontPage = ({userLoggedIn, navIsOpen, windowWidth}) => {
 			{
 				windowWidth > 920 ?
 				<React.Fragment >
-					<Feed userLoggedIn={userLoggedIn} windowWidth={windowWidth}/>
-					<DesktopWidgetContainer /> 
+					<Feed 
+					Link={Link} 
+					pageType={'frontPage'} 
+					user={user} 
+					setUser={setUser}
+					windowWidth={windowWidth}/>
+					<WidgetContainer Link={Link} pageType={'frontPage'}/> 
 				</React.Fragment> :
 				mobileViewIsFeed ?
-				<Feed userLoggedIn={userLoggedIn} windowWidth={windowWidth}/>:
-				<DesktopWidgetContainer /> 
+				<Feed 
+				Link={Link} 
+				pageType={'frontPage'} 
+				user={user} 
+				setUser={setUser} 
+				windowWidth={windowWidth}/>:
+				<WidgetContainer Link={Link} pageType={'frontPage'}/> 
 			}
 
 			<Footer />

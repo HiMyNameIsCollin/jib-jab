@@ -1,36 +1,36 @@
 import React from 'react'
 
-const MobileNavMenu = ({type}) => {
-	if(type === 'comm'){
+const MobileNavMenu = ({Link, navType}) => {
+	if(navType === 'comm'){
 	return(
 		<div className='mobileNavMenu'>
 			<div>
+				<Link to='/community' className='link'>
 				<img src='https://robohash.org/2' alt='Community avatar' />
 				<span> Toronto </span> 
+				</Link>
 			</div>
-			<a href='#'> View all </a>
+			<Link to='/community/list' className='link'>
+				View more
+			</Link>
 		</div>
 	)
-	} else if (type === 'myComm') {
+	} else if (navType === 'myComm') {
 	return(
 		<div className='mobileNavMenu'>
 			
-			<a href='#'> View all </a>
+			<Link to='/community/list' className='link'>
+				View more
+			</Link>
 		</div>
 	)
-	} else if (type === 'settings'){
+	} else if (navType === 'settings'){
 	return(
 		<div className='mobileNavMenu'>
 
-			<a href='#'> View all </a>
-		</div>
-	)
-	} else if (type === 'about') {
-	return(
-		<div className='mobileNavMenu'>
-			<div>
-				<span> Mission </span> 
-			</div>
+			<Link to='/community/list' className='link'>
+				View more
+			</Link>
 		</div>
 	)
 	}

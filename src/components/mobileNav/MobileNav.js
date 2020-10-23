@@ -3,12 +3,11 @@ import './_mobileNav.sass'
 import MobileNavMenu from './MobileNavMenu'
 
 
-const UserMobileNav = () => {
 
+const MobileNav = ({Link, navIsOpen, setNav, user}) => {
 	const [commIsOpen, setComm]  = useState(false)
 	const [myCommIsOpen, setMyComm] = useState(false)
 	const [settingIsOpen, setSettings] = useState(false)
-	const [aboutIsOpen, setAbout] = useState(false)
 
 	useEffect(() => {
 		if(commIsOpen === true){
@@ -26,130 +25,80 @@ const UserMobileNav = () => {
 	},[commIsOpen, myCommIsOpen])
 
 	return(
-		<nav id='mobileNav' className='container'>
+		<nav className='container mobileNav'>
 			<form>
 			 	<button> <i className="fas fa-search"></i></button>
 			 	<input type="text" value='Search' />
 			</form>
-			<div className='navItem navUserName'>
-				<img src='https://robohash.org/1' alt='User avatar'/>
-				<span> Users Name </span>
-			</div>
-			<div className='navItem'>
-				<i class="fas fa-inbox fa-2x"></i>
-				<span>Inbox</span>
-			</div>
+			{
+				user.userName !== '' ?
+				<div className='navItem container'>
+					<div> <i className="fas fa-sign-in-alt "></i> Login </div>
+					<div> <i className="fas fa-sign-in-alt "></i> Sign Up </div>
+				</div> :
+				<React.Fragment>
+					<div className='navItem navUserName'>
+						<Link className='link' to='/profile/'> 
+							<img src='https://robohash.org/1' alt='User avatar'/>
+							<span> Users name</span>
+						</Link>
+					</div>
+					<div className='navItem'>
+						<Link className='link' to='/inbox/'>
+							<i class="fas fa-inbox "></i>
+							<span>Inbox</span>
+						</Link>
+					</div>
+				</React.Fragment>
+			}
 			<div className='navItem' onClick={() => setComm(!commIsOpen)}>
-				<i class="fas fa-angle-double-right fa-2x"></i>
+				<i class="fas fa-angle-double-right "></i>
 				<span>Communities</span>
 				<i class="fas fa-caret-down"></i>
 			</div>
 			{
 				commIsOpen ?
-				<MobileNavMenu type={'comm'} /> :
+				<MobileNavMenu navType={'comm'} Link={Link}/> :
 				null
 			}
 			<div className='navItem' onClick={() => setMyComm(!myCommIsOpen)}>
-				<i class="fas fa-angle-right fa-2x"></i>
+				<i class="fas fa-angle-right "></i>
 				<span>My Communities</span>
 				<i class="fas fa-caret-down"></i>
 			</div>
 			{
 				myCommIsOpen ?
-				<MobileNavMenu type={'myComm'}/> :
+				<MobileNavMenu navType={'myComm'} Link={Link}/> :
 				null
 			}
 			<div className='navItem' onClick={() => setSettings(!settingIsOpen)}>
-				<i class="fas fa-cog fa-2x"></i>
+				<i class="fas fa-cog "></i>
 				<span>Settings</span>
 				<i class="fas fa-caret-down"></i>
 			</div>
 			{
 				settingIsOpen ?
-				<MobileNavMenu type={'settings'} /> :
+				<MobileNavMenu navType={'settings'} Link={Link} /> :
 				null
 			}
-			<div className='navItem' onClick={() => setAbout(!aboutIsOpen)}>
-				<i class="far fa-address-card fa-2x"></i>
+			<Link to='/global' className='navItem link'>
+				<i class="fas fa-globe-americas "></i>
+				<span>Global </span>
+			</Link>
+			<Link to='/' className='navItem link'>
+				<i class="fas fa-caravan "></i>
+				<span>Home </span>
+			</Link>
+			<Link to='./about' className='navItem link'>
+				<i class="far fa-address-card "></i>
 				<span>About</span>
-				<i class="fas fa-caret-down"></i>
-			</div>
-			{
-				aboutIsOpen ?
-				<MobileNavMenu type={'about'} /> :
-				null
-			}
-			<a href='#' className='navItem navItemSolo'>
-				<i class="fab fa-twitter-square fa-2x"></i>
-				<span> Follow me on Twitter </span>
+			</Link>
+			<a href='#' target='_blank' className='navItem'>
+				<i class="fab fa-twitter-square "></i>
+				<span>Follow me on Twitter </span>
 			</a>
 		</nav>
 	)
-}
-
-const DefaultMobileNav = () => {
-
-	const [commIsOpen, setComm]  = useState(false)
-
-	const [aboutIsOpen, setAbout] = useState(false)
-
-	useEffect(() => {
-		if(commIsOpen === true){
-			document.querySelector('.fa-angle-double-right').classList.add('navBtnOpen')
-		} else {
-			document.querySelector('.fa-angle-double-right').classList.remove('navBtnOpen')
-		}
-	},[commIsOpen])
-	return(
-		<nav id='mobileNav' className='container'>
-			<form>
-			 	<button> <i className="fas fa-search"></i></button>
-			 	<input type="text" value='Search' />
-			</form>
-			<div className='navItem container'>
-				<div> <i className="fas fa-sign-in-alt "></i> Login </div>
-				<div> <i className="fas fa-sign-in-alt "></i> Sign Up </div>
-			</div>
-			<div className='navItem' onClick={() => setComm(!commIsOpen)}>
-				<i class="fas fa-angle-double-right fa-2x"></i>
-				<span>Communities</span>
-				<i class="fas fa-caret-down"></i>
-			</div>
-		{
-			commIsOpen ?
-			<MobileNavMenu type={'comm'} /> :
-			null
-		}
-			<div className='navItem navItemSolo' >
-				<i class="fas fa-globe-americas fa-2x"></i>
-				<span>Global</span>
-			</div>
-
-			<div className='navItem' onClick={() => setAbout(!aboutIsOpen)}>
-				<i class="far fa-address-card fa-2x"></i>
-				<span>About</span>
-				<i class="fas fa-caret-down"></i>
-			</div>
-		{
-			aboutIsOpen ?
-			<MobileNavMenu type={'about'} /> :
-			null
-		}
-
-			<a href='#' className='navItem navItemSolo'>
-				<i class="fab fa-twitter-square fa-2x"></i>
-				<span> Follow me on Twitter </span>
-			</a>
-		</nav>
-	)
-}
-
-const MobileNav = ({userLoggedIn}) => {
-	if(userLoggedIn === true) {
-		return <UserMobileNav />
-	}else{
-		return <DefaultMobileNav />
-	}
 }
 
 export default MobileNav

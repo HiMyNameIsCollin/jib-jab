@@ -2,29 +2,21 @@ $grey: #786F52
 $purple: #715AFF
 $red: #FF5A5F
 $black: #011C27
-$white: #F2F4FF
+$gloomyBlue: #D0D2D4
 
-@mixin desktopWidget
-	height: calc(100% - 2.7em)
-	margin: 0 auto
-	margin-top: auto
-	padding: 0 1em
-	width: 100%
-	div
-		border-radius: 5px
 
 @mixin widgetAnchorButton
-	background: $red
-	border-radius: 5px
-	color: white
-	display: block
-	font-weight: 700
-	letter-spacing: .7px
-	margin: .5em auto 0 auto
-	padding: .5em 1em
-	text-align: center
-	text-decoration: none
-	width: calc(100% - 1em)
+	background: $red !important
+	border-radius: 5px !important
+	color: white !important
+	display: block !important
+	font-weight: 700 !important
+	letter-spacing: .7px !important
+	margin: .5em auto 0 auto !important
+	padding: .5em 1em !important
+	text-align: center !important
+	text-decoration: none !important
+	width: calc(100% - 1em) !important
 
 .widgetButton
 	@include widgetAnchorButton
@@ -36,36 +28,50 @@ ul
 a
 	text-decoration: none
 
-#desktopWidgetContainer
+.widgetContainer
 	display: flex
 	height: 100%
 	width: 100%
 
 
-#widgetSizingContainer
-	@include desktopWidget
+.widgetSizingContainer
+	height: 100%
+	margin: 0 auto
+	margin-top: auto
+	padding: 0 1em
+	width: 100%
 	div
 		background: white
+		border-radius: 5px
 		margin: 0 auto 1em auto
 		padding-bottom: 1em
 		width: auto
-		h3
-			background: $purple
+		h4
+			background: $black
+			color: white
 			border-top-right-radius: 5px 
 			border-top-left-radius: 5px
-			padding: .7em 0 .7em .5em
+			padding: 1em 0 1em .5em
+			height: 3em
 	div:nth-of-type(1)
 		margin-top: 1em
-		div
-			margin-top: 0
+
+
+
+.widgetSizingContainerFrontPage
+	height: calc(100% - 2.67em) !important
 			
 /*##########################MENU'S#######################*/
-#communityListWidget
+.communityListWidget
 	ul
 		.communityListWidgetItem
 			align-items: center
 			border-top: 1px solid $grey
 			display: flex
+			.link
+				display: flex
+				justify-content: center
+				align-items: center
 			img
 				background: black
 				border-radius: 50%
@@ -76,7 +82,7 @@ a
 				font-size: .9em
 				font-weight: 700
 
-#topPostListWidget
+.topPostListWidget
 	ul
 		.topPostListWidgetItem
 			display: flex
@@ -95,7 +101,7 @@ a
 				padding: 0 0 0 .5em
 				margin: 0 .5em
 
-#rulesListWidget
+.rulesListWidget
 	ul
 		li
 			align-items: start
@@ -119,14 +125,14 @@ a
 			padding: 0 1.8em
 
 
-#linkListWidget
+.linkListWidget
 	ul
 		li
 			margin: .5em 0
 			display: flex
 			align-items: center
 
-#moderatorListWidget
+.moderatorListWidget
 	font-size: 0.9em
 	.widgetButton
 		margin: 1em auto
@@ -157,7 +163,7 @@ a
 			margin: auto 1em auto auto
 
 
-#aboutCommunityWidget
+.aboutCommunityWidget
 	p
 		padding: 1em 1em 0 1em
 	div
@@ -167,6 +173,7 @@ a
 			align-items: start
 			flex-direction: column
 			justify-content: center
+			margin: 0
 			padding: 0 1em
 			width: 50%
 			p
@@ -179,7 +186,7 @@ a
 	p
 		padding-bottom: 1em
 
-#appendixWidget
+.appendixWidget
 	display: flex
 	flex-wrap: wrap
 	padding: 1em
@@ -187,10 +194,45 @@ a
 		font-size: .8em
 		width: 50%
 
+.interactionWidget
+	width: 100%
+	div
+		color: white
+		font-weight: 700
+		padding: 1em .5em
+		text-align: center
+		letter-spacing: 2px
+	.interactionWidgetButtons
+		div:nth-of-type(1)
+			background: $red
+		div:nth-of-type(2)
+			background: $black
+	.interactionWidgetScore
+		align-items: start
+		color: black
+		flex-wrap: wrap
+		margin: 0
+		padding: 0 .5em
+		div
+			border-radius: 0
+			color: black
+			padding: 0
+			text-align: start
+			width: 50%
+			p:nth-of-type(2)
+				font-weight: 400
+		div:nth-of-type(3)
+			width: 100%
+
+.announcementWithLinkWidget
+	p
+		padding: 1em
+
+
 
 /*#########################MEDIA QUERIES###########################*/
 @media only screen and (min-width: 576px)
-	#widgetSizingContainer
+	.widgetSizingContainer
 		div
 			width: 50%
 			div
@@ -199,20 +241,24 @@ a
 
 
 @media only screen and (min-width: 920px)
-	#desktopWidgetContainer
+	.widgetContainer
 		display: flex
-		grid-column: 6/9
+		grid-column: 9/13
 		grid-row: 3/4
 		div
 			width: 100%
 
-	#widgetSizingContainer
+	.widgetContainerGlobalPage
+		grid-row: 2/4 !important
+		margin-top: 1em
+
+	.widgetSizingContainer
 		div:nth-of-type(1)
 			margin-top: 0
 
 @media only screen and (min-width: 1200px)
-	#desktopWidgetContainer
-		grid-column: 6/8
+	.widgetContainer
+		grid-column: 9/12
 
 
 

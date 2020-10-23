@@ -3,8 +3,7 @@ import './_footer.sass'
 
 const Footer = () => {
 	return(
-		<div id='footer'>
-			<span> FOOTER </span>
+		<div className='footer'>
 		</div>
 	)
 }

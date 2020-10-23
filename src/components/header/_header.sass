@@ -2,7 +2,7 @@ $grey: #786F52
 $purple: #715AFF
 $red: #FF5A5F
 $black: #011C27
-$white: #F2F4FF
+$gloomyBlue: #D0D2D4
 
 @mixin headerFlair
 	background: $red
@@ -12,17 +12,22 @@ $white: #F2F4FF
 	transition: .25s ease-out all
 
 @mixin flairHover
-	&:hover
-		background: $purple
 
 
-
-#header
+.header
 	background: $black
 	color: white
 	justify-content: flex-start
+	max-height: 3.5em
 	padding: .5em 0 
-	z-index: 1
+	grid-column: 1/9
+	width: 100%
+	z-index: 5
+	.link
+		@include headerFlair
+		color: white
+		font-weight: 700
+		margin: auto .5em auto .5em
 	div
 		@include headerFlair
 		font-weight: 700
@@ -40,22 +45,51 @@ $white: #F2F4FF
 		margin: auto .5em auto .5em
 		i
 			transition: .25s ease-out all
+	.backToTopBtn
+		@include headerFlair
+		margin: auto .5em auto .5em
+	.backToTopBtnHidden
+		cursor: default
+		opacity: 0
+
+.sticky
+	position: fixed !important
+	top: 0 !important
+	animation: smoothScroll 1s forwards
+
+.paddedTop
+	padding-top: 3.5em
+
+
+@keyframes smoothScroll 
+	0% 
+		transform: translateY(-40px)
+	100% 
+		transform: translateY(0px)
+	
 
 .navBtnOpen
 	transform: rotate(90deg)
 
 
 @media only screen and (min-width: 920px)
-	#header
+	@mixin flairHover
+		&:hover
+			background: $purple
+
+	.paddedTop
+		padding-top: 0
+
+	.header
 		grid-row: 1/2
-		grid-column: 1/9
+		grid-column: 1/13
 		div
 			@include flairHover
 		form
-			background: $white
+			background: $gloomyBlue
 			border-radius: 5px
 			display: flex
-			margin: auto 0 auto .5em
+			margin: auto auto auto auto
 			padding: .7em 1em
 			width: 50%
 			input
@@ -77,4 +111,9 @@ $white: #F2F4FF
 		.headerBtn
 			@include flairHover
 			margin: auto .5em auto auto
+		.backToTopBtn
+			@include flairHover
+			margin: auto .5em auto .5em
+		.link 
+			@include flairHover
 			

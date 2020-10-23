@@ -5,16 +5,16 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 
 
-const GlobalPage = ({user, setUser,  navIsOpen, windowWidth ,Link}) => {
-
+const CommunityPage = ({user, setUser, windowWidth , Link}) => {
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 	return(
 		<React.Fragment>
+			<Intro pageType={'communityPage'} windowWidth={windowWidth} />
 			{
 				windowWidth <= 920 ?
 				<div className='container mobileViewToggle'>
 					<span onClick={() => setMobileView(true)} className={mobileViewIsFeed ? 'mobileViewChoice' : null}> Feed </span>
-					<span onClick={() => setMobileView(false)} className={!mobileViewIsFeed ? 'mobileViewChoice' : null}> Extras </span>
+					<span onClick={() => setMobileView(false)} className={!mobileViewIsFeed ? 'mobileViewChoice' : null}> About </span>
 				</div> :
 				null
 			}
@@ -23,20 +23,20 @@ const GlobalPage = ({user, setUser,  navIsOpen, windowWidth ,Link}) => {
 				<React.Fragment >
 					<Feed 
 					Link={Link} 
-					pageType={'globalPage'} 
+					pageType={'communityPage'} 
 					user={user} 
 					setUser={setUser}
 					windowWidth={windowWidth}/>
-					<WidgetContainer Link={Link} pageType={'globalPage'}/> 
+					<WidgetContainer Link={Link} pageType={'communityPage'}/> 
 				</React.Fragment> :
 				mobileViewIsFeed ?
 				<Feed 
 				Link={Link} 
-				pageType={'globalPage'} 
+				pageType={'communityPage'} 
 				user={user} 
 				setUser={setUser} 
 				windowWidth={windowWidth}/>:
-				<WidgetContainer Link={Link} pageType={'globalPage'}/> 
+				<WidgetContainer Link={Link} pageType={'communityPage'}/> 
 			}
 
 			<Footer />
@@ -44,4 +44,4 @@ const GlobalPage = ({user, setUser,  navIsOpen, windowWidth ,Link}) => {
 	)
 }
 
-export default GlobalPage
+export default CommunityPage

@@ -2,10 +2,21 @@ import React from 'react';
 import './App.sass'
 import AppContainer from './AppContainer'
 
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useLocation
+} from "react-router-dom"
+
+
 function App() {
   return (
     <div className="App">
-      <AppContainer />
+    <Router>
+      <AppContainer Link={Link} Switch={Switch} Route={Route} useLocation={useLocation} />
+    </Router>
     </div>
   );
 }
