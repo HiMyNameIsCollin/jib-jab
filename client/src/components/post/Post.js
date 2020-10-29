@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './_post.sass'
+import ReactionsWindow from './ReactionsWindow'
+import ReactionsDisplay from './ReactionsDisplay'
 
 const Post = ({user, windowWidth, Link, postType, pageType}) => {
 
@@ -60,7 +62,7 @@ const PostContent = () => {
 			 	 user.settings.feedType === 'list' ?
 				<img onClick={() => {
 					openEnlargedWindow(!enlargedImgOpen)
-				}} src='https://robohash.org/3' alt='Post image' /> :
+				}} src='https://source.unsplash.com/random/800x600' alt='Post image' /> :
 				null
 			}
 		</div> 
@@ -102,7 +104,7 @@ const EnlargedPostImg = () => {
 	return(
 		<div className='container enlargedPostImg'>
 			<Link to='/community/name/post' className='link'>
-				<img src='https://robohash.org/3' alt='Enlarged post image'/>
+				<img src='https://source.unsplash.com/random/800x600' alt='Enlarged post image'/>
 			</Link>
 		</div>
 	)
@@ -128,9 +130,10 @@ const InteractionWindow =() => {
 			</div>
 			<div className='container'>
 			{
-				postType !== 'enlargedPost' ?
+				windowWidth <= 920 ?
+				postType === 'enlarged' ?
 				<span> 100</span> :
-				null
+				null: null
 			}
 				
 				<i class="far fa-comment-dots"></i>
@@ -143,55 +146,6 @@ const PostMeta= () => {
 
 	const [reactionIsOpen, openReactions] = useState(false)
 
-	const ReactionsDisplay = ({reactionIsOpen, openReactions}) => {
-
-		return(
-			<div className='container reactionsDisplay'>
-				<div>
-					<i onClick={() => openReactions(!reactionIsOpen)} class="far fa-meh"></i>
-					<span> 0</span>
-				</div>
-				<div>
-					<i class="far fa-smile-beam"></i>
-					<span>0 </span>
-				</div>
-				<div>
-					<i class="far fa-laugh-squint"></i>	
-					<span>0 </span>		
-				</div>
-			</div>
-		)
-	}
-
-	const ReactionsWindow = () => {
-		return(
-			<div className='container reactionsWindow'>
-				<div>
-					<i onClick={() => openReactions(!reactionIsOpen)} class="fas fa-times"></i>
-				</div>
-				<div>
-					<i class="far fa-smile-beam"></i>
-					<span>0 </span>
-				</div>
-				<div>
-					<i class="far fa-laugh-squint"></i>	
-					<span>0 </span>		
-				</div>
-				<div>
-					<i class="far fa-sad-tear"></i>
-					<span>0 </span>			
-				</div>	
-				<div>
-					<i class="far fa-surprise"></i>	
-					<span>0 </span>		
-				</div>	
-				<div>
-					<i class="far fa-grimace"></i>
-					<span>0 </span>		
-				</div>
-				</div>
-		)
-	}
 
 	return(
 		<div className='container postMeta'>

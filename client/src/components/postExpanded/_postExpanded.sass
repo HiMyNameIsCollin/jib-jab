@@ -10,7 +10,6 @@ $gloomyBlue: #D0D2D4
 	grid-column: 2/9
 	grid-row: 2/3
 	height: auto
-	width: 100%
 	.post
 		margin: 0
 
@@ -18,7 +17,151 @@ $gloomyBlue: #D0D2D4
 	justify-content: space-between
 	padding: 0 1em 1em 1em
 
+.commentBox
+	background: white
+
+	
+.commentLoginBox
+	background: white
+	border-bottom: 1px grey solid
+	flex-wrap: wrap
+	justify-content: space-around
+	padding: 0 1em .5em 1em
+	p
+		text-align: center
+		margin: .5em 0
+		width: 100%
+	span
+		background: $red
+		color: white
+		cursor: pointer
+		border-radius: 5px
+		font-weight: 700
+		padding: .5em 1em
+		transition: .25s ease-out all
+
 .commentFeed
+	display: flex
+	flex-direction: column
+	position: relative
+	width: 100%
+	.seeMoreComments
+		color: blue
+		margin-bottom: 1em
+		padding: 0 1em
+		position: absolute
+		text-decoration: underline
+		transform: translateY(-1.1em) translateX(2em)
+
+
+
+.comment
+	border-left: 2px solid black
+	display: grid
+	grid-template-columns: auto 1fr
+	grid-template-rows: auto auto auto
+	font-size: .9rem
+	width: 100%
+	img
+		background: black
+		border-radius: 50%
+		grid-column: 1/2
+		grid-row: 1/2
+		height: 2em
+		margin: .5em 
+		width: 2em
+	.commentInfo
+		grid-column: 2/3
+		grid-row: 1/2
+		justify-content: flex-start
+		span
+			margin: 0 .5em 0 0em
+			font-weight: 700
+		span:nth-of-type(2)
+			font-weight: 400
+	.commentContent
+		justify-content: flex-start
+		padding: 0 1em .5em 0 
+		line-height: 20px
+		p
+			font-size: 1rem
+	.commentMeta
+		border-bottom: 2px solid black
+		flex-direction: column
+		grid-column: 1/2
+		grid-row: 2/4
+		margin: .25em .0 auto .0
+		height: calc(100% - .25em)
+		justify-content: space-between
+		i
+			font-size: 24px
+		i:nth-of-type(2)
+			margin-top: .5em
+			margin-bottom: auto
+		span
+			font-size: .9rem
+	.commentReply
+		grid-column: 2/3
+		justify-content: flex-end
+		font-size: .9rem
+		font-weight: 700
+		margin: 0
+		padding: 1em 0 1em 0
+		width: 100%
+		i
+			font-size: 24px
+		span
+			margin: 0 .5em 0 .5em
+		span:nth-of-type(1)
+			color: blue
+			text-decoration: underline
+			margin: 0 auto 0 .5em
+		span:nth-of-type(2)
+			margin: 0 auto 0 auto
+		span:nth-of-type(3)
+			margin-right: 1em
+
+.commentTab
+	padding-left: 1.3em
+	min-width: 2em
+	border-left: solid 2px black
+
+.parentCommentTab
+	border: none
+
+.parentComment
+	border: none
+	.commentMeta
+		border: none
+
+.commentContainer
+	width: 100%
+
+.renderedComments
+
+
+
+@media only screen and (min-width: 576px)
+	.commentLoginBox
+		background: white
+		flex-wrap: nowrap
+		padding: 1em 
+		p
+			text-align: start
+			margin: .5em 0
+		span
+			background: $red
+			color: white
+			cursor: pointer
+			border-radius: 5px
+			font-weight: 700
+			padding: .5em 1em
+			transition: .25s ease-out all
+		span:nth-of-type(1)
+			margin-right: 1em
+
+	.postExpanded
+		margin: 1em
 
 
 
@@ -26,11 +169,17 @@ $gloomyBlue: #D0D2D4
 @media only screen and (min-width: 920px)
 	.postExpanded
 		border-radius: 5px
-		margin-top: 1em
 		grid-column: 1/9
 		grid-row: 2/3
 		height: auto
-		width: 100%
+		margin: 1em 0 0 1em
+
+	.commentLoginBox
+		span
+			&:hover
+				background: $purple
+
+
 
 @media only screen and (min-width: 1220px)
 	.postExpanded

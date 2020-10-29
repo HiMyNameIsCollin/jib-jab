@@ -12,12 +12,13 @@ $gloomyBlue: #D0D2D4
 	display: grid
 	grid-template-rows: auto auto auto auto auto
 	padding: .5em 0
+	
 
 .postInfo
 	align-items: center
 	grid-row: 1/2
 	justify-content: space-between
-	padding: 0 .5em
+	padding: 0 .25em 0 .5em
 	width: 100%
 	span
 		font-weight: 700
@@ -86,7 +87,7 @@ $gloomyBlue: #D0D2D4
 	flex-direction: column
 	grid-row: 4/5
 	justify-content: flex-start
-	padding: .5em
+	padding: .5em 1em .5em .5em
 	text-align: start
 	span
 		background: $red
@@ -103,39 +104,42 @@ $gloomyBlue: #D0D2D4
 
 .postMeta
 	grid-row: 5/6
-	.interactionWindow
+
+	
+.interactionWindow
+	align-items: center
+	display: flex
+	font-size: .9em
+	flex-direction: row
+	justify-content: flex-start
+	div
+		align-items: center
+		margin: 0 .5em 0 .25em
+		i
+			font-size: 24px
+		span
+			font-weight: 600
+			margin: .25em .25em
+.reactionsWindow, .reactionsDisplay
+	justify-content: flex-start
+	margin: .5em auto .5em 0
+	padding: .25em
+	width: 100%
+	div
 		align-items: center
 		display: flex
-		flex-direction: row
-		justify-content: flex-start
-		div
-			align-items: center
-			margin: 0 .5em 0 .25em
-			i
-				font-size: 24px
-			span
-				font-size: .9em
-				font-weight: 600
-				margin: .25em .25em
-	.reactionsWindow, .reactionsDisplay
-		justify-content: flex-start
-		margin: .5em auto .5em 0
-		padding: .25em
-		width: 100%
-		div
-			align-items: center
-			display: flex
-			margin:  0 .5em 0 .25em
-			i
-				font-size: 24px
-				margin: 0
-			span
-				font-weight: 600
+		margin:  0 .25em 0 .25em
+		i
+			font-size: 24px
+			margin: 0
+		span
+			font-weight: 600
+			font-size: .9em
 
-	.reactionsWindow
-		div:nth-of-type(1)
-			i
-				padding-right: 16px
+.reactionsWindow
+	div:nth-of-type(1)
+		i
+			padding-right: 16px
 
 
 

@@ -1,14 +1,153 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Post from '../post/Post'
+import CommentFeed from './CommentFeed'
 import './_postExpanded.sass'
-
-
 const PostExpanded = ({Link, user, windowWidth, pageType}) => {
 
-const CommentFeed = () => {
+
+let postData = {
+	info: {
+		userName: 'name',
+		time: '3hrs'
+	},
+	karma: 1,
+	comments: [
+		{
+			commentInfo: {
+				userName: 'name',
+				time: '1hrs'
+			},
+			commentContent: 'LoremBlah No child',
+			comments: []
+		},
+		{
+			commentInfo: {
+				userName: 'name',
+				time: '2hrs'
+			},
+			commentContent: 'LoremBlah1',
+			comments: [
+				{
+					commentInfo: {
+						userName: 'name',
+						time: '2hrs'
+					},
+					commentContent: 'LoremBlah1 child',
+					comments: []
+				},
+				{
+					commentInfo: {
+						userName: 'name',
+						time: '2hrs'
+					},
+					commentContent: 'LoremBlah1 child',
+					comments: [
+						{
+							commentInfo: {
+								userName: 'name',
+								time: '2hrs'
+							},
+							commentContent: 'LoremBlah1 child child',
+							comments: [
+							{
+								commentInfo: {
+									userName: 'name',
+									time: '2hrs'
+								},
+								commentContent: 'LoremBlah1 child child',
+								comments: [
+								{
+									commentInfo: {
+										userName: 'name',
+										time: '2hrs'
+									},
+									commentContent: 'LoremBlah1 child child',
+									comments: [
+									{
+										commentInfo: {
+											userName: 'name',
+											time: '2hrs'
+										},
+										commentContent: 'LoremBlah1 child child',
+										comments: [
+											{
+												commentInfo: {
+													userName: 'name',
+													time: '2hrs'
+												},
+												commentContent: 'LoremBlah1 child child',
+												comments: [
+												
+												],
+											},
+										],
+									},
+									],
+								},
+								],
+							},
+							],
+						},
+						{
+							commentInfo: {
+								userName: 'name',
+								time: '2hrs'
+							},
+							commentContent: 'LoremBlah1 child child 2',
+							comments: [
+							
+							],
+						},
+					],
+				},
+				{
+					commentInfo: {
+						userName: 'name',
+						time: '2hrs'
+					},
+					commentContent: 'LoremBlah1 child',
+					comments: []
+				},
+			],
+		},
+		{
+			commentInfo: {
+				userName: 'name',
+				time: '1hrs'
+			},
+			commentContent: 'LoremBlah2',
+			comments: [
+				{
+					commentInfo: {
+						userName: 'name',
+						time: '2hrs'
+					},
+					commentContent: 'LoremBlah2 child',
+					comments: [
+						{
+							commentInfo: {
+								userName: 'name',
+								time: '2hrs'
+							},
+							commentContent: 'LoremBlah2 child child LoremBlah2 child child LoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child child',
+							comments: [
+							
+							],
+						},
+					],
+				},
+			],
+		},
+	],
+}
+
+
+
+
+const LeaveACommentBox = () => {
 	return(
-		<div className='commentFeed'>
-			
+		<div className='commentBox'>
+
 		</div>
 	)
 }
@@ -16,13 +155,13 @@ const CommentFeed = () => {
 const PostMenuBar = () => {
 	return(
 		<div className='postMenuBar container'>
-			<span> 100 Comments </span>
+			<span> {postData.comments.length} Comments </span>
 			<div>
 				<i className="fas fa-bars"></i>
 				<span> Share </span>
 			</div>
 			{
-				user.userName !== undefined ? 
+				user.userName !== '' ? 
 				<React.Fragment>
 					<div>
 						<i className="fas fa-bars"></i>
@@ -39,6 +178,7 @@ const PostMenuBar = () => {
 	)
 }
 
+
 	return(
 		<div className='postExpanded'>
 			<Post pageType={pageType} postType={'enlarged'} user={user} Link={Link} windowWidth={windowWidth}/>
@@ -47,7 +187,17 @@ const PostMenuBar = () => {
 				<PostMenuBar /> :
 				null
 			}
-			<CommentFeed />
+			{
+				user.userName !== '' ?
+				<LeaveACommentBox /> :
+				<div className='commentLoginBox container'>
+					<p> Login or register to comment </p>
+					<span>Login</span>
+					<span> Register</span>
+				</div>
+			}
+			<CommentFeed postData={postData} />
+			
 		</div>
 
 	)
