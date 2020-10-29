@@ -3,7 +3,7 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import PostExpanded from '../components/postExpanded/PostExpanded'
 
-const PostPage = ({Link, user, windowWidth}) => {
+const PostPage = ({Link, user,  windowWidth}) => {
 	return(
 		<React.Fragment>
 			<PostExpanded pageType={'communityPage'} Link={Link} user={user} windowWidth={windowWidth}/>

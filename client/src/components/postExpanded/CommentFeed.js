@@ -1,55 +1,106 @@
 import React, { useState, useEffect } from 'react'
 import Comment from './Comment'
 
-const CommentFeed = ({postData}) => {
+const initialSort = {
+	sortOptionsChoice: 'spicy',
+	sortOptionsContChoice: 'day'
+}
 
-	function renderComments(data, n) {
-		if(n === undefined){
-			n = 0
-			console.log(n)
-		} else {
-			n++
-		}
-		if(n < 4) {
-			return(
-				<div className={n === 0 ? 'commentTab parentCommentTab' : 'commentTab'}>
-				{
-					data.comments.map((c, i) => {
-						if(c.comments.length === 0) {
-							return <Comment data={c}/>
-						} else {
-							return(
-								<React.Fragment> 
-									<Comment data={c} />
-									{renderComments(c, n)}
-								</React.Fragment>
-							)
-						}
-					})
+const CommentFeed = ({postData, user}) => {
+
+	const [commentSort, setCommentSort] = useState(initialSort)
+	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
+
+	const SortComments = () => {
+		return(
+			<div className='sortComments container'> 
+			    <div onClick={() => setCommentDropDownOpen(!commentDropDownOpen)} className='container'> 
+			    {
+			    	commentSort.sortOptionsChoice === 'spicy' ?
+			    	<React.Fragment>
+						<i className="fas fa-pepper-hot"></i>
+						<span>Spicy</span>
+			    	</React.Fragment> :
+			    	commentSort.sortOptionsChoice === 'best' ?
+			    	<React.Fragment>
+						<i className="fas fa-poll"></i>
+						<span>Best</span>
+			    	</React.Fragment> :
+			    	commentSort.sortOptionsChoice === 'dicey' ?
+			    	<React.Fragment>
+						<i className="fas fa-dice"></i>
+						<span>Dicey</span>
+			    	</React.Fragment> :
+			    	commentSort.sortOptionsChoice === 'new' ?
+			    	<React.Fragment>
+						<i className="fas fa-baby"></i>
+						<span>New</span>
+			    	</React.Fragment> :
+			    	null
+			    }
+					<i className="fas fa-caret-down"></i>
+								{
+					commentDropDownOpen ?
+					<div className='commentSortDropDown container'>
+						 <div onClick={(e)=> {
+					    	e.stopPropagation()
+					    	let commentSortMod = {...commentSort}
+					    	commentSortMod.sortOptionsChoice = 'spicy'
+					    	setCommentSort(commentSortMod)
+					    	setCommentDropDownOpen(false)
+					    }}> 
+							<i className="fas fa-pepper-hot"></i>
+							<span>Spicy</span>
+						</div>
+						<div onClick={(e)=> {
+					    	e.stopPropagation()
+					    	let commentSortMod = {...commentSort}
+					    	commentSortMod.sortOptionsChoice = 'best'
+					    	setCommentSort(commentSortMod)
+					    	setCommentDropDownOpen(false)
+					    }}> 
+							<i className="fas fa-poll"></i>
+							<span>Best</span>
+						</div>
+						<div onClick={(e)=> {
+					    	e.stopPropagation()
+					    	let commentSortMod = {...commentSort}
+					    	commentSortMod.sortOptionsChoice = 'dicey'
+					    	setCommentSort(commentSortMod)
+					    	setCommentDropDownOpen(false)
+					    }}> 
+							<i className="fas fa-dice"></i>
+							<span>Dicey</span>
+						</div>
+						<div onClick={(e)=> {
+					    	e.stopPropagation()
+					    	let commentSortMod = {...commentSort}
+					    	commentSortMod.sortOptionsChoice = 'new'
+					    	setCommentSort(commentSortMod)
+					    	setCommentDropDownOpen(false)
+					    }}>  
+							<i className="fas fa-baby"></i>
+							<span>New</span>
+						</div>
+					</div> 
+					:
+					null
 				}
 				</div>
-			)			
-		} else {
-			return <p className='seeMoreComments'> See more comments </p>
-		}
+				<div> <span>{postData.comments.length}</span> comments</div>
+			</div> 
+		)
 	}
+
 
 	return(
 		<div className='commentFeed'>
-			{
+		<SortComments/>
+		{
 			postData.comments.map((c, i)=> {
-				if(c.comments.length === 0){
-					return <Comment data={c} commentType='parentComment'/>
-				} else {
-					return (
-						<React.Fragment>
-						<Comment data={c} commentType='parentComment'/>
-						{renderComments(c)}
-						</React.Fragment>
-					)
-				}
+				return <Comment data={c} commentType='parentComment'/>
 			}) 
-			}
+		}
 		</div>
 	)
 }

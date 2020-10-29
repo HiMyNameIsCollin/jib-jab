@@ -141,16 +141,8 @@ let postData = {
 	],
 }
 
+	const [mainCommentInFocus, setMainCommentInFocus] = useState(false)
 
-
-
-const LeaveACommentBox = () => {
-	return(
-		<div className='commentBox'>
-
-		</div>
-	)
-}
 
 const PostMenuBar = () => {
 	return(
@@ -179,6 +171,18 @@ const PostMenuBar = () => {
 }
 
 
+const CommentForm = () => {
+	return(
+		<div className='commentForm '>
+			<textarea rows='4'/>
+			<div className='container'>
+				<span > X </span>
+				<input type='button' value='Add comment'/>
+			</div>
+		</div>
+	)
+}
+
 	return(
 		<div className='postExpanded'>
 			<Post pageType={pageType} postType={'enlarged'} user={user} Link={Link} windowWidth={windowWidth}/>
@@ -189,12 +193,18 @@ const PostMenuBar = () => {
 			}
 			{
 				user.userName !== '' ?
-				<LeaveACommentBox /> :
 				<div className='commentLoginBox container'>
 					<p> Login or register to comment </p>
 					<span>Login</span>
 					<span> Register</span>
-				</div>
+				</div> :
+				!mainCommentInFocus ?
+				<div className='leaveACommentBox container'>
+					<img src="https://robohash.org/1" alt=""/>
+					<input type='text' value='Submit a comment' onClick={() =>setMainCommentInFocus(true) }/>
+				</div> :
+				<CommentForm />
+
 			}
 			<CommentFeed postData={postData} />
 			
