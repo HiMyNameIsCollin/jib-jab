@@ -6,6 +6,7 @@ $gloomyBlue: #D0D2D4
 
 @mixin headerFlair
 	background: $red
+	color: white
 	cursor: pointer
 	border-radius: 5px
 	padding: .5em 1em
@@ -24,7 +25,6 @@ $gloomyBlue: #D0D2D4
 	z-index: 5
 	.link
 		@include headerFlair
-		color: white
 		font-weight: 700
 		margin: auto .5em auto .5em
 	div
@@ -35,7 +35,6 @@ $gloomyBlue: #D0D2D4
 		display: none
 	.headerBtn
 		@include headerFlair
-		color: white
 		font-weight: 700
 		margin: auto 0 auto auto
 		text-decoration: none
@@ -46,6 +45,7 @@ $gloomyBlue: #D0D2D4
 			transition: .25s ease-out all
 	.backToTopBtn
 		@include headerFlair
+		font-weight: 700
 		margin: auto .5em auto .5em
 	.backToTopBtnHidden
 		cursor: default

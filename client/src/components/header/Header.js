@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import './_header.sass'
 
-const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link}) => {
+const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay}) => {
 
 	const [headerIsSticky, setHeaderIsSticky] = useState(false)
 
@@ -68,7 +68,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link}) => {
 			{
 
 				user.userName === '' ?
-				<span className='headerBtn'> Login <i className="fas fa-sign-in-alt"></i> </span> :
+				<span className='headerBtn' onClick={() => setOverlay('login')}> Login <i className="fas fa-sign-in-alt"></i> </span> :
 				<span className='headerBtn'><i class="fas fa-pencil-alt"></i> </span>
 			}
 

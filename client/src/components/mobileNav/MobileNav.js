@@ -4,7 +4,7 @@ import MobileNavMenu from './MobileNavMenu'
 
 
 
-const MobileNav = ({Link, navIsOpen, setNav, user}) => {
+const MobileNav = ({Link, navIsOpen, setNav, user, setOverlay}) => {
 	const [commIsOpen, setComm]  = useState(false)
 	const [myCommIsOpen, setMyComm] = useState(false)
 	const [settingIsOpen, setSettings] = useState(false)
@@ -31,10 +31,22 @@ const MobileNav = ({Link, navIsOpen, setNav, user}) => {
 			 	<input type="text" value='Search' />
 			</form>
 			{
-				user.userName !== '' ?
+				user.userName === '' ?
 				<div className='navItem container'>
-					<div> <i className="fas fa-sign-in-alt "></i> Login </div>
-					<div> <i className="fas fa-sign-in-alt "></i> Sign Up </div>
+					<div onClick={() => {
+						setOverlay('login')
+						setNav(!navIsOpen)
+					}}> 
+						<i className="fas fa-sign-in-alt "></i>
+						 Login 
+					</div>
+					<div onClick={() => {
+						setOverlay('register')
+						setNav(!navIsOpen)
+					}}> 
+						<i className="fas fa-sign-in-alt "></i>
+						 Sign Up 
+					</div>
 				</div> :
 				<React.Fragment>
 					<div className='navItem navUserName'>

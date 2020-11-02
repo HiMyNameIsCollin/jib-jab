@@ -2,6 +2,7 @@ import React from 'react'
 import Intro from '../components/intro/Intro'
 import Feed from '../components/feed/Feed'
 import WidgetContainer from '../components/widgetContainer/WidgetContainer'
+import Footer from '../components/footer/Footer'
 
 const ProfilePage = ({user, windowWidth, Link}) => {
 	return(
@@ -13,6 +14,8 @@ const ProfilePage = ({user, windowWidth, Link}) => {
 				<WidgetContainer Link={Link} pageType={'profilePage'}/> :
 				null
 			}
+
+			<Footer />
 		</React.Fragment>
 	)
 }

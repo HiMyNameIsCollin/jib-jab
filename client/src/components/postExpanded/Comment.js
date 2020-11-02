@@ -1,24 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 
 
 const Comment = ({data}) => {
-
 	const [commentHidden, setCommentToHidden] = useState(false)
-	const [commentFormOpen, setCommentFormOpen] = useState(false)
 
-		const CommentBody = ({commentType}) => {
+		const CommentBody = ({commentType, data}) => {
+			const [commentFormOpen, setCommentFormOpen] = useState(false)
+			const [commentHidden, setCommentToHidden] = useState(false)
 			const CommentInfo = () => {
 			return(
 				<div className='commentInfo container' onClick={() => setCommentToHidden(!commentHidden)}>
-					<span> {data.commentInfo.userName} </span> 
-					<span> {data.commentInfo.time} </span>
-					<span>
+					<span className='commentUserName'> {data.commentInfo.userName} </span> 
+					{
+						commentHidden ?
+						null :
+						<span> {data.commentInfo.time} </span>
+					}
+					<span className='commentKarma'>
 						1 karma
 					</span>
 					{
 						commentHidden ?
-						<span>
+						<span className='commentsCounter'>
 							{
 								data.comments.length > 0 ?
 								data.comments.length === 1 ?
@@ -82,7 +86,7 @@ const Comment = ({data}) => {
 					<span onClick={() => setCommentToHidden(!commentHidden)}>
 						Hide
 					</span>
-					<span>
+					<span className='commentsCounter'>
 						{
 							data.comments.length > 0 ?
 							data.comments.length === 1 ?
@@ -109,7 +113,7 @@ const Comment = ({data}) => {
 	function renderComments(data, n) {
 		if(n === undefined){
 			n = 0
-			console.log(n)
+			console.log(n, data)
 		} else {
 			n++
 		}
@@ -119,7 +123,7 @@ const Comment = ({data}) => {
 				{
 					data.comments.map((c, i) => {
 						if(c.comments.length === 0) {
-							return <CommentBody data={c}/>
+							return <CommentBody data={c} />
 						} else {
 							return(
 								<React.Fragment> 
@@ -145,7 +149,7 @@ const Comment = ({data}) => {
 				<CommentBody commentType={'parentComment'} data={data} /> :
 				<React.Fragment>
 				{
-					commentHidden ?
+					commentHidden ? 
 					<CommentBody commentType={'parentComment'} data={data} /> :
 					<React.Fragment>
 						<CommentBody commentType={'parentComment'} data={data} />

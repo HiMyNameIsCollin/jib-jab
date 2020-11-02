@@ -1,11 +1,14 @@
 import React, {useState, useEffect } from 'react'
 import Header from './components/header/Header'
 import MobileNav from './components/mobileNav/MobileNav'
+import Overlay from './components/overlay/Overlay'
 import FrontPage from './pageTemplates/FrontPage'
 import GlobalPage from './pageTemplates/GlobalPage'
 import CommunityPage from './pageTemplates/CommunityPage'
 import ProfilePage from './pageTemplates/ProfilePage'
 import PostPage from './pageTemplates/PostPage'
+import AboutPage from './pageTemplates/AboutPage'
+
 
 
 const AppContainer = ({Link, Route, Switch, useLocation}) => {
@@ -13,9 +16,12 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 	const [windowWidth, setWindowWidth] = useState()
 	const [navIsOpen, setNav] = useState(false)
 	const [currentLocation, setCurrentLocation] = useState(undefined)
+	const [overlayIsOpen, setOverlay] = useState(undefined)
 	const [user, setUser] = useState({
 			userName: '',
 			communities: [],
+			karma: 1,
+			followers: [],
 			settings: {
 				feedType: 'list'
 			}
@@ -45,6 +51,14 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
   		}
   	},[location.pathname])
 
+  	useEffect(() => {
+  		if(navIsOpen){
+  			setOverlay(undefined)
+  		}
+  	},[navIsOpen])
+
+
+
 	return(
 		<div id='AppContainer'>
 			<Header 
@@ -53,7 +67,14 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 			setNav={setNav} 
 			user={user} 
 			setUser={setUser} 
-			windowWidth={windowWidth}/>
+			windowWidth={windowWidth}
+			setOverlay={setOverlay}/>
+			{
+				overlayIsOpen !== undefined ?
+				<Overlay overlayIsOpen={overlayIsOpen} setOverlay={setOverlay} setUser={setUser} user={user}/>
+				:
+				null
+			}
 			{
 				navIsOpen && windowWidth <= 920 ?
 				<div class='menuOverLay'>
@@ -61,7 +82,8 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 					user={user}
 					setNav={setNav}
 					navIsOpen={navIsOpen}
-					Link={Link} />
+					Link={Link}
+					setOverlay={setOverlay} />
 				</div> :
 				null
 			}
@@ -99,6 +121,9 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 		        	user={user} 
 		        	setUser={setUser}
 		        	windowWidth={windowWidth} />
+		        </Route>
+		        <Route exact path='/about'>
+		        	<AboutPage  />
 		        </Route>
 	        </Switch>
 

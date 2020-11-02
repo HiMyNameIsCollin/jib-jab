@@ -161,7 +161,7 @@ const AboutCommunityWidget = () => {
 const AppendixWidget = () => {
 	return(
 		<div className='appendixWidget'>
-			<a href=""> About </a>
+			<Link to='/about'> <span> About </span> </Link>
 			<a href=""> Hire me </a>
 		</div>
 	)

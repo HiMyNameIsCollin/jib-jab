@@ -11,6 +11,8 @@ const CommentFeed = ({postData, user}) => {
 	const [commentSort, setCommentSort] = useState(initialSort)
 	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
 
+
+
 	const SortComments = () => {
 		return(
 			<div className='sortComments container'> 
@@ -42,6 +44,7 @@ const CommentFeed = ({postData, user}) => {
 								{
 					commentDropDownOpen ?
 					<div className='commentSortDropDown container'>
+						<p> Sort comments by: </p>
 						 <div onClick={(e)=> {
 					    	e.stopPropagation()
 					    	let commentSortMod = {...commentSort}
@@ -87,7 +90,7 @@ const CommentFeed = ({postData, user}) => {
 					null
 				}
 				</div>
-				<div> <span>{postData.comments.length}</span> comments</div>
+				<span className='feedSortCommentsLabel'> {postData.comments.length} comments</span>
 			</div> 
 		)
 	}

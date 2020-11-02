@@ -132,8 +132,8 @@ const InteractionWindow =() => {
 			{
 				windowWidth <= 920 ?
 				postType === 'enlarged' ?
-				<span> 100</span> :
-				null: null
+				null :
+				null:  <span> 100</span>
 			}
 				
 				<i class="far fa-comment-dots"></i>

@@ -68,6 +68,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort}) => {
 				{
 					sortOptionsOpen ?
 					<div className='dropDownContainer container'>
+					    <p> Sort posts by: </p>
 					    <div onClick={(e)=> {
 					    	e.stopPropagation()
 					    	let feedSortMod = {...feedSort}
@@ -137,6 +138,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort}) => {
 			{
 				sortOptionsContOpen ?
 				<div className='dropDownContainer container'>
+				    <p> Sort posts by: </p>
 					<div onClick={(e)=> {
 						e.stopPropagation()
 				    	let feedSortMod = {...feedSort}
@@ -195,6 +197,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort}) => {
 				{
 					displayOptionsOpen ?
 					<div className='dropDownContainer container'>
+						<p>  View posts in:  </p>
 						<div onClick={(e) => {
 							e.stopPropagation()
 							openDisplayOptions(false)

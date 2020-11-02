@@ -32,7 +32,7 @@ let postData = {
 						userName: 'name',
 						time: '2hrs'
 					},
-					commentContent: 'LoremBlah1 child',
+					commentContent: 'LoremBlah1 child2',
 					comments: []
 				},
 				{
@@ -40,42 +40,42 @@ let postData = {
 						userName: 'name',
 						time: '2hrs'
 					},
-					commentContent: 'LoremBlah1 child',
+					commentContent: 'LoremBlah1 child3',
 					comments: [
 						{
 							commentInfo: {
 								userName: 'name',
 								time: '2hrs'
 							},
-							commentContent: 'LoremBlah1 child child',
+							commentContent: 'LoremBlah1 child child4',
 							comments: [
 							{
 								commentInfo: {
 									userName: 'name',
 									time: '2hrs'
 								},
-								commentContent: 'LoremBlah1 child child',
+								commentContent: 'LoremBlah1 child child5',
 								comments: [
 								{
 									commentInfo: {
 										userName: 'name',
 										time: '2hrs'
 									},
-									commentContent: 'LoremBlah1 child child',
+									commentContent: 'LoremBlah1 child child6',
 									comments: [
 									{
 										commentInfo: {
 											userName: 'name',
 											time: '2hrs'
 										},
-										commentContent: 'LoremBlah1 child child',
+										commentContent: 'LoremBlah1 child child7',
 										comments: [
 											{
 												commentInfo: {
 													userName: 'name',
 													time: '2hrs'
 												},
-												commentContent: 'LoremBlah1 child child',
+												commentContent: 'LoremBlah1 child child8',
 												comments: [
 												
 												],
@@ -147,13 +147,12 @@ let postData = {
 const PostMenuBar = () => {
 	return(
 		<div className='postMenuBar container'>
-			<span> {postData.comments.length} Comments </span>
 			<div>
 				<i className="fas fa-bars"></i>
 				<span> Share </span>
 			</div>
 			{
-				user.userName !== '' ? 
+				user.userName === '' ? 
 				<React.Fragment>
 					<div>
 						<i className="fas fa-bars"></i>
