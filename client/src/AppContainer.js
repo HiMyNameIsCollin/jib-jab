@@ -40,14 +40,12 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 
   	useEffect(() => {
   		setCurrentLocation(location.pathname)
+  		tokenRefresh()
   	}, [])
 
   	useEffect(() => {
   		if(currentLocation !== location.pathname){
-  			document.body.scrollTop = 0
-			document.documentElement.scrollTop = 0	
-  			setCurrentLocation(location.pathname)
-  			setNav(false)
+  			tokenRefresh()
   		}
   	},[location.pathname])
 
@@ -57,6 +55,36 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
   		}
   	},[navIsOpen])
 
+  	function tokenRefresh() {
+		const accessToken = window.localStorage.getItem('accessToken')
+		fetch('http://localhost:3000/', {
+			headers: {
+				authorization: `Bearer ${accessToken}`,
+				'Content-Type' : 'application/json'
+			}
+		})
+		.then(response => response.json())
+		.then(response => setUser(response))
+		.catch(err => {
+			const refreshToken = window.localStorage.getItem('refreshToken')
+			fetch('http://localhost:4000/api/token', {
+				method: 'post',
+				headers: { 'Content-Type' : 'application/json' },
+				body: JSON.stringify({
+					token: refreshToken
+				})
+			})
+			.then(response => response.json())
+			.then(response => {
+				window.localStorage.setItem('accessToken', response)
+			})
+			.catch(err => console.log)
+		})
+		document.body.scrollTop = 0
+		document.documentElement.scrollTop = 0	
+		setCurrentLocation(location.pathname)
+		setNav(false)
+  	}
 
 
 	return(

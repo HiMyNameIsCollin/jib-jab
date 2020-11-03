@@ -30,6 +30,8 @@ const Login = ({setOverlay, setLoading, user, setUser}) => {
 				console.log(data)
 				if(data.accessToken){
 					setUser(data.result2)
+					window.localStorage.setItem("accessToken", data.accessToken)
+					window.localStorage.setItem("refreshToken", data.refreshToken)
 					setOverlay(undefined)
 				} else {
 					setIncorrect(true)
@@ -41,7 +43,6 @@ const Login = ({setOverlay, setLoading, user, setUser}) => {
 			})
 		}
 	}
-	console.log(errors)
 
 	return(
 		<div className='login'>

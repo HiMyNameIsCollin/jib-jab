@@ -74,9 +74,11 @@ app.post('/api/login', (req, res) => {
 			.then(result2 => {
 				let user = {userName: result2.userName}
 				const accessToken = generateAccessToken(user)
-				const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-				TokenModel.create({$push:{refreshToken}})
-				.then(result3 => res.json({result2, accessToken, refreshToken}))
+				const refreshToken =  jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+				const newToken = new TokenModel({
+					token: refreshToken
+				})
+				newToken.save().then(result3 => res.json({result2, accessToken, refreshToken}))
 			})
 		} else {
 			res.status(400).json('Incorrect credidentals')
@@ -84,8 +86,24 @@ app.post('/api/login', (req, res) => {
 	})
 })
 
+app.post('/api/token', (req, res) => {
+	const refreshToken = req.body.token
+	if(refreshToken === null) return res.sendStatus(401)
+	TokenModel.findOne({token: refreshToken})
+	.then(result => {
+		if(!result) return res.sendStatus(403)
+		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+			if(err) return res.sendStatus(403)
+			const accessToken = generateAccessToken({userName: user.userName})
+			console.log(user.userName, accessToken)
+			res.json(accessToken)
+
+		})
+	})
+})
+
 function generateAccessToken(user) {
-	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15s'})
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
 }
 
 app.listen(myPort, () => {

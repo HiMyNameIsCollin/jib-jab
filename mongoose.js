@@ -2,12 +2,6 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const url = 'mongodb://127.0.0.1:27017/jibjab'
-
-mongoose.connect(url, { useNewUrlParser: true })
-
-const conn = mongoose.connection
-
 
 const loginSchema = new Schema({
 	id: String,
