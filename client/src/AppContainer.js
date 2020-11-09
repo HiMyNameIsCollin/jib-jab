@@ -3,13 +3,21 @@ import Header from './components/header/Header'
 import MobileNav from './components/mobileNav/MobileNav'
 import Overlay from './components/overlay/Overlay'
 import FrontPage from './pageTemplates/FrontPage'
-import GlobalPage from './pageTemplates/GlobalPage'
 import CommunityPage from './pageTemplates/CommunityPage'
 import ProfilePage from './pageTemplates/ProfilePage'
 import PostPage from './pageTemplates/PostPage'
 import AboutPage from './pageTemplates/AboutPage'
 
 
+const initialState = {
+	userName: '',
+	communities: ['announcements'],
+	karma: 1,
+	followers: [],
+	settings: {
+		feedType: 'list'
+	}
+}
 
 const AppContainer = ({Link, Route, Switch, useLocation}) => {
 
@@ -17,15 +25,9 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 	const [navIsOpen, setNav] = useState(false)
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
-	const [user, setUser] = useState({
-			userName: '',
-			communities: [],
-			karma: 1,
-			followers: [],
-			settings: {
-				feedType: 'list'
-			}
-		})
+	const [user, setUser] = useState(initialState)
+	const [posts, setPosts] = useState(undefined)
+	const [community, setCommunity] = useState(undefined)
 
 	const location = useLocation()
 
@@ -40,13 +42,24 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 
   	useEffect(() => {
   		setCurrentLocation(location.pathname)
-  		tokenRefresh()
   	}, [])
 
   	useEffect(() => {
   		if(currentLocation !== location.pathname){
+  			console.log(location.pathname)
   			tokenRefresh()
+			document.body.scrollTop = 0
+			document.documentElement.scrollTop = 0	
+			setCurrentLocation(location.pathname)
+			setNav(false)
   		}
+		fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
+		.then(response => response.json())
+		.then(response => {
+				setCommunity(response.community)
+				setPosts(response.posts)
+		})
+		.catch(err => console.log)
   	},[location.pathname])
 
   	useEffect(() => {
@@ -76,14 +89,14 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 			})
 			.then(response => response.json())
 			.then(response => {
-				window.localStorage.setItem('accessToken', response)
+				window.localStorage.setItem('accessToken', response.accessToken)
+				if(response.result !== null) {
+					setUser(response.result)
+				}
 			})
 			.catch(err => console.log)
 		})
-		document.body.scrollTop = 0
-		document.documentElement.scrollTop = 0	
-		setCurrentLocation(location.pathname)
-		setNav(false)
+
   	}
 
 
@@ -108,6 +121,7 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 				<div class='menuOverLay'>
 					<MobileNav 
 					user={user}
+					setUser={setUser}
 					setNav={setNav}
 					navIsOpen={navIsOpen}
 					Link={Link}
@@ -121,34 +135,36 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 		       		user={user} 
 		       		setUser={setUser} 
 		       		Link={Link} 
-		       		windowWidth={windowWidth} />
+		       		windowWidth={windowWidth} 
+		        	posts={posts}
+		        	setPosts={setPosts}/>
 		        </Route>
-		       	<Route exact path="/user">
+		       	<Route path="/u/:userName">
 		        	<ProfilePage 
 		        	user={user} 
 		        	windowWidth={windowWidth} 
-		        	Link={Link}/>
+		        	Link={Link}
+		        	posts={posts}
+		        	setPosts={setPosts}/>
 		        </Route>
-		        <Route exact path="/community">
+		        <Route path="/c/:communityName">
 		        	<CommunityPage 
 		        	user={user} 
 		        	setUser={setUser}
 		        	windowWidth={windowWidth} 
-		        	Link={Link}/>
+		        	Link={Link}
+		        	posts={posts}
+		        	community={community}
+		        	setPosts={setPosts}/>
 		        </Route>
-		        <Route path="/global"> 
-		        	<GlobalPage 
-		        	user={user} 
-		        	setUser={setUser}
-		        	windowWidth={windowWidth} 
-		        	Link={Link}/>
-		        </Route>
-		        <Route exact path='/community/post'>
+		        <Route exact path='/p/:communityName/:postID'>
 		        	<PostPage 
 		        	Link={Link}
 		        	user={user} 
 		        	setUser={setUser}
-		        	windowWidth={windowWidth} />
+		        	windowWidth={windowWidth}
+		        	posts={posts}
+		        	community={community} />
 		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage  />

@@ -4,31 +4,35 @@ $red: #FF5A5F
 $black: #011C27
 $gloomyBlue: #D0D2D4
 
-
 .intro
 	height: auto
 	#trendingIntro
 		display: none
 
 .communityHeader
-	background-image: url('')
 	height: auto
+	background-size: cover
+	background-position: 50% 50%
+	div:nth-of-type(2)
+		background: $gloomyBlue
+		border-top: solid white 2px
+		width: 100%
 	div
 		flex-direction: column
 		justify-content: flex-start
-		height: 100%
-		padding: 1em 0
+		padding: .5em 0
 		margin: 0 auto
-		width: 100%
 		img
 			background: $grey
-			border-radius: 10%
+			border: solid white 2px
+			border-radius: 50%
 			margin: 0 auto 1em auto
+			transform: translateY(30%)
 			width: 35%
 		p
 			font-weight: 700
 			letter-spacing: 1px
-			margin: .5em 0 
+			margin: 1em 0 
 			text-align: center
 		p:nth-of-type(2)
 			font-weight: 400

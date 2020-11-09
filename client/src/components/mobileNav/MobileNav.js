@@ -2,9 +2,7 @@ import React, {useState, useEffect} from 'react'
 import './_mobileNav.sass'
 import MobileNavMenu from './MobileNavMenu'
 
-
-
-const MobileNav = ({Link, navIsOpen, setNav, user, setOverlay}) => {
+const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay}) => {
 	const [commIsOpen, setComm]  = useState(false)
 	const [myCommIsOpen, setMyComm] = useState(false)
 	const [settingIsOpen, setSettings] = useState(false)
@@ -70,7 +68,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setOverlay}) => {
 			</div>
 			{
 				commIsOpen ?
-				<MobileNavMenu navType={'comm'} Link={Link}/> :
+				<MobileNavMenu navType={'comm'} Link={Link} setNav={setNav} user={user}/> :
 				null
 			}
 			<div className='navItem' onClick={() => setMyComm(!myCommIsOpen)}>
@@ -90,7 +88,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setOverlay}) => {
 			</div>
 			{
 				settingIsOpen ?
-				<MobileNavMenu navType={'settings'} Link={Link} /> :
+				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} /> :
 				null
 			}
 			<Link to='/global' className='navItem link'>

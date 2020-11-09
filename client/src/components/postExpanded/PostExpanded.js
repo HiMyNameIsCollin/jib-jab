@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Post from '../post/Post'
 import CommentFeed from './CommentFeed'
 import './_postExpanded.sass'
-const PostExpanded = ({Link, user, windowWidth, pageType}) => {
+const PostExpanded = ({Link, user, windowWidth, pageType, posts}) => {
 
 
 let postData = {
@@ -184,7 +184,7 @@ const CommentForm = () => {
 
 	return(
 		<div className='postExpanded'>
-			<Post pageType={pageType} postType={'enlarged'} user={user} Link={Link} windowWidth={windowWidth}/>
+			<Post pageType={pageType} postType={'enlarged'} user={user} Link={Link} windowWidth={windowWidth} post={posts[0]}/>
 			{
 				windowWidth > 920 ?
 				<PostMenuBar /> :

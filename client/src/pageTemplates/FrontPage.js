@@ -8,12 +8,6 @@ const FrontPage = ({user, setUser, windowWidth, Link}) => {
 
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 
-	useEffect(() => {
-		fetch('http://localhost:3000/popular/123')
-		.then(response => response.json())
-		.then(console.log)
-	}, [])
-
 	return(
 		<React.Fragment>
 			<Intro pageType={'frontPage'} windowWidth={windowWidth} />

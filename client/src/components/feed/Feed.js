@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Post from '../post/Post'
 import SortOptionsContainer from './sortOptionsContainer/SortOptionsContainer'
+import Loading from '../loading/Loading'
 import './_feed.sass'
 
 const initialSort = {
@@ -8,7 +9,7 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const Feed = ({user, setUser,  windowWidth, pageType, Link}) => {
+const Feed = ({user, setUser,  windowWidth, pageType, Link, posts, community}) => {
 
 	const [feedSort, setFeedSort] = useState(initialSort)
 
@@ -37,7 +38,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link}) => {
 	}
 
 	return(
-		<div className={pageType === 'globalPage' ? 'feedGlobalPage feed' : 'feed'}>
+		<div className={community ? community.communityNameLower === 'global' ? 'feedGlobalPage feed' : 'feed' : 'feed'}>
 			{
 				pageType === 'frontPage' ?
 				<p className='feedHeader'> Popular posts </p> :
@@ -48,10 +49,23 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link}) => {
 				<ProfileFeedSort />:
 				<SortOptionsContainer setUser={setUser} user={user} feedSort={feedSort} setFeedSort={setFeedSort} />
 			}
-			<Post pageType={pageType} Link={Link} user={user} windowWidth={windowWidth}/>
-			<Post pageType={pageType} Link={Link} user={user} windowWidth={windowWidth}/>
+			{
+				posts !== undefined ?
+				posts.map((p, i) => {
+					return <Post 
+						pageType={pageType} 
+						Link={Link} 
+						user={user} 
+						windowWidth={windowWidth}
+						post={p}
+						key={i}/> 
+						
+				}): <Loading />
+			}
+			
+			
 
-			<div className='pageSelectorContainer container'>
+{/*			<div className='pageSelectorContainer container'>
 			{
 				windowWidth <= 920 ?
 				<React.Fragment>
@@ -61,7 +75,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link}) => {
 				<p className='feedSeeMore'> See more </p>
 			}
 
-			</div>
+			</div>*/}
 		</div>
 	)
 }

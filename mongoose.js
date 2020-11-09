@@ -2,9 +2,17 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+const communitySchema = new Schema({
+	communityName: String,
+	followers: Array,
+	moderators: Array,
+	posts: Array,
+	settings: Object,
+	configuration: Object,
+	createdOn: String
+})
 
 const loginSchema = new Schema({
-	id: String,
 	userName: String,
 	userNameLower: String,
 	hash: String, 
@@ -22,14 +30,16 @@ const userSchema = new Schema({
 })
 
 const postSchema = new Schema({
+	community: String,
 	comments: Array,
 	image: String,
-	reactions: Object,
+	reactions: Array,
 	text: String,
 	title: String,
 	time: String,
 	user: String,
-	votes: Object
+	karma: Number,
+	id: String
 })
 
 const tokenSchema = new Schema({
@@ -41,5 +51,6 @@ module.exports = {
 	loginSchema,
 	userSchema,
 	postSchema,
-	tokenSchema
+	tokenSchema,
+	communitySchema
 }

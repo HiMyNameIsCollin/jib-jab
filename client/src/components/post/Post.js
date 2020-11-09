@@ -3,15 +3,15 @@ import './_post.sass'
 import ReactionsWindow from './ReactionsWindow'
 import ReactionsDisplay from './ReactionsDisplay'
 
-const Post = ({user, windowWidth, Link, postType, pageType}) => {
+const Post = ({user, windowWidth, Link, postType, post}) => {
 
 const PostInfo = () => {
 	return(
 		<div className='container postInfo'>
 			<img src='https://robohash.org/4' alt="Community img"/>
 			{
-				pageType !== 'communityPage' && postType !== 'enlarged' ?
-				<span className='postInfoCommunityName'><Link className='link' to='/community'> Community name</Link></span>:
+				postType !== 'enlarged' ?
+				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.community}`}> {post.community}</Link></span>:
 				null
 			}
 			
@@ -20,15 +20,15 @@ const PostInfo = () => {
 				<span class='joinCommunity'> Join </span> :
 				null
 			}
-			<span className='postInfoTimePosted'> 5hrs </span>
+			<span className='postInfoTimePosted'>  </span>
 			{
-				pageType === 'communityPage' && windowWidth <= 576 ?
-				<span className='postInfoUserName'><Link className='link' to='/user'> /u/Users name </Link></span> :
+				postType === 'enlarged' && windowWidth <= 576 ?
+				<span className='postInfoUserName'><Link className='link' to={`/u/${post.user}`}> /u/{post.user} </Link></span> :
 				null
 			}
 			{
 				windowWidth > 576 ?
-				<span className='postInfoUserName'><Link className='link' to='/user'> /u/Users name </Link></span> :
+				<span className='postInfoUserName'><Link className='link' to={`/u/${post.user}`}> /u/{post.user} </Link></span> :
 				null
 			}
 			{
@@ -50,8 +50,9 @@ const PostContent = () => {
 			<p>
 				{
 					postType === 'enlarged' ? 
-					'orem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem orem lorem lorem lorem lorem lorem lorem lorem lorem' :
-					<Link to='/community/post' className='link'> orem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem orem lorem lorem lorem lorem lorem lorem lorem lorem 
+					`${post.title}` :
+					<Link to={`/p/${post.communityName}/${post.id}`} className='link'> 
+						{post.title}
 					</Link> 
 				}
 				
@@ -62,7 +63,7 @@ const PostContent = () => {
 			 	 user.settings.feedType === 'list' ?
 				<img onClick={() => {
 					openEnlargedWindow(!enlargedImgOpen)
-				}} src='https://source.unsplash.com/random/800x600' alt='Post image' /> :
+				}} src={post.image} alt='Post image' /> :
 				null
 			}
 		</div> 
@@ -77,9 +78,9 @@ const PostMenu = () => {
 				<span> Share </span>
 			</div>
 			<div>
-				<Link to='/user' className='link'>
+				<Link to={`/u/${post.user}`} className='link'>
 					<i className="fas fa-bars"></i>
-					<span> User name's profile </span>
+					<span> {post.user}'s profile </span>
 				</Link>
 			</div>
 			{
@@ -103,8 +104,8 @@ const PostMenu = () => {
 const EnlargedPostImg = () => {
 	return(
 		<div className='container enlargedPostImg'>
-			<Link to='/community/name/post' className='link'>
-				<img src='https://source.unsplash.com/random/800x600' alt='Enlarged post image'/>
+			<Link to={`/c/${post.community}/${post.id}`}className='link'>
+				<img src={post.image} alt='Enlarged post image'/>
 			</Link>
 		</div>
 	)
@@ -114,7 +115,7 @@ const EnlargedPostText = () => {
 	return(
 		<div className='container enlargedPostText' >
 		<span> Post tag </span> 
-		<p> This is where a user can input: fact, hot takes, shit post, or whatever else. This is where a user can input: fact, hot takes, shit post, or whatever else. This is where a user can input: fact, hot takes, shit post, or whatever else. This is where a user can input: fact, hot takes, shit post, or whatever else. </p>
+		<p> {post.text}</p>
 		</div>
 	)
 }
@@ -125,7 +126,7 @@ const InteractionWindow =() => {
 		<div className='container interactionWindow'>
 			<div className='container'>
 				<i class="fas fa-arrow-circle-up"></i>
-				<span> 24.7k</span>
+				<span> {post.karma}</span>
 				<i class="fas fa-arrow-circle-down"></i>
 			</div>
 			<div className='container'>
@@ -133,7 +134,7 @@ const InteractionWindow =() => {
 				windowWidth <= 920 ?
 				postType === 'enlarged' ?
 				null :
-				null:  <span> 100</span>
+				null:  <span>{post.comments.length}</span>
 			}
 				
 				<i class="far fa-comment-dots"></i>
