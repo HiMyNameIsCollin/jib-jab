@@ -9,9 +9,9 @@ import PostPage from './pageTemplates/PostPage'
 import AboutPage from './pageTemplates/AboutPage'
 
 
-const initialState = {
+const initialUser = {
 	userName: '',
-	communities: ['announcements'],
+	communities: ['Announcements'],
 	karma: 1,
 	followers: [],
 	settings: {
@@ -19,15 +19,15 @@ const initialState = {
 	}
 }
 
+
 const AppContainer = ({Link, Route, Switch, useLocation}) => {
 
 	const [windowWidth, setWindowWidth] = useState()
 	const [navIsOpen, setNav] = useState(false)
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
-	const [user, setUser] = useState(initialState)
-	const [posts, setPosts] = useState(undefined)
-	const [community, setCommunity] = useState(undefined)
+	const [user, setUser] = useState(initialUser)
+	const [pageContent, setPageContent] = useState(undefined)
 
 	const location = useLocation()
 
@@ -45,21 +45,45 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
   	}, [])
 
   	useEffect(() => {
+  		console.log(location.pathname)
+  		const accessToken = window.localStorage.getItem('accessToken')
   		if(currentLocation !== location.pathname){
-  			console.log(location.pathname)
-  			tokenRefresh()
+  			tokenRefresh(accessToken)
 			document.body.scrollTop = 0
 			document.documentElement.scrollTop = 0	
 			setCurrentLocation(location.pathname)
 			setNav(false)
   		}
-		fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
-		.then(response => response.json())
-		.then(response => {
-				setCommunity(response.community)
-				setPosts(response.posts)
-		})
-		.catch(err => console.log)
+  		if (location.pathname === '/'){
+			fetch(`http://localhost:3000/api/`, {
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					'Content-Type' : 'application/json'
+				}
+			})
+			.then(response => response.json())
+			.then(response => {
+					setPageContent(response)
+			})
+			.catch(err => {
+				fetch('http://localhost:3000/api/default')
+				.then(response => response.json())
+				.then(response => setPageContent(response))
+				.catch(err => console.log(err))
+			})
+		} else {
+			fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
+			.then(response => response.json())
+			.then(response => {
+					setPageContent(response)
+			})
+			.catch(err => {
+				fetch('http://localhost:3000/api/default')
+				.then(response => response.json())
+				.then(response => setPageContent(response))
+				.catch(err => console.log(err))
+			})
+		}
   	},[location.pathname])
 
   	useEffect(() => {
@@ -68,8 +92,7 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
   		}
   	},[navIsOpen])
 
-  	function tokenRefresh() {
-		const accessToken = window.localStorage.getItem('accessToken')
+  	function tokenRefresh(accessToken) {
 		fetch('http://localhost:3000/', {
 			headers: {
 				authorization: `Bearer ${accessToken}`,
@@ -77,7 +100,11 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 			}
 		})
 		.then(response => response.json())
-		.then(response => setUser(response))
+		.then(response => {
+			if(response !== null){
+				setUser(response)
+			}
+		})
 		.catch(err => {
 			const refreshToken = window.localStorage.getItem('refreshToken')
 			fetch('http://localhost:4000/api/token', {
@@ -135,36 +162,35 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 		       		user={user} 
 		       		setUser={setUser} 
 		       		Link={Link} 
-		       		windowWidth={windowWidth} 
-		        	posts={posts}
-		        	setPosts={setPosts}/>
+		       		windowWidth={windowWidth}
+		       		pageContent={pageContent}/>
 		        </Route>
 		       	<Route path="/u/:userName">
 		        	<ProfilePage 
 		        	user={user} 
 		        	windowWidth={windowWidth} 
 		        	Link={Link}
-		        	posts={posts}
-		        	setPosts={setPosts}/>
+		        	pageContent={pageContent}
+		        	setPageContent={setPageContent}/>
 		        </Route>
-		        <Route path="/c/:communityName">
+		        <Route exact path="/c/:communityName">
 		        	<CommunityPage 
 		        	user={user} 
 		        	setUser={setUser}
 		        	windowWidth={windowWidth} 
 		        	Link={Link}
-		        	posts={posts}
-		        	community={community}
-		        	setPosts={setPosts}/>
+		        	pageContent={pageContent}
+		        	setPageContent={setPageContent}/>
 		        </Route>
-		        <Route exact path='/p/:communityName/:postID'>
+		        <Route path='/c/:communityName/:postID'>
 		        	<PostPage 
 		        	Link={Link}
 		        	user={user} 
 		        	setUser={setUser}
 		        	windowWidth={windowWidth}
-		        	posts={posts}
-		        	community={community} />
+		        	pageContent={pageContent} 
+		        	overlayIsOpen={overlayIsOpen} 
+		        	setOverlay={setOverlay}/>
 		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage  />

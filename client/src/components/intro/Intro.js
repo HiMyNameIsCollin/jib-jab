@@ -3,7 +3,7 @@ import Loading from '../loading/Loading'
 import './_intro.sass'
 
 
-const Intro = ({pageType, windowWidth, community}) => {
+const Intro = ({pageType, windowWidth, pageContent}) => {
 
 	const TrendingIntro = () => {
 
@@ -34,13 +34,13 @@ const Intro = ({pageType, windowWidth, community}) => {
 
 	const CommunityHeader = () => {
 		return(
-			<div className='communityHeader' style={{backgroundImage: `url(${community.configuration.headerImg})` }}> 
+			<div className='communityHeader' style={{backgroundImage: `url(${pageContent.configuration.headerImg})` }}> 
 				<div className='container'>
-					<img src={community.configuration.communityImg }alt=""/>
+					<img src={pageContent.configuration.communityImg }alt=""/>
 				</div>
 				<div className=' container'>
-					<p> {community.communityName}</p>
-					<p> {community.configuration.communityHeader} </p>
+					<p> {pageContent.communityName}</p>
+					<p> {pageContent.configuration.communityHeader} </p>
 				</div>
 			</div>
 		)
@@ -50,8 +50,8 @@ const Intro = ({pageType, windowWidth, community}) => {
 		return(
 			<div className='container profileHeader'>
 				<div className='profileAvatar container'>
-					<img src="https://robohash.org/4" alt=""/>
-					<p>/u/UserName</p>
+					<img src={pageContent.configuration.communityImg} alt=""/>
+					<p>{pageContent.userName}</p>
 				</div>
 				{
 					windowWidth > 920 ?
@@ -88,10 +88,10 @@ const Intro = ({pageType, windowWidth, community}) => {
 	return(
 		<div className='intro'>
 		{
-			community !== undefined || pageType === 'frontPage' || pageType === 'profilePage' ?
+			pageContent !== undefined || pageType === 'frontPage' || pageType === 'profilePage' ?
 			windowWidth > 920 && pageType === 'frontPage' ?
 			<TrendingIntro /> :
-			pageType === 'communityPage' && community.communityNameLower !== 'global' ?
+			pageType === 'communityPage' && pageContent.communityNameLower !== 'global' ?
 			<CommunityHeader /> :
 			pageType === 'profilePage' ?
 			<ProfileHeader  windowWidth={windowWidth}/> :

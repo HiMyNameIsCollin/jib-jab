@@ -9,7 +9,7 @@ import AppendixWidget from './widgets/AppendixWidget'
 import InteractionWidget from './widgets/InteractionWidget'
 import AnnouncementWithLinkWidget from './widgets/AnnouncementWithLinkWidget'
 import './_widgetContainer.sass'
-const WidgetContainer = ({pageType, Link, community}) => {
+const WidgetContainer = ({pageType, Link, pageContent, user}) => {
 
 
 /*###########################TYPE OF MENU#######################################*/
@@ -17,7 +17,7 @@ const WidgetContainer = ({pageType, Link, community}) => {
 const FrontPageWidgets = () => {
 	return(
 		<React.Fragment>
-			<CommunityListWidget Link={Link} community={community} pageType={pageType} />
+			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user}/>
 			<TopPostListWidget />
 			<AppendixWidget Link={Link}/>				
 		</React.Fragment>
@@ -27,7 +27,7 @@ const FrontPageWidgets = () => {
 const GlobalPageWidgets = () => {
 	return(
 		<React.Fragment>
-			<CommunityListWidget Link={Link} community={community} pageType={pageType}  />
+			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user}/>
 			<TopPostListWidget />
 			<AppendixWidget />	
 		</React.Fragment> 
@@ -38,27 +38,27 @@ const CommunityWidgets = () => {
 	return(
 		<React.Fragment>
 		{
-			community.configuration.widgets.aboutWidget.active ? 
-			<AboutCommunityWidget community={community}/> :
+			pageContent.configuration.widgets.aboutWidget.active ? 
+			<AboutCommunityWidget pageContent={pageContent}/> :
 			null
 		}
 		{
-			community.configuration.widgets.communityListWidget.active ? 
-			<CommunityListWidget Link={Link} community={community} pageType={pageType} /> :
+			pageContent.configuration.widgets.communityListWidget.active ? 
+			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user} /> :
 			null
 		}
 		{
-			community.configuration.widgets.announcementWidget.active ?
+			pageContent.configuration.widgets.announcementWidget.active ?
 			<AnnouncementWithLinkWidget Link={Link} /> :
 			null			
 		}
 		{
-			community.configuration.widgets.rulesWidget.active ?
+			pageContent.configuration.widgets.rulesWidget.active ?
 			<RulesListWidget /> :
 			null
 		}
 		{
-			community.configuration.widgets.linkListWidget.active ?
+			pageContent.configuration.widgets.linkListWidget.active ?
 			<LinkListWidget /> :
 			null
 		}
@@ -72,41 +72,29 @@ const CommunityWidgets = () => {
 const ProfileWidgets = () => {
 	return(
 		<React.Fragment>
-			<InteractionWidget />
+			<InteractionWidget pageContent={pageContent}/>
 			<AppendixWidget Link={Link}/>	
 		</React.Fragment>
 	)
 }
 
-const PostPageWidgets = () => {
-	return(
-		<React.Fragment>
-			<AboutCommunityWidget community={community}/>
-			<CommunityListWidget Link={Link} community={community} pageType={pageType} />
-			<AnnouncementWithLinkWidget />
-			<RulesListWidget />
-			<LinkListWidget />
-			<ModeratorListWidget /> 
-			<AppendixWidget Link={Link}/> 
-		</React.Fragment>
-	)
-}
+
 
 
 	return(
-		<div className={ community ? community.communityNameLower === 'global'|| pageType === 'postPage' ? 'widgetContainerGlobalPage container widgetContainer' : 'container widgetContainer' : 'container widgetContainer'}>
-			<div className={community ? community.communityNameLower === 'frontpage' ? 'widgetSizingContainerFrontPage widgetSizingContainer' : 'widgetSizingContainer' : 'widgetSizingContainer'}>
+		<div className={ pageContent ? pageContent.communityNameLower === 'global'|| pageType === 'postPage' ? 'widgetContainerGlobalPage container widgetContainer' : 'container widgetContainer' : 'container widgetContainer'}>
+			<div className={pageType === 'frontPage' ? 'widgetSizingContainerFrontPage widgetSizingContainer' : 'widgetSizingContainer'}>
 			{
 				pageType === 'frontPage' ?
 				<FrontPageWidgets  /> :
 				pageType === 'profilePage' ?
 				<ProfileWidgets /> :
 				pageType === 'communityPage' ?
-				<CommunityWidgets community={community}/> : 
+				<CommunityWidgets /> : 
 				pageType === 'globalPage' ?
 				<GlobalPageWidgets /> :
 				pageType === 'postPage' ?
-				<PostPageWidgets /> :
+				<CommunityWidgets /> :
 				null
 			}
 			</div>

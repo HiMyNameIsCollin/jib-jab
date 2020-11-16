@@ -1,6 +1,6 @@
 import React from 'react'
 
-const InteractionWidget = () => {
+const InteractionWidget = ({pageContent}) => {
 	return(
 		<div className='interactionWidget'>
 			<h4>
@@ -16,16 +16,16 @@ const InteractionWidget = () => {
 			</div>
 			<div className='interactionWidgetScore container'>
 				<div >
-					<p> 0 </p>
+					<p> {pageContent.karma} </p>
 					<p> Karma </p>
 				</div>
 				<div >
-					<p> 0 </p>
+					<p> {pageContent.followers.length} </p>
 					<p> Followers </p>
 				</div>
 				<div>
 					<p> User since: </p>
-					<p> Nov 5th, 2020</p>
+					<p> {pageContent.created}</p>
 				</div>
 			</div>
 		</div>

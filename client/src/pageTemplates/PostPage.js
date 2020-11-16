@@ -4,9 +4,10 @@ import Footer from '../components/footer/Footer'
 import PostExpanded from '../components/postExpanded/PostExpanded'
 import Loading from '../components/loading/Loading'
 
-const PostPage = ({Link, user,  windowWidth, posts,community}) => {
+const PostPage = ({Link, user,  windowWidth, pageContent, overlayIsOpen, setOverlay}) => {
+
 		{
-			if (posts && community ) {
+			if (pageContent) {
 				return(
 				<React.Fragment>
 					<PostExpanded 
@@ -14,10 +15,12 @@ const PostPage = ({Link, user,  windowWidth, posts,community}) => {
 					Link={Link} 
 					user={user} 
 					windowWidth={windowWidth}
-					posts={posts}/>
+					pageContent={pageContent}
+					overlayIsOpen={overlayIsOpen} 
+					setOverlay={setOverlay}/>
 					{
 						windowWidth > 920 ?
-						<WidgetContainer Link={Link} pageType={'postPage'} community={community}/> :
+						<WidgetContainer Link={Link} pageType={'postPage'} pageContent={pageContent}/> :
 						null				
 					}
 

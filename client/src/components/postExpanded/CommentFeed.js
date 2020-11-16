@@ -6,7 +6,7 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const CommentFeed = ({postData, user}) => {
+const CommentFeed = ({comments, user}) => {
 
 	const [commentSort, setCommentSort] = useState(initialSort)
 	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
@@ -90,7 +90,7 @@ const CommentFeed = ({postData, user}) => {
 					null
 				}
 				</div>
-				<span className='feedSortCommentsLabel'> {postData.comments.length} comments</span>
+				<span className='feedSortCommentsLabel'> {comments.length} comments</span>
 			</div> 
 		)
 	}
@@ -100,7 +100,7 @@ const CommentFeed = ({postData, user}) => {
 		<div className='commentFeed'>
 		<SortComments/>
 		{
-			postData.comments.map((c, i)=> {
+			comments.map((c, i)=> {
 				return <Comment data={c} commentType='parentComment'/>
 			}) 
 		}

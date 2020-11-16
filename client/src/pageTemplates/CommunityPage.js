@@ -6,16 +6,12 @@ import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
 
-const CommunityPage = ({user, setUser, windowWidth , Link, posts, community}) => {
+const CommunityPage = ({user, setUser, windowWidth, Link, pageContent}) => {
 	const [mobileViewIsFeed, setMobileView] = useState(true)
-	if(community){
+	if(pageContent){
 		return(
 			<React.Fragment>
-				{
-					community.communityNameLower !=='global' ?
-					<Intro pageType={'communityPage'} windowWidth={windowWidth} community={community}/> :
-					null
-				}
+					<Intro pageType={'communityPage'} windowWidth={windowWidth} pageContent={pageContent}/> 
 				{
 					windowWidth <= 920 ?
 					<div className='container mobileViewToggle'>
@@ -30,23 +26,21 @@ const CommunityPage = ({user, setUser, windowWidth , Link, posts, community}) =>
 						<Feed 
 						Link={Link} 
 						pageType={'communityPage'} 
-						posts={posts}
 						user={user} 
 						setUser={setUser}
 						windowWidth={windowWidth}
-						community={community} />
-						<WidgetContainer Link={Link} pageType={'communityPage'} community={community}/> 
+						pageContent={pageContent} />
+						<WidgetContainer Link={Link} pageType={'communityPage'} pageContent={pageContent}/> 
 					</React.Fragment> :
 					mobileViewIsFeed ?
 					<Feed 
 					Link={Link} 
 					pageType={'communityPage'} 
 					user={user} 
-					posts={posts}
 					setUser={setUser} 
 					windowWidth={windowWidth}
-					community={community}/>:
-					<WidgetContainer Link={Link} pageType={'communityPage'} community={community}/> 
+					pageContent={pageContent}/>:
+					<WidgetContainer Link={Link} pageType={'communityPage'} pageContent={pageContent}/> 
 				}
 
 				<Footer />

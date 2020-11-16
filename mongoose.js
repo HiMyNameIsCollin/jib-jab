@@ -4,10 +4,13 @@ const Schema = mongoose.Schema
 
 const communitySchema = new Schema({
 	communityName: String,
+	communityNameLower: String,
 	followers: Array,
 	moderators: Array,
+	communities: Array,
 	posts: Array,
 	settings: Object,
+	configuration: Object,
 	configuration: Object,
 	createdOn: String
 })
@@ -34,11 +37,11 @@ const postSchema = new Schema({
 	comments: Array,
 	image: String,
 	reactions: Array,
-	text: String,
+	text: Array,
 	title: String,
 	time: String,
 	user: String,
-	karma: Number,
+	karma: Object,
 	id: String
 })
 

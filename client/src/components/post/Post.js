@@ -8,10 +8,9 @@ const Post = ({user, windowWidth, Link, postType, post}) => {
 const PostInfo = () => {
 	return(
 		<div className='container postInfo'>
-			<img src='https://robohash.org/4' alt="Community img"/>
 			{
 				postType !== 'enlarged' ?
-				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.community}`}> {post.community}</Link></span>:
+				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.communityName}`}> {post.communityName}</Link></span>:
 				null
 			}
 			
@@ -20,7 +19,7 @@ const PostInfo = () => {
 				<span class='joinCommunity'> Join </span> :
 				null
 			}
-			<span className='postInfoTimePosted'>  </span>
+			<span className='postInfoTimePosted'>{post.time}  </span>
 			{
 				postType === 'enlarged' && windowWidth <= 576 ?
 				<span className='postInfoUserName'><Link className='link' to={`/u/${post.user}`}> /u/{post.user} </Link></span> :
@@ -51,7 +50,7 @@ const PostContent = () => {
 				{
 					postType === 'enlarged' ? 
 					`${post.title}` :
-					<Link to={`/p/${post.communityName}/${post.id}`} className='link'> 
+					<Link to={`/c/${post.communityName}/${post.id}`} className='link'> 
 						{post.title}
 					</Link> 
 				}
@@ -61,10 +60,11 @@ const PostContent = () => {
 			 	 postType === 'enlarged' ? 
 			 	 null :
 			 	 user.settings.feedType === 'list' ?
+			 	 post.image !== '' ?
 				<img onClick={() => {
 					openEnlargedWindow(!enlargedImgOpen)
 				}} src={post.image} alt='Post image' /> :
-				null
+				null : null
 			}
 		</div> 
 	)
@@ -114,8 +114,12 @@ const EnlargedPostImg = () => {
 const EnlargedPostText = () => {
 	return(
 		<div className='container enlargedPostText' >
-		<span> Post tag </span> 
-		<p> {post.text}</p>
+		<span> Post tag </span>	
+		{
+			post.text.map((t, i) =>  {
+				return <p> {t} </p>
+			})
+		}
 		</div>
 	)
 }
@@ -126,7 +130,7 @@ const InteractionWindow =() => {
 		<div className='container interactionWindow'>
 			<div className='container'>
 				<i class="fas fa-arrow-circle-up"></i>
-				<span> {post.karma}</span>
+				<span> {post.karma.upvotes - post.karma.downvotes}</span>
 				<i class="fas fa-arrow-circle-down"></i>
 			</div>
 			<div className='container'>
@@ -196,12 +200,12 @@ const PostMeta= () => {
 				</React.Fragment>
 			}
 			{
-				enlargedImgOpen ?
+				enlargedImgOpen && post.image !== '' ?
 				<EnlargedPostImg /> :
 				null
 			}	
 			{
-				postType === 'enlarged' ?
+				postType === 'enlarged' && post.text.length !== 0 ?
 				<EnlargedPostText /> :
 				null
 			}

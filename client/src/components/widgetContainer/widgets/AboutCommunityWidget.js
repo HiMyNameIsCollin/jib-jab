@@ -1,10 +1,10 @@
 import React from 'react'
 
-const AboutCommunityWidget = ({community}) => {
+const AboutCommunityWidget = ({pageContent}) => {
 	return(
 		<div className='aboutCommunityWidget'>
-			<h4>{community.configuration.widgets.aboutWidget.header}</h4>
-			<p> {community.configuration.widgets.aboutWidget.body}</p>
+			<h4>{pageContent.configuration.widgets.aboutWidget.header}</h4>
+			<p> {pageContent.configuration.widgets.aboutWidget.body}</p>
 			<div className='container'>
 				<div className='container'>
 					<p> 0 </p>

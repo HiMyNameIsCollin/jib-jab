@@ -9,27 +9,58 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const Feed = ({user, setUser,  windowWidth, pageType, Link, posts, community}) => {
+const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 
 	const [feedSort, setFeedSort] = useState(initialSort)
+	const [posts, setPosts] = useState(undefined)
+	const [profileFeedChoice, setProfileFeedChoice] = useState('spicy')
+
+	useEffect(() => {
+		if(pageType === 'profilePage') {
+			fetch(`http://localhost:3000/api/p/`,{
+				method: 'post',
+				headers: {'Content-Type' : 'application/json'},
+				body: JSON.stringify({
+					posts: pageContent.posts,
+					sortType: profileFeedChoice
+				})
+			})
+			.then(response => response.json())
+			.then(response => setPosts(response))
+			.catch(err => console.log(err))			
+		} else {
+			fetch(`http://localhost:3000/api/p/`, {
+				method: 'post',
+				headers: {'Content-Type' : 'application/json'}, 
+				body: JSON.stringify({
+					posts: pageContent.posts,
+					sortType: feedSort.sortOptionsChoice,
+					sortTypeCont: feedSort.sortOptionsContChoice
+				})
+			})
+			.then(response => response.json())
+			.then(response => setPosts(response))
+			.catch(err => console.log)
+		}
+	},[])
+
+
+
 
 	const ProfileFeedSort = () => {
-
-		const [profileFeedChoice, setProfileFeedChoice] = useState(1)
-
 		return(
 			<div className='container profileFeedSort'>
 				<div onClick={(e) => {
 			    	e.stopPropagation()
-			    	setProfileFeedChoice(1)
-				}} className={profileFeedChoice === 1 ? 'profileFeedChoice' : null}>
+			    	setProfileFeedChoice('spicy')
+				}} className={profileFeedChoice === 'spicy' ? 'profileFeedChoice' : null}>
 					<i class="fas fa-fire"></i>
 					<span>Spicy</span>
 				</div>
 				<div onClick={(e) => {
 			    	e.stopPropagation()
-			    	setProfileFeedChoice(2)
-				}} className={profileFeedChoice === 2 ? 'profileFeedChoice' : null}>
+			    	setProfileFeedChoice('new')
+				}} className={profileFeedChoice === 'new' ? 'profileFeedChoice' : null}>
 					<i class="fas fa-baby"></i>
 					<span>New</span>
 				</div>
@@ -38,7 +69,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, posts, community}) =
 	}
 
 	return(
-		<div className={community ? community.communityNameLower === 'global' ? 'feedGlobalPage feed' : 'feed' : 'feed'}>
+		<div className={pageContent ? pageContent.communityNameLower === 'global' ? 'feedGlobalPage feed' : 'feed' : 'feed'}>
 			{
 				pageType === 'frontPage' ?
 				<p className='feedHeader'> Popular posts </p> :
