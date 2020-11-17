@@ -6,12 +6,36 @@ import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
 
-const CommunityPage = ({user, setUser, windowWidth, Link, pageContent}) => {
+const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType}) => {
+
+	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
+	const [currentPage, setCurrentPage] = useState(undefined)
+
+	useEffect(() => {
+		if(location.pathname.toLowerCase() === '/c/popular'){
+			history.push('/')
+		} else {
+			fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
+			.then(response => response.json())
+			.then(response => {
+					setPageContent(response)
+			})
+			.catch(err => console.log(err))
+		}
+	},[location.pathname])
+
+  	useEffect(() => {
+  		if(currentPage !== location.pathname){
+  			setPageContent(undefined)
+  			setCurrentPage(location.pathname)
+  		}
+  	},[location.pathname])
+
 	if(pageContent){
 		return(
 			<React.Fragment>
-					<Intro pageType={'communityPage'} windowWidth={windowWidth} pageContent={pageContent}/> 
+					<Intro pageType={pageType} windowWidth={windowWidth} pageContent={pageContent}/> 
 				{
 					windowWidth <= 920 ?
 					<div className='container mobileViewToggle'>
@@ -25,12 +49,12 @@ const CommunityPage = ({user, setUser, windowWidth, Link, pageContent}) => {
 					<React.Fragment >
 						<Feed 
 						Link={Link} 
-						pageType={'communityPage'} 
+						pageType={pageType} 
 						user={user} 
 						setUser={setUser}
 						windowWidth={windowWidth}
 						pageContent={pageContent} />
-						<WidgetContainer Link={Link} pageType={'communityPage'} pageContent={pageContent}/> 
+						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 					</React.Fragment> :
 					mobileViewIsFeed ?
 					<Feed 
@@ -40,7 +64,7 @@ const CommunityPage = ({user, setUser, windowWidth, Link, pageContent}) => {
 					setUser={setUser} 
 					windowWidth={windowWidth}
 					pageContent={pageContent}/>:
-					<WidgetContainer Link={Link} pageType={'communityPage'} pageContent={pageContent}/> 
+					<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 				}
 
 				<Footer />

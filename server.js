@@ -62,8 +62,9 @@ function timeDifference(date, dateType) {
 }
 
 function sortPosts(posts, sortType, sortTypeCont){
+	console.log(sortType)
 	let newSortOrder = []
-	if(sortType === 'spicy'){
+	if(sortType === 'spicy' || sortType === 'communities'){
 		posts.forEach((p, i) => {
 			newSortOrder.push({
 				id: p.id,
@@ -95,7 +96,9 @@ function sortPosts(posts, sortType, sortTypeCont){
 		return output
 	} else if (sortType === 'new'){
 		
-	}
+	} else if(sortType === 'soapBox'){
+
+	} 
 }
 
 
@@ -119,66 +122,55 @@ app.get('/', authenticateToken, (req, res) => {
 	})
 })
 
-app.get('/api/', authenticateToken, (req, res) => {
+app.post('/api/', (req, res) => {
 	CommunityModel.findOne({communityName: 'Popular'})
 	.then(pageContent => {
-		UserModel.findOne({userNameLower: req.user.userName.toLowerCase()})
-		.then(result => {
-			pageContent.communities = result.communities.map((c,i) => c.toLowerCase())
-			CommunityModel.find({
-				communityNameLower: { $in: 
-					pageContent.communities
-				}
-			})
-			.then(result => {
-				let popularPosts = []
-				result.map((r, i) => popularPosts.push(...r.posts))
-				pageContent.posts = popularPosts
-				res.json(pageContent)
-			})
-		})
-	})
-})
-
-app.get('/api/default', (req, res) => {
-	CommunityModel.findOne({communityName: 'Popular'})
-	.then(pageContent => {
-		const communities = pageContent.communities.map((c, i) => c.toLowerCase())
+		const communities = req.body.communities.map((c, i) => c.toLowerCase())
 		CommunityModel.find({
-			communityNameLower: { $in:
+			communityNameLower : { $in:
 				communities
 			}
 		})
 		.then(result => {
-			let popularPosts = []
-			result.map((r, i) => popularPosts.push(...r.posts))
-			pageContent.posts = popularPosts
+			pageContent.communities = req.body.communities
+			result.map((r, i) => pageContent.posts.push(...r.posts))
 			res.json(pageContent)
 		})
-		.catch(err => console.log(err, ' err'))
 	})
-	.catch(err=> console.log(err))
 })
+
 
 
 /*GET COMMUNITY DATA AND POSTS */
 app.get('/api/c/:communityName/', (req, res) => {
-	console.log(321)
 	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
 	.then((pageContent) => {
-		res.json(pageContent)
+		if(pageContent.communityNameLower !== 'global'){
+			res.json(pageContent)
+		} else {
+			const communities = pageContent.communities.map((r, i) => r.toLowerCase())
+			CommunityModel.find({
+				communityNameLower: { $in:
+					communities
+				}
+			})
+			.then(result => {
+				const posts = []
+				result.map((r, i) => posts.push(...r.posts))
+				pageContent.posts = posts
+				res.json(pageContent)
+			})
+		}
 	})
-	.catch(err => console.log(err))
+	.catch(err => console.log(err))		
 })
 
 app.get('/api/c/:communityName/:postID', (req, res) => {
-	console.log(123)
 	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
 	.then((pageContent) => {
 		const posts = []
 		posts.push(req.params.postID)
 		pageContent.posts = posts
-		console.log(pageContent.posts)
 		res.json(pageContent)
 	})
 	.catch(err => console.log(err))
@@ -210,8 +202,6 @@ app.post('/api/p/', (req, res) => {
 
 /*GET COMMUNITY IMAGE*/
 app.get('/img/:communityName' , (req, res) => {
-	/*I MIGHT NOT NEED CONDITIONAL RETURN FOR GLOBAL IF I MAKE GLOBAL A COMMUNITY PAGE*/
-	if(req.params.communityName === 'global') return res.json('https://robohash.org/4')
 	CommunityModel.findOne({communityNameLower: req.params.communityName })
 	.then((result) => res.json(result.configuration.communityImg))
 	.catch(err => console.log(err))
@@ -219,7 +209,19 @@ app.get('/img/:communityName' , (req, res) => {
 
 app.get('/api/u/:user', (req, res) => {
 	UserModel.findOne({userNameLower: req.params.user.toLowerCase()})
+	.then(result => {
+		res.json(result)
+	})
+	.catch(err => console.log(err))
+})
+
+app.post('/api/u/:user/:postID', (req, res) => {
+	CommunityModel.findOne({communityName: 'Popular'})
 	.then(pageContent => {
+		const posts = []
+		posts.push(req.params.postID)
+		pageContent.communities = req.body.communities
+		pageContent.posts = posts
 		res.json(pageContent)
 	})
 	.catch(err => console.log(err))

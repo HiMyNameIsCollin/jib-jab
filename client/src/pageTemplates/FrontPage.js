@@ -5,14 +5,31 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
-const FrontPage = ({user, setUser, windowWidth, Link, pageContent}) => {
+const FrontPage = ({user, setUser, windowWidth, Link, location, pageType}) => {
 
+	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
+
+	useEffect(() => {
+		console.log(user)
+			fetch(`http://localhost:3000/api/`, {
+				method: 'post',
+				headers: {'Content-Type' : 'application/json'},
+				body: JSON.stringify({
+					communities: user.communities
+				})
+			})
+			.then(response => response.json())
+			.then(response => {
+					setPageContent(response)
+			})
+			.catch(err => console.log(err))
+	},[])
 
 	if(pageContent && user) {
 	return(
 		<React.Fragment>
-			<Intro pageType={'frontPage'} windowWidth={windowWidth} />
+			<Intro pageType={pageType} windowWidth={windowWidth} />
 			{
 				windowWidth <= 920 ?
 				<div className='container mobileViewToggle'>
@@ -26,22 +43,22 @@ const FrontPage = ({user, setUser, windowWidth, Link, pageContent}) => {
 				<React.Fragment >
 					<Feed 
 					Link={Link} 
-					pageType={'frontPage'} 
+					pageType={pageType} 
 					user={user} 
 					setUser={setUser}
 					windowWidth={windowWidth}
 					pageContent={pageContent}/>
-					<WidgetContainer Link={Link} pageType={'frontPage'} user={user} pageContent={pageContent}/> 
+					<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
 				</React.Fragment> :
 				mobileViewIsFeed ?
 				<Feed 
 				Link={Link} 
-				pageType={'frontPage'} 
+				pageType={pageType} 
 				user={user} 
 				setUser={setUser} 
 				windowWidth={windowWidth}
 				pageContent={pageContent}/>:
-				<WidgetContainer Link={Link} pageType={'frontPage'} user={user} pageContent={pageContent}/> 
+				<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
 			}
 
 			<Footer />

@@ -3,17 +3,17 @@ import './_post.sass'
 import ReactionsWindow from './ReactionsWindow'
 import ReactionsDisplay from './ReactionsDisplay'
 
-const Post = ({user, windowWidth, Link, postType, post}) => {
+const Post = ({user, windowWidth, Link, postType, post, pageType}) => {
 
 const PostInfo = () => {
 	return(
 		<div className='container postInfo'>
 			{
-				postType !== 'enlarged' ?
+				/*IF POST IS NOT OPEN OR SOAPBOX*/
+				postType !== 'enlarged' || post.communityName !== post.user ?
 				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.communityName}`}> {post.communityName}</Link></span>:
 				null
 			}
-			
 			{
 				user.userName !== '' ?
 				<span class='joinCommunity'> Join </span> :
@@ -21,6 +21,7 @@ const PostInfo = () => {
 			}
 			<span className='postInfoTimePosted'>{post.time}  </span>
 			{
+				/*IF POST IS NOT OPEN AND LESS THAN TABLET RESOLUTION*/
 				postType === 'enlarged' && windowWidth <= 576 ?
 				<span className='postInfoUserName'><Link className='link' to={`/u/${post.user}`}> /u/{post.user} </Link></span> :
 				null
@@ -50,6 +51,10 @@ const PostContent = () => {
 				{
 					postType === 'enlarged' ? 
 					`${post.title}` :
+					pageType === 'profilePage' ?
+					<Link to={`/u/${post.communityName}/${post.id}`} className='link'> 
+						{post.title}
+					</Link> :
 					<Link to={`/c/${post.communityName}/${post.id}`} className='link'> 
 						{post.title}
 					</Link> 

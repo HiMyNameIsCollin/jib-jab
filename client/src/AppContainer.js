@@ -20,18 +20,19 @@ const initialUser = {
 }
 
 
-const AppContainer = ({Link, Route, Switch, useLocation}) => {
+const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 
 	const [windowWidth, setWindowWidth] = useState()
 	const [navIsOpen, setNav] = useState(false)
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
 	const [user, setUser] = useState(initialUser)
-	const [pageContent, setPageContent] = useState(undefined)
 
 	const location = useLocation()
+	const history = useHistory()
 
   	useEffect(() => {
+  		setCurrentLocation(location.pathname)
 	    function handleResize() {
 	      setWindowWidth(window.innerWidth)
 	    }
@@ -41,49 +42,13 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
   	}, [])
 
   	useEffect(() => {
-  		setCurrentLocation(location.pathname)
-  	}, [])
-
-  	useEffect(() => {
-  		console.log(location.pathname)
-  		const accessToken = window.localStorage.getItem('accessToken')
   		if(currentLocation !== location.pathname){
-  			tokenRefresh(accessToken)
+  			tokenRefresh()
 			document.body.scrollTop = 0
 			document.documentElement.scrollTop = 0	
 			setCurrentLocation(location.pathname)
 			setNav(false)
   		}
-  		if (location.pathname === '/'){
-			fetch(`http://localhost:3000/api/`, {
-				headers: {
-					authorization: `Bearer ${accessToken}`,
-					'Content-Type' : 'application/json'
-				}
-			})
-			.then(response => response.json())
-			.then(response => {
-					setPageContent(response)
-			})
-			.catch(err => {
-				fetch('http://localhost:3000/api/default')
-				.then(response => response.json())
-				.then(response => setPageContent(response))
-				.catch(err => console.log(err))
-			})
-		} else {
-			fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
-			.then(response => response.json())
-			.then(response => {
-					setPageContent(response)
-			})
-			.catch(err => {
-				fetch('http://localhost:3000/api/default')
-				.then(response => response.json())
-				.then(response => setPageContent(response))
-				.catch(err => console.log(err))
-			})
-		}
   	},[location.pathname])
 
   	useEffect(() => {
@@ -92,7 +57,8 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
   		}
   	},[navIsOpen])
 
-  	function tokenRefresh(accessToken) {
+  	function tokenRefresh() {
+  		const accessToken = window.localStorage.getItem('accessToken')
 		fetch('http://localhost:3000/', {
 			headers: {
 				authorization: `Bearer ${accessToken}`,
@@ -163,15 +129,27 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 		       		setUser={setUser} 
 		       		Link={Link} 
 		       		windowWidth={windowWidth}
-		       		pageContent={pageContent}/>
+		       		location={location}
+		       		pageType={'frontPage'} />
 		        </Route>
-		       	<Route path="/u/:userName">
+		       	<Route exact path="/u/:userName">
 		        	<ProfilePage 
 		        	user={user} 
 		        	windowWidth={windowWidth} 
 		        	Link={Link}
-		        	pageContent={pageContent}
-		        	setPageContent={setPageContent}/>
+		       		location={location}
+		       		pageType={'profilePage'}/>
+		        </Route>
+		       	<Route path="/u/:userName/:postID">
+		        	<PostPage 
+		        	Link={Link}
+		        	user={user} 
+		        	setUser={setUser}
+		        	windowWidth={windowWidth}
+		        	overlayIsOpen={overlayIsOpen} 
+		        	setOverlay={setOverlay}
+		       		location={location}
+		       		pageType={'userPostPage'}/>
 		        </Route>
 		        <Route exact path="/c/:communityName">
 		        	<CommunityPage 
@@ -179,8 +157,10 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 		        	setUser={setUser}
 		        	windowWidth={windowWidth} 
 		        	Link={Link}
-		        	pageContent={pageContent}
-		        	setPageContent={setPageContent}/>
+		       		location={location}
+		       		history={history}
+					pageType={'communityPage'} 
+		       		/>
 		        </Route>
 		        <Route path='/c/:communityName/:postID'>
 		        	<PostPage 
@@ -188,12 +168,13 @@ const AppContainer = ({Link, Route, Switch, useLocation}) => {
 		        	user={user} 
 		        	setUser={setUser}
 		        	windowWidth={windowWidth}
-		        	pageContent={pageContent} 
 		        	overlayIsOpen={overlayIsOpen} 
-		        	setOverlay={setOverlay}/>
+		        	setOverlay={setOverlay}
+		       		location={location}
+					pageType={'postPage'} />
 		        </Route>
 		        <Route exact path='/about'>
-		        	<AboutPage  />
+		        	<AboutPage />
 		        </Route>
 	        </Switch>
 

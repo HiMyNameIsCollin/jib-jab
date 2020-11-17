@@ -82,10 +82,10 @@ const ProfileWidgets = () => {
 
 
 	return(
-		<div className={ pageContent ? pageContent.communityNameLower === 'global'|| pageType === 'postPage' ? 'widgetContainerGlobalPage container widgetContainer' : 'container widgetContainer' : 'container widgetContainer'}>
+		<div className={ pageContent ? pageContent.communityNameLower === 'global'|| pageType === 'postPage' || pageType === 'userPostPage' ? 'widgetContainerGlobalPage container widgetContainer' : 'container widgetContainer' : 'container widgetContainer'}>
 			<div className={pageType === 'frontPage' ? 'widgetSizingContainerFrontPage widgetSizingContainer' : 'widgetSizingContainer'}>
 			{
-				pageType === 'frontPage' ?
+				pageType === 'frontPage' || 'userPostPage' ?
 				<FrontPageWidgets  /> :
 				pageType === 'profilePage' ?
 				<ProfileWidgets /> :

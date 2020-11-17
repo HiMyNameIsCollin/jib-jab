@@ -8,7 +8,7 @@ import {
   Route,
   Link,
   useLocation,
-  
+  useHistory
 } from "react-router-dom"
 
 
@@ -16,7 +16,7 @@ function App() {
   return (
     <div className="App">
     <Router>
-      <AppContainer Link={Link} Switch={Switch} Route={Route} useLocation={useLocation} />
+      <AppContainer Link={Link} Switch={Switch} Route={Route} useLocation={useLocation} useHistory={useHistory}/>
     </Router>
     </div>
   );

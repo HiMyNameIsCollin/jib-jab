@@ -13,21 +13,36 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 
 	const [feedSort, setFeedSort] = useState(initialSort)
 	const [posts, setPosts] = useState(undefined)
-	const [profileFeedChoice, setProfileFeedChoice] = useState('spicy')
+	const [profileFeedChoice, setProfileFeedChoice] = useState('soapBox')
 
 	useEffect(() => {
+		setPosts(undefined)
 		if(pageType === 'profilePage') {
-			fetch(`http://localhost:3000/api/p/`,{
+			if(profileFeedChoice === 'soapBox'){
+				fetch(`http://localhost:3000/api/p/`,{
+					method: 'post',
+					headers: {'Content-Type' : 'application/json'},
+					body: JSON.stringify({
+						posts: pageContent.soapBox,
+						sortType: profileFeedChoice
+					})
+				})
+				.then(response => response.json())
+				.then(response => setPosts(response))
+				.catch(err => console.log(err))					
+			}else {
+				fetch(`http://localhost:3000/api/p/`,{
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
 					posts: pageContent.posts,
 					sortType: profileFeedChoice
+					})
 				})
-			})
-			.then(response => response.json())
-			.then(response => setPosts(response))
-			.catch(err => console.log(err))			
+				.then(response => response.json())
+				.then(response => setPosts(response))
+				.catch(err => console.log(err))				
+			}
 		} else {
 			fetch(`http://localhost:3000/api/p/`, {
 				method: 'post',
@@ -42,7 +57,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 			.then(response => setPosts(response))
 			.catch(err => console.log)
 		}
-	},[])
+	},[profileFeedChoice])
 
 
 
@@ -52,17 +67,17 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 			<div className='container profileFeedSort'>
 				<div onClick={(e) => {
 			    	e.stopPropagation()
-			    	setProfileFeedChoice('spicy')
-				}} className={profileFeedChoice === 'spicy' ? 'profileFeedChoice' : null}>
+			    	setProfileFeedChoice('soapBox')
+				}} className={profileFeedChoice === 'soapBox' ? 'profileFeedChoice' : null}>
 					<i class="fas fa-fire"></i>
-					<span>Spicy</span>
+					<span>Soap Box</span>
 				</div>
 				<div onClick={(e) => {
 			    	e.stopPropagation()
-			    	setProfileFeedChoice('new')
-				}} className={profileFeedChoice === 'new' ? 'profileFeedChoice' : null}>
+			    	setProfileFeedChoice('communities')
+				}} className={profileFeedChoice === 'communities' ? 'profileFeedChoice' : null}>
 					<i class="fas fa-baby"></i>
-					<span>New</span>
+					<span>Communities</span>
 				</div>
 			</div>
 		)
