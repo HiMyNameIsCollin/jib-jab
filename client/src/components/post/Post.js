@@ -1,12 +1,34 @@
 import React, { useState, useEffect } from 'react'
 import './_post.sass'
-import ReactionsWindow from './ReactionsWindow'
-import ReactionsDisplay from './ReactionsDisplay'
 
-const Post = ({user, windowWidth, Link, postType, post, pageType}) => {
 
+const Post = ({user, setUser, windowWidth, Link, postType, post, pageType, handleVote}) => {
+
+		const handleSubscription = (communityName, request) => {
+  		const accessToken = window.localStorage.getItem('accessToken')
+		fetch('http://localhost:3000/api/c/subscription', {
+			method: 'post',
+			headers: {
+				authorization: `Bearer ${accessToken}`,
+				'Content-Type' : 'application/json'
+			},
+			body: JSON.stringify({
+				communityName,
+				request,
+			})
+		})
+		.then(response => response.json())
+		.then(response => {
+			console.log(response)
+			setUser(response)
+		})
+		.catch(err => console.log(err))
+	}
+	
 const PostInfo = () => {
+
 	return(
+
 		<div className='container postInfo'>
 			{
 				/*IF POST IS NOT OPEN OR SOAPBOX*/
@@ -16,10 +38,12 @@ const PostInfo = () => {
 			}
 			{
 				user.userName !== '' ?
-				<span class='joinCommunity'> Join </span> :
+				user.communities.includes(post.communityName) ?
+				<span class='joinedCommunity' onClick={() => handleSubscription(post.communityName, 'unsubscribe') }> Unsubscribe </span> :
+				<span class='joinCommunity' onClick={() => handleSubscription(post.communityName, 'subscribe')}> Subscibe </span> :
 				null
 			}
-			<span className='postInfoTimePosted'>{post.time}  </span>
+
 			{
 				/*IF POST IS NOT OPEN AND LESS THAN TABLET RESOLUTION*/
 				postType === 'enlarged' && windowWidth <= 576 ?
@@ -133,17 +157,26 @@ const EnlargedPostText = () => {
 const InteractionWindow =() => {
 	return(
 		<div className='container interactionWindow'>
+			<span className='postInfoTimePosted'> 3hrs  </span>
 			<div className='container'>
-				<i class="fas fa-arrow-circle-up"></i>
-				<span> {post.karma.upvotes - post.karma.downvotes}</span>
-				<i class="fas fa-arrow-circle-down"></i>
+			{
+				post.karma.upvotes.includes(user.userName) ?
+				<i onClick={() => handleVote(post.id, 'upvote')} class="fas fa-arrow-circle-up" style={{color: 'blue'}}></i>:
+				<i onClick={() => handleVote(post.id, 'upvote')} class="fas fa-arrow-circle-up"></i>
+			}
+				<span> {post.karma.upvotes.length - post.karma.downvotes.length}</span>
+			{
+				post.karma.downvotes.includes(user.userName) ?
+				<i onClick={() => handleVote(post.id, 'downvote')} class="fas fa-arrow-circle-down" style={{color: 'red'}}></i>:
+				<i onClick={() => handleVote(post.id, 'downvote')} class="fas fa-arrow-circle-down"></i>
+			}
 			</div>
 			<div className='container'>
 			{
 				windowWidth <= 920 ?
 				postType === 'enlarged' ?
 				null :
-				null:  <span>{post.comments.length}</span>
+				<span>{post.comments.length}</span> : <span>{post.comments.length}</span>
 			}
 				
 				<i class="far fa-comment-dots"></i>
@@ -154,23 +187,13 @@ const InteractionWindow =() => {
 
 const PostMeta= () => {
 
-	const [reactionIsOpen, openReactions] = useState(false)
-
-
 	return(
 		<div className='container postMeta'>
 		{
-			reactionIsOpen ?
-			<ReactionsWindow reactionIsOpen={reactionIsOpen} openReactions={openReactions}  />:
-			<ReactionsDisplay reactionIsOpen={reactionIsOpen} openReactions={openReactions} />
-		}
-		{
-			reactionIsOpen === false && windowWidth <= 920 ?
+			windowWidth <= 920 ?
 			<InteractionWindow /> :
 			null
 		}
-
-
 		</div>
 	)
 }

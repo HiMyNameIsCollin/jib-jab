@@ -7,7 +7,7 @@ require('dotenv').config()
 const {mongoose, postSchema, tokenSchema, userSchema, communitySchema} = require('./mongoose')
 const url = 'mongodb://127.0.0.1:27017/jibjab'
 
-mongoose.connect(url, { useNewUrlParser: true })
+mongoose.connect(url, { useNewUrlParser: true , useFindAndModify: false })
 
 const conn = mongoose.connection
 let PostModel
@@ -68,7 +68,7 @@ function sortPosts(posts, sortType, sortTypeCont){
 		posts.forEach((p, i) => {
 			newSortOrder.push({
 				id: p.id,
-				score: p.karma.upvotes - p.karma.downvotes + p.reactions.length * 2,
+				score: p.karma.upvotes.length - p.karma.downvotes.length ,
 				age: timeDifference(p.time)
 			})
 		})
@@ -176,6 +176,59 @@ app.get('/api/c/:communityName/:postID', (req, res) => {
 	.catch(err => console.log(err))
 })
 
+app.post('/api/c/subscription', authenticateToken, async (req, res) => {
+	const community = await CommunityModel.findOne({communityNameLower: req.body.communityName.toLowerCase()})
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(user && community) {
+		const session = await mongoose.startSession()
+		session.startTransaction()
+		try{
+			if(req.body.request === 'subscribe'){
+				user.communities.push(community.communityName)
+				community.followers.push(user.userName)
+				community.markModified('followers')
+				community.save()
+				user.markModified('communities')
+				user.save()
+				.then(savedUser => {
+					res.json(savedUser)
+				})
+				.catch(err => console.log(err))
+			} else if (req.body.request === 'unsubscribe') {
+				community.followers.forEach((f, i) => {
+					if(f === user.userName){
+						community.followers.splice(i, 1)
+						i--
+					}
+				})
+				user.communities.forEach((c, i) => {
+					if(c === community.communityName){
+						console.log(c, 123)
+						user.communities.splice(i, 1)
+						i--
+					}
+				})
+				community.markModified('followers')
+				community.save()
+				user.markModified('communities')
+				user.save()
+				.then(savedUser => {
+					res.json(savedUser)
+				})
+				.catch(err => console.log(err))
+			}
+		}
+		catch(err){
+			await session.abortTransaction()
+			session.endSession()
+			res.status(400).json({error: 'There has been an error'})
+		}
+	} else {
+		res.status(400).json({error: 'There has been an error'})
+	}
+})
+
+
 app.post('/api/p/', (req, res) => {
 	console.log(req.body)
 	if(req.body.posts.length > 1){
@@ -189,15 +242,80 @@ app.post('/api/p/', (req, res) => {
 			res.json(posts)
 		})
 		.catch(err => console.log(err))
-	} else {
+	} else if(req.body.posts.length === 1) {
 		PostModel.findOne({id: req.body.posts[0]})
 		.then(result => {
 			const posts = [result]
 			res.json(posts)
 		})
 		.catch(err => console.log(err))
+	} else if(req.body.posts.length === 0){
+		res.status(400).json({error: 'Not subscribed to anything, try following some people or communities to fill your feed'})
 	}
 })
+
+app.post('/api/vote', authenticateToken, async (req, res) => {
+	let { request , postID } = req.body
+	let { userName } = req.user
+	const post = await PostModel.findOne({id: postID})
+	if(post){
+		let {upvotes, downvotes} = post.karma
+		try{
+			if(request === 'downvote'){
+				if(downvotes.includes(userName)){
+					downvotes.forEach((u, i) => {
+						if(u === userName){
+							downvotes.splice(i, 1)
+							i--
+						}
+					})
+				} else {
+					if(upvotes.includes(userName)){
+						upvotes.forEach((u, i) => {
+							if(u === userName){
+								upvotes.splice(i, 1)
+								i--
+							}
+						})
+					}
+					downvotes.push(userName)
+				}
+					post.markModified('karma')
+					post.save()
+					.then(savedPost => res.json(savedPost))
+					.catch(err => console.log(err))
+			} else {
+				console.log(123)
+				if(upvotes.includes(userName)){
+					upvotes.forEach((u, i) => {
+						if(u === userName){
+							upvotes.splice(i, 1)
+							i--
+						}
+					})
+				} else {
+					if(downvotes.includes(userName)){
+						downvotes.forEach((u, i) => {
+							if(u === userName){
+								downvotes.splice(i, 1)
+								i--
+							}
+						})
+					}
+					upvotes.push(userName)
+				}
+				post.markModified('karma')
+				post.save()
+				.then(savedPost => res.json(savedPost))
+				.catch(err => console.log(err))
+			}
+		}
+		catch(err){
+			res.status(400).json({error: 'There has been an error'})
+		}
+	}
+})
+
 
 
 /*GET COMMUNITY IMAGE*/

@@ -69,7 +69,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 
 				user.userName === '' ?
 				<span className='headerBtn' onClick={() => setOverlay('login')}> Login <i className="fas fa-sign-in-alt"></i> </span> :
-				<span className='headerBtn'><i class="fas fa-pencil-alt"></i> </span>
+				<span className='headerBtn' onClick={() => setOverlay('submitPost')}><i class="fas fa-pencil-alt"></i> </span>
 			}
 
 				<span onClick={() => setNav(!navIsOpen)} 

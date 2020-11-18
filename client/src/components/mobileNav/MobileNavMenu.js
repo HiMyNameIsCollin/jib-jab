@@ -51,7 +51,9 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav}) => {
 					})
 				})
 				.then(response => {
-					setUser(initialState)
+					setUser(undefined)
+		  			window.localStorage.removeItem("accessToken")
+					window.localStorage.removeItem("refreshToken")
 				})
 				.catch(err => console.log(err))
 			}}> 

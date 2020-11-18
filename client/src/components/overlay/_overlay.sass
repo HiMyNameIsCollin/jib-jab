@@ -32,13 +32,14 @@ $gloomyBlue: #D0D2D4
 		z-index: -1
 
 
-.register, .login
+.register, .login, .submitMessage, .submitPost
 	background: white
 	border-radius: 5px
 	grid-column: 1/13
 	padding: 1em
 	position: relative
 	margin: auto
+	min-height: 50vh
 	width: calc(100% - 1em)
 	h3
 		margin-bottom: .5em
@@ -66,14 +67,14 @@ $gloomyBlue: #D0D2D4
 			color: red
 
 @media only screen and (min-width: 420px)
-	.login, .register
+	.login, .register .submitMessage, .submitPost
 		grid-column: 3/11
 
 
 @media only screen and (min-width: 572px)
-	.login, .register
+	.login, .register .submitMessage, .submitPost
 		grid-column: 4/10
 
 @media only screen and (min-width: 920px)
-	.login, .register
+	.login, .register .submitMessage, .submitPost
 		grid-column: 5/9

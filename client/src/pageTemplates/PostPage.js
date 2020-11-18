@@ -4,7 +4,7 @@ import Footer from '../components/footer/Footer'
 import PostExpanded from '../components/postExpanded/PostExpanded'
 import Loading from '../components/loading/Loading'
 
-const PostPage = ({Link, user,  windowWidth, overlayIsOpen, setOverlay, location, pageType}) => {
+const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay, location, pageType}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 
@@ -25,10 +25,10 @@ const PostPage = ({Link, user,  windowWidth, overlayIsOpen, setOverlay, location
 					})
 				})
 				.then(response => response.json())
-				.then(response => {
-					setPageContent(response)
-				})
-				.catch(err => console.log(err))
+					.then(response => {
+						setPageContent(response)
+					})
+					.catch(err => console.log(err))
 			}
 	},[])
 
@@ -39,10 +39,12 @@ const PostPage = ({Link, user,  windowWidth, overlayIsOpen, setOverlay, location
 					<PostExpanded 
 					Link={Link} 
 					user={user} 
+					setUser={setUser}
 					windowWidth={windowWidth}
 					pageContent={pageContent}
 					overlayIsOpen={overlayIsOpen} 
-					setOverlay={setOverlay}/>
+					setOverlay={setOverlay}
+					pageType={pageType}/>
 					{
 						windowWidth > 920 ?
 						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> :

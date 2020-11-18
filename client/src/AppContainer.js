@@ -7,6 +7,7 @@ import CommunityPage from './pageTemplates/CommunityPage'
 import ProfilePage from './pageTemplates/ProfilePage'
 import PostPage from './pageTemplates/PostPage'
 import AboutPage from './pageTemplates/AboutPage'
+import Loading from './components/loading/Loading'
 
 
 const initialUser = {
@@ -26,7 +27,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const [navIsOpen, setNav] = useState(false)
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
-	const [user, setUser] = useState(initialUser)
+	const [user, setUser] = useState(undefined)
 
 	const location = useLocation()
 	const history = useHistory()
@@ -57,6 +58,12 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
   		}
   	},[navIsOpen])
 
+  	useEffect(() => {
+  		if(user === undefined){
+  			setUser(initialUser)
+  		}
+  	}, [user])
+
   	function tokenRefresh() {
   		const accessToken = window.localStorage.getItem('accessToken')
 		fetch('http://localhost:3000/', {
@@ -69,6 +76,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		.then(response => {
 			if(response !== null){
 				setUser(response)
+			} else {
+
 			}
 		})
 		.catch(err => {
@@ -85,6 +94,9 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				window.localStorage.setItem('accessToken', response.accessToken)
 				if(response.result !== null) {
 					setUser(response.result)
+					console.log(response.result)
+				} else {
+					setUser(initialUser)
 				}
 			})
 			.catch(err => console.log)
@@ -92,8 +104,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 
   	}
 
-
-	return(
+  	if(user !== undefined){
+  	return(
 		<div id='AppContainer'>
 			<Header 
 			navIsOpen={navIsOpen} 
@@ -177,12 +189,12 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	<AboutPage />
 		        </Route>
 	        </Switch>
-
-{/*			
-			<PopularPage userLoggedIn={userLoggedIn} navIsOpen={navIsOpen}/> 
-			*/}
 		</div>
-	)
+	)		
+  	} else {
+  		return <Loading />
+  	}
+
 }
 
 export default AppContainer

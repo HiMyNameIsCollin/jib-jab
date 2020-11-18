@@ -17,31 +17,34 @@ $gloomyBlue: #D0D2D4
 .postInfo
 	align-items: center
 	grid-row: 1/2
-	justify-content: space-between
+	justify-content: flex-start
 	padding: 0 .25em 0 0
 	width: 100%
 	span
 		font-weight: 700
-		font-size: .8em
+		font-size: .7em
 		letter-spacing: 1px
-		margin: .5em
-	.postInfoTimePosted
-		margin-right: auto
+		margin: .5em 0 .5em 1em
+	.postInfoCommunityName
+		margin-right: .5em
 	.postInfoUserName
 		margin-left: auto
 	.joinCommunity
 		color: blue
 		border-bottom: 1px solid blue
+		cursor: pointer
 		display: inline
-		font-weight: 400
-		margin: .5em
-		padding: 0 .1em
+		font-weight: 700
+		margin: 0 auto 0 1em
+		padding: .2em 0 0 0
 	.joinedCommunity
 		color: $grey
+		cursor: pointer
+		border-bottom: 1px solid $grey
 		display: inline
-		font-weight: 400
-		margin: .5em
-		padding: 0 .1em
+		font-weight: 700
+		margin: 0 auto 0 0
+		padding: .2em 0 0 0
 	img
 		background: black
 		border-radius: 50%
@@ -78,6 +81,7 @@ $gloomyBlue: #D0D2D4
 
 .enlargedPostImg
 	grid-row: 3/4
+	padding-bottom: 1em
 	img
 		background: black
 		height: auto
@@ -106,13 +110,19 @@ $gloomyBlue: #D0D2D4
 
 .postMeta
 	grid-row: 5/6
+
 	
 .interactionWindow
-	align-items: center
 	display: flex
 	font-size: .9em
 	flex-direction: row
 	justify-content: flex-start
+	width: 100%
+	span
+		font-weight: 700
+		font-size: .8em
+		letter-spacing: 1px
+		margin: .5em 0 .5em 1em
 	div
 		align-items: center
 		margin: 0 .5em 0 .25em
@@ -121,26 +131,8 @@ $gloomyBlue: #D0D2D4
 		span
 			font-weight: 600
 			margin: .25em .25em
-.reactionsWindow, .reactionsDisplay
-	justify-content: flex-start
-	margin: .5em auto .5em 0
-	padding: .25em
-	width: 100%
-	div
-		align-items: center
-		display: flex
-		margin:  0 .25em 0 .25em
-		i
-			font-size: 24px
-			margin: 0
-		span
-			font-weight: 600
-			font-size: .9em
-
-.reactionsWindow
-	div:nth-of-type(1)
-		i
-			padding-right: 16px
+	.postInfoTimePosted
+		margin-right: auto
 
 
 
@@ -151,10 +143,6 @@ $gloomyBlue: #D0D2D4
 			display: inline
 			font-weight: 400
 
-
-	.reactionsWindow
-		margin-right: auto
-		width: 50%
 
 @media only screen and (min-width: 920px)
 	.post
@@ -184,11 +172,15 @@ $gloomyBlue: #D0D2D4
 		grid-row: 1/6
 		flex-direction: column
 		justify-content: flex-start
+		span
+			font-weight: 700
+			letter-spacing: 1px
+			margin: .1em 0 .5em 1em
 		div:nth-of-type(2)
 			margin: auto .5em .5em .5em 
 		div
 			flex-direction: column
-			margin: 0 .5em
+			margin: .5em
 			i
 				font-size: 24px
 			span
@@ -196,20 +188,5 @@ $gloomyBlue: #D0D2D4
 				font-weight: 600
 				margin: .25em 0
 
-	.reactionsWindow, .reactionsDisplay
-		margin: .5em 0
-		padding: .25em
-		div
-			display: flex
-			margin:  0 .5em
-			i
-				font-size: 24px
-				margin: 0 .25em
-			span
-				font-weight: 600
-		div:nth-of-type(1)
-			margin-left: .5em
-			i
-				margin: 0
 
 

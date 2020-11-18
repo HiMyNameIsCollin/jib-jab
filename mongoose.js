@@ -24,19 +24,23 @@ const loginSchema = new Schema({
 })
 
 const userSchema = new Schema({
+	createdOn: String,
 	userName: String,
+	userNameLower: String,
 	communities: Array,
+	configuration: Object,
 	karma: Number,
+	posts: Array,
+	soapBox: Array,
 	followers: Array,
 	settings: Object,
-
+	savedPosts: Array
 })
 
 const postSchema = new Schema({
 	community: String,
 	comments: Array,
 	image: String,
-	reactions: Array,
 	text: Array,
 	title: String,
 	time: String,

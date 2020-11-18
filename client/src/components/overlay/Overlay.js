@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import Login from './Login'
 import Register from './Register'
+import SubmitMessage from './SubmitMessage'
+import SubmitPost from './SubmitPost'
 import Loading from '../loading/Loading'
 import './_overlay.sass'
 
@@ -18,7 +20,11 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser}) => {
 	{
 		overlayIsOpen === 'login' ?
 		<Login  setOverlay={setOverlay} setLoading={setLoading} user={user} setUser={setUser} /> :
-		<Register setOverlay={setOverlay} setLoading={setLoading}/>
+		overlayIsOpen === 'register' ?
+		<Register setOverlay={setOverlay} setLoading={setLoading}/> :
+		overlayIsOpen === 'submitPost' ?
+		<SubmitPost setOverlay={setOverlay} setLoading={setLoading} /> :
+		null
 	}
 		</div>
 	)

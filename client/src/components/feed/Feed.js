@@ -16,7 +16,12 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 	const [profileFeedChoice, setProfileFeedChoice] = useState('soapBox')
 
 	useEffect(() => {
-		setPosts(undefined)
+		if(pageContent.posts.length !== 0){
+			handlePostFetch()
+		}
+	},[profileFeedChoice])
+
+	const handlePostFetch = () => {
 		if(pageType === 'profilePage') {
 			if(profileFeedChoice === 'soapBox'){
 				fetch(`http://localhost:3000/api/p/`,{
@@ -57,8 +62,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 			.then(response => setPosts(response))
 			.catch(err => console.log)
 		}
-	},[profileFeedChoice])
-
+	}
 
 
 
@@ -83,6 +87,33 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 		)
 	}
 
+	const handleVote = (postID, request) => {
+  		const accessToken = window.localStorage.getItem('accessToken')
+		fetch('http://localhost:3000/api/vote', {
+			method: 'post',
+			headers: {
+				authorization: `Bearer ${accessToken}`,
+				'Content-Type' : 'application/json'
+			},
+			body: JSON.stringify({
+				postID,
+				request,
+			})
+		})
+		.then(response => response.json())
+		.then(response => {
+			let updatedPosts = [...posts]
+			updatedPosts.forEach((p, i) => {
+				if(p.id === response.id){
+					updatedPosts[i] = response
+				}
+			})
+			setPosts(updatedPosts)
+		})
+		.catch(err => console.log(err))
+	}
+
+
 	return(
 		<div className={pageContent ? pageContent.communityNameLower === 'global' ? 'feedGlobalPage feed' : 'feed' : 'feed'}>
 			{
@@ -96,18 +127,23 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 				<SortOptionsContainer setUser={setUser} user={user} feedSort={feedSort} setFeedSort={setFeedSort} />
 			}
 			{
-				posts !== undefined ?
+				pageContent.posts.length !== 0 ?
+				posts !== null && posts !== undefined ?
 				posts.map((p, i) => {
 					return <Post 
 						pageType={pageType} 
 						Link={Link} 
 						user={user} 
+						setUser={setUser}
 						windowWidth={windowWidth}
 						post={p}
-						key={i}/> 
+						key={i}
+						handleVote={handleVote}/> 
 						
-				}): <Loading />
+				}): <Loading /> :
+				<p style={{textAlign: 'center', padding: '1em'}}> There are no posts by anybody you are following, or communities you are subscribed too :( </p>
 			}
+
 			
 			
 

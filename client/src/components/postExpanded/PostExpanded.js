@@ -3,7 +3,7 @@ import Post from '../post/Post'
 import CommentFeed from './CommentFeed'
 import Loading from '../loading/Loading'
 import './_postExpanded.sass'
-const PostExpanded = ({Link, user, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay}) => {
+const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay}) => {
 let postData = {
 	info: {
 		userName: 'name',
@@ -156,6 +156,32 @@ let postData = {
 			.catch(err => console.log)
 	}, [])
 
+	const handleVote = (postID, request) => {
+  		const accessToken = window.localStorage.getItem('accessToken')
+		fetch('http://localhost:3000/api/vote', {
+			method: 'post',
+			headers: {
+				authorization: `Bearer ${accessToken}`,
+				'Content-Type' : 'application/json'
+			},
+			body: JSON.stringify({
+				postID,
+				request,
+			})
+		})
+		.then(response => response.json())
+		.then(response => {
+			let updatedPosts = [...posts]
+			updatedPosts.forEach((p, i) => {
+				if(p.id === response.id){
+					updatedPosts[i] = response
+				}
+			})
+			setPosts(updatedPosts)
+		})
+		.catch(err => console.log(err))
+	}
+
 
 
 	const PostMenuBar = () => {
@@ -203,7 +229,7 @@ let postData = {
 	if(posts !== undefined){
 		return(
 			<div className='postExpanded'>
-				<Post pageType={pageType} postType={'enlarged'} user={user} Link={Link} windowWidth={windowWidth} post={posts[0]}/>
+				<Post pageType={pageType} postType={'enlarged'} user={user} setUser={setUser} Link={Link} windowWidth={windowWidth} post={posts[0]} posts={posts} handleVote={handleVote}/>
 				{
 					windowWidth > 920 ?
 					<PostMenuBar /> :

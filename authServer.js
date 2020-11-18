@@ -7,7 +7,7 @@ require('dotenv').config()
 const {mongoose, loginSchema, userSchema, tokenSchema, communitySchema} = require('./mongoose')
 const url = 'mongodb://127.0.0.1:27017/jibjab'
 
-mongoose.connect(url, { useNewUrlParser: true })
+mongoose.connect(url, { useNewUrlParser: true , useFindAndModify: false })
 
 const conn = mongoose.connection
 let LoginModel 
@@ -52,12 +52,17 @@ app.post('/api/register', (req, res) => {
 			user.save().then(() => {
 				const user = new UserModel({
 					userName,
-					communities: ['announcements'],
+					userNameLower: userName.toLowerCase(),
+					communities: ['Announcements'],
 					karma: 1,
 					followers: [],
 					settings: {
 						feedType: 'list'
-					}
+					},
+					createdOn: 'November 20th 2020',
+					posts: [],
+					soapBox: [],
+					savedPosts: []
 				})
 				user.save().then(() => {
 					CommunityModel.findOneAndUpdate({'communityName': 'announcements'}, {$push:{'followers': userName}})
@@ -77,7 +82,7 @@ app.post('/api/login', (req, res) => {
 			UserModel.findOne({userName: result.userName})
 			.then(result2 => {
 				let user = {userName: result2.userName}
-				const accessToken = generateAccessToken(user)
+				const accessToken = generateAccessToken(user, 10)
 				const refreshToken =  jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
 				const newToken = new TokenModel({
 					token: refreshToken
@@ -91,9 +96,13 @@ app.post('/api/login', (req, res) => {
 })
 
 app.delete('/api/logout', (req, res) => {
-	TokenModel.findOneAndDelete({token: req.body.token}).
-	then(result => {
-		res.sendStatus(204)
+	TokenModel.findOneAndDelete({token: req.body.token})
+	.then(result => {
+		if(result !== null) {
+			res.sendStatus(204)
+		} else {
+			console.log('fuck')
+		}
 	})
 })
 
@@ -102,13 +111,13 @@ app.post('/api/token', (req, res) => {
 	if(refreshToken === null) return res.sendStatus(401)
 	TokenModel.findOne({token: refreshToken})
 	.then(result => {
-		if(!result) return res.sendStatus(403)
+		console.log(result)
+		if(result === null) return res.sendStatus(403)
 		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 			if(err) return res.sendStatus(403)
 			const accessToken = generateAccessToken({userName: user.userName})
 			UserModel.findOne({userName: user.userName})
 			.then(result => {
-				console.log(result)
 				res.json({accessToken, result})
 			})
 
@@ -118,7 +127,7 @@ app.post('/api/token', (req, res) => {
 })
 
 function generateAccessToken(user) {
-	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30m'})
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '5s'})
 }
 
 app.listen(myPort, () => {

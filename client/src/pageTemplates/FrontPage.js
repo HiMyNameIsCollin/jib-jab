@@ -11,7 +11,6 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType}) => {
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 
 	useEffect(() => {
-		console.log(user)
 			fetch(`http://localhost:3000/api/`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
@@ -21,6 +20,7 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType}) => {
 			})
 			.then(response => response.json())
 			.then(response => {
+					console.log(response)
 					setPageContent(response)
 			})
 			.catch(err => console.log(err))
