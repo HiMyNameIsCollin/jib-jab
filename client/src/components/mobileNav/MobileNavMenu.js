@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 const initialState = {
 	userName: '',
@@ -11,22 +11,60 @@ const initialState = {
 }
 
 
-const MobileNavMenu = ({Link, navType, user, setUser, setNav}) => {
-	if(navType === 'comm'){
+const MobileNavMenu = ({Link, navType, user, setUser, setNav, history}) => {
+
+
+
+const MobileNavCommunity = ({ listItem, Link}) => {
+
+	const [communityImg, setCommunityImg] = useState(undefined)
+
+	useEffect(() => {
+		let isMounted = true
+			fetch(`http://localhost:3000/img/${listItem.toLowerCase()}`)
+			.then(response => response.json())
+			.then(response => {
+				if(isMounted) {
+					setCommunityImg(response)
+				}})
+			.catch(err => console.log(err))
+			return () => { isMounted = false }
+	}, [])
+	return(
+		<li className='mobileNavCommunityItem'>
+			<Link to={`/c/${listItem}`} className='link' >
+				<img src={communityImg} alt=""/>
+				<span> {listItem} </span>
+			</Link>
+		</li>	
+		)
+}
+
+
+
+	if(navType === 'myComm'){
 	return(
 		<div className='mobileNavMenu'>
 			<div>
-				<Link to='/community' className='link'>
-				<img src='https://robohash.org/2' alt='Community avatar' />
-				<span> Toronto </span> 
-				</Link>
+			{
+				user.communities.length !== 0 ?
+				user.communities.map((c, i) => {
+					return	<MobileNavCommunity listItem={c} Link={Link} />
+				}) :
+				<p style={{textAlign: 'center', paddingRight: '1em'}}> You are not subscribed to any communities </p>
+			}
+
 			</div>
-			<Link to='/community/list' className='link'>
-				View more
-			</Link>
+			{
+				user.communities.length >= 10 ?
+				<Link to='/community/list' className='link'>
+					View more
+				</Link> :
+				null
+			}
 		</div>
 	)
-	} else if (navType === 'myComm') {
+	} else if (navType === 'comm') {
 	return(
 		<div className='mobileNavMenu'>
 			
@@ -38,6 +76,8 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav}) => {
 	} else if (navType === 'settings'){
 	return(
 		<div className='mobileNavMenu'>
+		<div> Feed view: </div>
+
 		{
 			user.userName !== '' ?
 			<div onClick={() => {
@@ -57,15 +97,10 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav}) => {
 				})
 				.catch(err => console.log(err))
 			}}> 
-				<img src='https://robohash.org/2' alt='Community avatar' />
 				<span> Logout </span> 
 			</div> :
 			null
 		}
-
-			<Link to='/community/list' className='link'>
-				View more
-			</Link>
 		</div>
 	)
 	}

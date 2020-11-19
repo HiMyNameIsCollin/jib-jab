@@ -62,7 +62,8 @@ app.post('/api/register', (req, res) => {
 					createdOn: 'November 20th 2020',
 					posts: [],
 					soapBox: [],
-					savedPosts: []
+					savedPosts: [],
+					image: 'http://robohash.org/12'
 				})
 				user.save().then(() => {
 					CommunityModel.findOneAndUpdate({'communityName': 'announcements'}, {$push:{'followers': userName}})
@@ -101,7 +102,7 @@ app.delete('/api/logout', (req, res) => {
 		if(result !== null) {
 			res.sendStatus(204)
 		} else {
-			console.log('fuck')
+			res.sendStatus(400)
 		}
 	})
 })
@@ -127,7 +128,7 @@ app.post('/api/token', (req, res) => {
 })
 
 function generateAccessToken(user) {
-	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '5s'})
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
 }
 
 app.listen(myPort, () => {

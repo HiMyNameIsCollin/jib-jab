@@ -9,7 +9,7 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
+const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setError}) => {
 
 	const [feedSort, setFeedSort] = useState(initialSort)
 	const [posts, setPosts] = useState(undefined)
@@ -88,29 +88,33 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 	}
 
 	const handleVote = (postID, request) => {
-  		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('http://localhost:3000/api/vote', {
-			method: 'post',
-			headers: {
-				authorization: `Bearer ${accessToken}`,
-				'Content-Type' : 'application/json'
-			},
-			body: JSON.stringify({
-				postID,
-				request,
+		if(user.userName !== '') {
+	  		const accessToken = window.localStorage.getItem('accessToken')
+			fetch('http://localhost:3000/api/vote', {
+				method: 'post',
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					'Content-Type' : 'application/json'
+				},
+				body: JSON.stringify({
+					postID,
+					request,
+				})
 			})
-		})
-		.then(response => response.json())
-		.then(response => {
-			let updatedPosts = [...posts]
-			updatedPosts.forEach((p, i) => {
-				if(p.id === response.id){
-					updatedPosts[i] = response
-				}
+			.then(response => response.json())
+			.then(response => {
+				let updatedPosts = [...posts]
+				updatedPosts.forEach((p, i) => {
+					if(p.id === response.id){
+						updatedPosts[i] = response
+					}
+				})
+				setPosts(updatedPosts)
 			})
-			setPosts(updatedPosts)
-		})
-		.catch(err => console.log(err))
+			.catch(err => console.log(err))
+			} else {
+				setError('Must be logged in to vote')
+			}
 	}
 
 
@@ -138,7 +142,8 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent}) => {
 						windowWidth={windowWidth}
 						post={p}
 						key={i}
-						handleVote={handleVote}/> 
+						handleVote={handleVote}
+						setError={setError}/> 
 						
 				}): <Loading /> :
 				<p style={{textAlign: 'center', padding: '1em'}}> There are no posts by anybody you are following, or communities you are subscribed too :( </p>

@@ -1,7 +1,6 @@
   import React, { useState, useEffect } from 'react'
 
 
-
 const CommunityListWidgetItem = ({ listItem, Link}) => {
 
 	const [communityImg, setCommunityImg] = useState(undefined)
@@ -34,13 +33,17 @@ return(
 			<h4>Communities</h4>
 			<ul>
 				{
-
+					pageContent.communities.length !== 0 ?
 					pageContent.communities.map((l, i) => {
 						return (
 							<CommunityListWidgetItem listItem={l} Link={Link}/>
 							)
-					})
+					}) :
+					<>
+					<CommunityListWidgetItem listItem={'Global'} Link={Link}/>
+					</>
 				}
+
 			</ul>
 			<a className='widgetButton' href=""> View more </a>
 		</div>

@@ -28,6 +28,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
 	const [user, setUser] = useState(undefined)
+	const [error, setError] = useState(undefined)
 
 	const location = useLocation()
 	const history = useHistory()
@@ -64,6 +65,17 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
   		}
   	}, [user])
 
+  	useEffect(() => {
+  		if(error !== undefined){
+  			setTimeout(() => {
+  				document.getElementsByClassName('error')[0].classList.add('errorSlideOut')
+  			}, 3000)
+  			setTimeout(() => {
+  				setError(undefined)
+  			}, 5000)
+  		}
+  	},[error])
+
   	function tokenRefresh() {
   		const accessToken = window.localStorage.getItem('accessToken')
 		fetch('http://localhost:3000/', {
@@ -77,8 +89,9 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 			if(response !== null){
 				setUser(response)
 			} else {
-
+				setUser(initialUser)
 			}
+		
 		})
 		.catch(err => {
 			const refreshToken = window.localStorage.getItem('refreshToken')
@@ -94,10 +107,10 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				window.localStorage.setItem('accessToken', response.accessToken)
 				if(response.result !== null) {
 					setUser(response.result)
-					console.log(response.result)
 				} else {
 					setUser(initialUser)
 				}
+			
 			})
 			.catch(err => console.log)
 		})
@@ -119,6 +132,13 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				overlayIsOpen !== undefined ?
 				<Overlay overlayIsOpen={overlayIsOpen} setOverlay={setOverlay} setUser={setUser} user={user}/>
 				:
+				null
+			} 
+			{
+				error !== undefined ?
+				<div className='error errorSlideIn container'> 
+					<p> {error }</p>
+				</div> :
 				null
 			}
 			{
@@ -142,7 +162,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		Link={Link} 
 		       		windowWidth={windowWidth}
 		       		location={location}
-		       		pageType={'frontPage'} />
+		       		pageType={'frontPage'}
+		       		setError={setError} />
 		        </Route>
 		       	<Route exact path="/u/:userName">
 		        	<ProfilePage 
@@ -150,7 +171,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	windowWidth={windowWidth} 
 		        	Link={Link}
 		       		location={location}
-		       		pageType={'profilePage'}/>
+		       		pageType={'profilePage'}
+		       		setError={setError}/>
 		        </Route>
 		       	<Route path="/u/:userName/:postID">
 		        	<PostPage 
@@ -161,7 +183,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	overlayIsOpen={overlayIsOpen} 
 		        	setOverlay={setOverlay}
 		       		location={location}
-		       		pageType={'userPostPage'}/>
+		       		pageType={'userPostPage'}
+		       		setError={setError}/>
 		        </Route>
 		        <Route exact path="/c/:communityName">
 		        	<CommunityPage 
@@ -172,7 +195,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		location={location}
 		       		history={history}
 					pageType={'communityPage'} 
-		       		/>
+		       		setError={setError}/>
 		        </Route>
 		        <Route path='/c/:communityName/:postID'>
 		        	<PostPage 
@@ -183,7 +206,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	overlayIsOpen={overlayIsOpen} 
 		        	setOverlay={setOverlay}
 		       		location={location}
-					pageType={'postPage'} />
+					pageType={'postPage'} 
+					setError={setError}/>
 		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage />

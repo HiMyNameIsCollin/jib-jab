@@ -66,6 +66,33 @@ body
 		opacity: 0.8
 		overflow: hidden
 		z-index: 1
+
+.error
+	background: white
+	bottom: 0
+	height: 3em
+	left: 0
+	position: fixed
+	width: 100%
+
+.errorSlideIn
+	animation: errorSlideIn .5s linear forwards
+
+.errorSlideOut
+	animation: errorSlideOut .5s linear forwards
+
+@keyframes errorSlideIn
+	0%
+		transform: translateY(100%)
+	100%
+		transform: translateY(0%)
+
+@keyframes errorSlideOut
+	0%
+		transform: translateY(0%)
+	100%
+		transform: translateY(100%)
+
 		
 
 

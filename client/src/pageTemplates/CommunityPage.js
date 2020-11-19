@@ -6,7 +6,7 @@ import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
 
-const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType}) => {
+const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType, setError}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
@@ -53,7 +53,8 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 						user={user} 
 						setUser={setUser}
 						windowWidth={windowWidth}
-						pageContent={pageContent} />
+						pageContent={pageContent} 
+						setError={setError} />
 						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 					</React.Fragment> :
 					mobileViewIsFeed ?
@@ -63,7 +64,8 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 					user={user} 
 					setUser={setUser} 
 					windowWidth={windowWidth}
-					pageContent={pageContent}/>:
+					pageContent={pageContent}
+					setError={setError}/>:
 					<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 				}
 

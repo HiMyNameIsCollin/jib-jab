@@ -49,8 +49,8 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay}) => {
 				<React.Fragment>
 					<div className='navItem navUserName'>
 						<Link className='link' to='/profile/'> 
-							<img src='https://robohash.org/1' alt='User avatar'/>
-							<span> Users name</span>
+							<img src={user.settings.image} alt='User avatar'/>
+							<span> {user.userName}</span>
 						</Link>
 					</div>
 					<div className='navItem'>
@@ -78,7 +78,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay}) => {
 			</div>
 			{
 				myCommIsOpen ?
-				<MobileNavMenu navType={'myComm'} Link={Link}/> :
+				<MobileNavMenu navType={'myComm'} Link={Link} user={user}/> :
 				null
 			}
 			<div className='navItem' onClick={() => setSettings(!settingIsOpen)}>

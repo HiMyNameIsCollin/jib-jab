@@ -123,6 +123,7 @@ app.get('/', authenticateToken, (req, res) => {
 })
 
 app.post('/api/', (req, res) => {
+	console.log(req.body)
 	CommunityModel.findOne({communityName: 'Popular'})
 	.then(pageContent => {
 		const communities = req.body.communities.map((c, i) => c.toLowerCase())
@@ -230,7 +231,6 @@ app.post('/api/c/subscription', authenticateToken, async (req, res) => {
 
 
 app.post('/api/p/', (req, res) => {
-	console.log(req.body)
 	if(req.body.posts.length > 1){
 		PostModel.find({
 			id: { $in: 
@@ -285,7 +285,6 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 					.then(savedPost => res.json(savedPost))
 					.catch(err => console.log(err))
 			} else {
-				console.log(123)
 				if(upvotes.includes(userName)){
 					upvotes.forEach((u, i) => {
 						if(u === userName){

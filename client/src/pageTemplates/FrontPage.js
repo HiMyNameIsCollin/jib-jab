@@ -5,7 +5,7 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
-const FrontPage = ({user, setUser, windowWidth, Link, location, pageType}) => {
+const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setError}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
@@ -47,7 +47,8 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType}) => {
 					user={user} 
 					setUser={setUser}
 					windowWidth={windowWidth}
-					pageContent={pageContent}/>
+					pageContent={pageContent}
+					setError={setError}/>
 					<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
 				</React.Fragment> :
 				mobileViewIsFeed ?
@@ -57,7 +58,8 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType}) => {
 				user={user} 
 				setUser={setUser} 
 				windowWidth={windowWidth}
-				pageContent={pageContent}/>:
+				pageContent={pageContent}
+				setError={setError}/>:
 				<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
 			}
 

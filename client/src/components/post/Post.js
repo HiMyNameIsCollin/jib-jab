@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import PostMenu from './PostMenu'
 import './_post.sass'
 
 
-const Post = ({user, setUser, windowWidth, Link, postType, post, pageType, handleVote}) => {
+const Post = ({user, setUser, windowWidth, Link, postType, post, pageType, handleVote, setError}) => {
 
 		const handleSubscription = (communityName, request) => {
   		const accessToken = window.localStorage.getItem('accessToken')
@@ -57,12 +58,18 @@ const PostInfo = () => {
 			}
 			{
 				postType !== 'enlarged' ?
+				user.userName === '' ?
+				<i style={{margin: '0 .5em 0 auto'}}
+				onClick={() => {
+				openPostInfo(!postInfoIsOpen)
+				openEnlargedWindow(false)}}
+				className="fa fa-ellipsis-h"></i> :
 				<i onClick={() => {
-					openPostInfo(!postInfoIsOpen)
-					openEnlargedWindow(false)
-				}}className="fas fa-bars"></i> :
+				openPostInfo(!postInfoIsOpen)
+				openEnlargedWindow(false)}}
+				className="fa fa-ellipsis-h"></i> : 
 				null
-			}
+			}	
 		</div>
 	)
 }
@@ -99,41 +106,12 @@ const PostContent = () => {
 	)
 }
 
-const PostMenu = () => {
-	return(
-		<div className='container postMenu'>
-			<div>
-				<i className="fas fa-bars"></i>
-				<span> Share </span>
-			</div>
-			<div>
-				<Link to={`/u/${post.user}`} className='link'>
-					<i className="fas fa-bars"></i>
-					<span> {post.user}'s profile </span>
-				</Link>
-			</div>
-			{
-				user.userName !== '' ?
-				<React.Fragment>
-					<div>
-						<i className="fas fa-bars"></i>
-						<span> Save</span>
-					</div>
-					<div>
-						<i className="fas fa-bars"></i>
-						<span> Report</span>
-					</div>
-				</React.Fragment> :
-				null
-			}
-		</div>
-	)
-}
+
 
 const EnlargedPostImg = () => {
 	return(
 		<div className='container enlargedPostImg'>
-			<Link to={`/c/${post.community}/${post.id}`}className='link'>
+			<Link to={`/c/${post.communityName}/${post.id}`}className='link'>
 				<img src={post.image} alt='Enlarged post image'/>
 			</Link>
 		</div>
@@ -176,27 +154,17 @@ const InteractionWindow =() => {
 				windowWidth <= 920 ?
 				postType === 'enlarged' ?
 				null :
-				<span>{post.comments.length}</span> : <span>{post.comments.length}</span>
+				<Link className='link container' to={`/c/${post.communityName}/${post.id}`}>{post.comments.length} <i class="far fa-comment-dots"></i></Link> : <Link className='link container' to={`/c/${post.communityName}/${post.id}`}>{post.comments.length} <i class="far fa-comment-dots"></i></Link>
 			}
 				
-				<i class="far fa-comment-dots"></i>
+				
 			</div>
 		</div>
 	)
 }
 
-const PostMeta= () => {
 
-	return(
-		<div className='container postMeta'>
-		{
-			windowWidth <= 920 ?
-			<InteractionWindow /> :
-			null
-		}
-		</div>
-	)
-}
+/*#####################POST COMPONENT#########################################*/
 
 
 	const [postInfoIsOpen, openPostInfo] = useState(false)
@@ -205,7 +173,7 @@ const PostMeta= () => {
 	useEffect(() => {
 		if(user.settings.feedType === 'card'){
 			openEnlargedWindow(true)
-		} else if (user.settings.feedType === 'list'){
+		} else if (user.settings.feedType === 'list' && postType !== 'enlarged'){
 			openEnlargedWindow(false)
 		}
 	},[user])
@@ -221,10 +189,10 @@ const PostMeta= () => {
 			<PostInfo Link={Link} postInfoIsOpen={postInfoIsOpen} openPostInfo={openPostInfo} user={user} openEnlargedWindow={openEnlargedWindow}/>
 			{
 				postInfoIsOpen ?
-				<PostMenu/> :
+				<PostMenu post={post} Link={Link} user={user}/> :
 				<React.Fragment>
 					<PostContent Link={Link} enlargedImgOpen={enlargedImgOpen} openEnlargedWindow={openEnlargedWindow} user={user}/> 
-					<PostMeta  user={user} windowWidth={windowWidth}/>
+					<InteractionWindow />
 				</React.Fragment>
 			}
 			{

@@ -7,9 +7,9 @@ $gloomyBlue: #D0D2D4
 @mixin menuImage
 	background: white
 	border-radius: 50%
-	height: 2em
-	margin-right: 1em
-	width: 2em
+	height: 1.5em
+	margin-right: 0
+	width: 1.5em
 	
 
 .mobileNav
@@ -20,6 +20,7 @@ $gloomyBlue: #D0D2D4
 	font-weight: 700
 	height: auto
 	width: 100%
+	z-index: 1
 	.link
 		color: white
 	i
@@ -90,3 +91,20 @@ $gloomyBlue: #D0D2D4
 
 
 
+
+.mobileNavCommunityItem
+	align-items: center
+	display: flex
+	.link
+		display: flex
+		justify-content: flex-start
+		align-items: center
+	img
+		background: black
+		border-radius: 50%
+		height: 2em
+		width: 2em
+	span
+		font-size: .9em
+		font-weight: 700
+		margin-left: .5em
