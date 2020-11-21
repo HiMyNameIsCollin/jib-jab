@@ -11,7 +11,7 @@ const initialState = {
 }
 
 
-const MobileNavMenu = ({Link, navType, user, setUser, setNav, history}) => {
+const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setError}) => {
 
 
 
@@ -40,6 +40,21 @@ const MobileNavCommunity = ({ listItem, Link}) => {
 		)
 }
 
+	const handleFeedType = () => {
+		if(user.userName !== ''){
+  			const accessToken = window.localStorage.getItem('accessToken')
+			fetch('http://localhost:3000/api/u/settings', {
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					'Content-Type' : 'application/json'
+				}
+			})
+			.then(response => response.json())
+			.then(response => response.success !== true ? setError('There seems to have been an error') : null)
+			.catch(err => setError('There seems to have been an error'))
+		}
+
+	}
 
 
 	if(navType === 'myComm'){
@@ -76,7 +91,34 @@ const MobileNavCommunity = ({ listItem, Link}) => {
 	} else if (navType === 'settings'){
 	return(
 		<div className='mobileNavMenu'>
-		<div> Feed view: </div>
+		<div> 
+			<span>
+			Feed view:
+			</span>
+			<div className={user.settings.feedType === 'card' ? 'mobileNavMenuSelection ' : null}
+				onClick={(e) => {
+				e.stopPropagation()
+				let userMod = {...user}
+				userMod.settings.feedType = 'card' 
+				setUser(userMod)
+				handleFeedType()
+			}}> 
+				<i className="fas fa-square"></i>
+				<span>Card</span>
+			</div>
+			<div 
+				className={user.settings.feedType === 'list' ? 'mobileNavMenuSelection' : null}
+				onClick={(e) => {
+				e.stopPropagation()
+				let userMod = {...user}
+				userMod.settings.feedType = 'list'
+				setUser(userMod)
+				handleFeedType()
+			}}> 
+				<i className="fas fa-bars"></i>
+				<span>List</span>
+			</div>
+		</div>
 
 		{
 			user.userName !== '' ?

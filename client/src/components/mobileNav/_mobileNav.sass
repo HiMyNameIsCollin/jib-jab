@@ -15,7 +15,6 @@ $gloomyBlue: #D0D2D4
 .mobileNav
 	align-items: start
 	background: $black
-	border-top: solid $red 2px
 	flex-direction: column
 	font-weight: 700
 	height: auto
@@ -78,16 +77,31 @@ $gloomyBlue: #D0D2D4
 		height: auto
 		margin: 0 0 0 auto
 		width: calc(100% - 4.2em)
+		span
+			width: 33%
 		div
+			align-items: center
 			color: white
 			display: flex
-			align-items: center
+			padding: .5em 0
 			img
 				@include menuImage
+			div
+				display: flex
+				justify-content: space-around
+				width: 33%
+				i
+					margin: 0
 		a
 			color: white
 			text-decoration: none
 			margin: .5em 0 
+
+.mobileNavMenuSelection
+	background: white
+	i , span
+		color: black
+
 
 
 
@@ -108,3 +122,5 @@ $gloomyBlue: #D0D2D4
 		font-size: .9em
 		font-weight: 700
 		margin-left: .5em
+
+

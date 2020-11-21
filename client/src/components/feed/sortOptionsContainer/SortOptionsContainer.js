@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './_sortOptionsContainer.sass'
 
-const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort}) => {
+const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) => {
 
 	const [sortOptionsOpen, openSortOptions] = useState(false)
 	const [sortOptionsContOpen, openSortOptionsCont] = useState(false)
@@ -29,9 +29,21 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort}) => {
 		}
 	},[sortOptionsContOpen])
 
-	useEffect(() => {
+	const handleFeedType = () => {
+		if(user.userName !== ''){
+  			const accessToken = window.localStorage.getItem('accessToken')
+			fetch('http://localhost:3000/api/u/settings', {
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					'Content-Type' : 'application/json'
+				}
+			})
+			.then(response => response.json())
+			.then(response => response.success !== true ? setError('There seems to have been an error') : null)
+			.catch(err => setError('There seems to have been an error'))
+		}
 
-	})
+	}
 
 	const SortOptions = ({openSortOptions, sortOptionsOpen, feedSort, setFeedSort}) => {
 
@@ -204,6 +216,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort}) => {
 							let userMod = {...user}
 							userMod.settings.feedType = 'card' 
 							setUser(userMod)
+							handleFeedType()
 						}}> 
 							<span>Card view</span>
 							<i className="fas fa-square"></i>
@@ -214,6 +227,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort}) => {
 							let userMod = {...user}
 							userMod.settings.feedType = 'list'
 							setUser(userMod)
+							handleFeedType()
 						}}> 
 							<span>List view</span>
 							<i className="fas fa-bars"></i>

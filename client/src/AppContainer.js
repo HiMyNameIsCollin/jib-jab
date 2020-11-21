@@ -21,6 +21,7 @@ const initialUser = {
 }
 
 
+
 const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 
 	const [windowWidth, setWindowWidth] = useState()
@@ -91,7 +92,6 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 			} else {
 				setUser(initialUser)
 			}
-		
 		})
 		.catch(err => {
 			const refreshToken = window.localStorage.getItem('refreshToken')
@@ -110,7 +110,6 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				} else {
 					setUser(initialUser)
 				}
-			
 			})
 			.catch(err => console.log)
 		})
@@ -150,7 +149,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					setNav={setNav}
 					navIsOpen={navIsOpen}
 					Link={Link}
-					setOverlay={setOverlay} />
+					setOverlay={setOverlay} 
+					setError={setError}/>
 				</div> :
 				null
 			}

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import './_mobileNav.sass'
 import MobileNavMenu from './MobileNavMenu'
 
-const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay}) => {
+const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setError}) => {
 	const [commIsOpen, setComm]  = useState(false)
 	const [myCommIsOpen, setMyComm] = useState(false)
 	const [settingIsOpen, setSettings] = useState(false)
@@ -68,7 +68,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay}) => {
 			</div>
 			{
 				commIsOpen ?
-				<MobileNavMenu navType={'comm'} Link={Link} setNav={setNav} user={user}/> :
+				<MobileNavMenu navType={'comm'} Link={Link} setNav={setNav} user={user} setError={setError}/> :
 				null
 			}
 			<div className='navItem' onClick={() => setMyComm(!myCommIsOpen)}>
@@ -78,7 +78,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay}) => {
 			</div>
 			{
 				myCommIsOpen ?
-				<MobileNavMenu navType={'myComm'} Link={Link} user={user}/> :
+				<MobileNavMenu navType={'myComm'} Link={Link} user={user} setError={setError}/> :
 				null
 			}
 			<div className='navItem' onClick={() => setSettings(!settingIsOpen)}>
@@ -88,10 +88,10 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay}) => {
 			</div>
 			{
 				settingIsOpen ?
-				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} /> :
+				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} setError={setError}/> :
 				null
 			}
-			<Link to='/global' className='navItem link'>
+			<Link to='/c/global' className='navItem link'>
 				<i class="fas fa-globe-americas "></i>
 				<span>Global </span>
 			</Link>

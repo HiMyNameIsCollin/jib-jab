@@ -128,7 +128,12 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 			{
 				pageType === 'profilePage' ?
 				<ProfileFeedSort />:
-				<SortOptionsContainer setUser={setUser} user={user} feedSort={feedSort} setFeedSort={setFeedSort} />
+				<SortOptionsContainer 
+				setUser={setUser} 
+				user={user} 
+				feedSort={feedSort} 
+				setFeedSort={setFeedSort} 
+				setError={setError}/>
 			}
 			{
 				pageContent.posts.length !== 0 ?

@@ -37,7 +37,6 @@ body
 
 .menuOverLay
 	background: $black
-	border-bottom: solid $red 2px
 	height: calc(100vh - 3em)
 	overflow-y: scroll
 	position: fixed
@@ -94,6 +93,15 @@ body
 		transform: translateY(100%)
 
 		
+@media only screen and (min-width: 576px)
+	.menuOverLay
+		right: 0
+		width: 75% 
+
+@media only screen and (min-width: 720px)
+	.menuOverLay
+		width: 50%
+
 
 
 @media only screen and (min-width: 920px)
@@ -103,3 +111,4 @@ body
 		grid-template-rows: 3.5em auto auto auto
 		grid-template-columns: repeat(12, 1fr)
 		height: 100%
+
