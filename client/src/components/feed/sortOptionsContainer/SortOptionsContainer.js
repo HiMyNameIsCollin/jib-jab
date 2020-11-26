@@ -29,6 +29,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) 
 		}
 	},[sortOptionsContOpen])
 
+/*#######HANDLE USER SETTINGS DB FEED SETTINGS##########*/
 	const handleFeedType = () => {
 		if(user.userName !== ''){
   			const accessToken = window.localStorage.getItem('accessToken')
@@ -58,10 +59,10 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) 
 						<i className="fas fa-pepper-hot"></i>
 						<span>Spicy</span>
 			    	</React.Fragment> :
-			    	feedSort.sortOptionsChoice === 'best' ?
+			    	feedSort.sortOptionsChoice === 'top' ?
 			    	<React.Fragment>
 						<i className="fas fa-poll"></i>
-						<span>Best</span>
+						<span>Top</span>
 			    	</React.Fragment> :
 			    	feedSort.sortOptionsChoice === 'dicey' ?
 			    	<React.Fragment>
@@ -94,12 +95,12 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) 
 						<div onClick={(e)=> {
 					    	e.stopPropagation()
 					    	let feedSortMod = {...feedSort}
-					    	feedSortMod.sortOptionsChoice = 'best'
+					    	feedSortMod.sortOptionsChoice = 'top'
 					    	setFeedSort(feedSortMod)
 					    	openSortOptions(false)
 					    }}> 
 							<i className="fas fa-poll"></i>
-							<span>Best</span>
+							<span>Top</span>
 						</div>
 						<div onClick={(e)=> {
 					    	e.stopPropagation()
@@ -247,7 +248,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) 
 			feedSort={feedSort} 
 			setFeedSort={setFeedSort} />
 			{
-				feedSort.sortOptionsChoice === 'best' || feedSort.sortOptionsChoice === 'dicey' ?
+				feedSort.sortOptionsChoice === 'top' || feedSort.sortOptionsChoice === 'dicey' ?
 				<SortOptionsCont 
 				sortOptionsContOpen={sortOptionsContOpen} 
 				openSortOptionsCont={openSortOptionsCont} 

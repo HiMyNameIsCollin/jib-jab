@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import PostMenu from './PostMenu'
 import './_post.sass'
+import timeDifference from '../../utils/timeDifference'
 
 
-const Post = ({user, setUser, windowWidth, Link, postType, post, pageType, handleVote, setError}) => {
+const Post = ({user, setUser, windowWidth, Link, postView, post, pageType, handleVote, setError}) => {
 
 		const handleSubscription = (communityName, request) => {
   		const accessToken = window.localStorage.getItem('accessToken')
@@ -32,7 +33,7 @@ const PostInfo = () => {
 		<div className='container postInfo'>
 			{
 				/*IF POST IS NOT OPEN OR SOAPBOX*/
-				postType !== 'enlarged' || post.communityName !== post.user ?
+				postView !== 'open' ?
 				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.communityName}`}> {post.communityName}</Link></span>:
 				null
 			}
@@ -46,7 +47,7 @@ const PostInfo = () => {
 
 			{
 				/*IF POST IS NOT OPEN AND LESS THAN TABLET RESOLUTION*/
-				postType === 'enlarged' && windowWidth <= 576 ?
+				postView === 'open' && windowWidth <= 576 ?
 				<span className='postInfoUserName'><Link className='link' to={`/u/${post.user}`}> /u/{post.user} </Link></span> :
 				null
 			}
@@ -56,7 +57,7 @@ const PostInfo = () => {
 				null
 			}
 			{
-				postType !== 'enlarged' ?
+				postView !== 'open' ?
 				user.userName === '' ?
 				<i style={{margin: '0 .5em 0 auto'}}
 				onClick={() => {
@@ -79,9 +80,7 @@ const PostContent = () => {
 		<div className='container postContent'>
 			<p>
 				{
-					postType === 'enlarged' ? 
-					`${post.title}` :
-					pageType === 'profilePage' ?
+					post.postType === 'soapBox' ?
 					<Link to={`/u/${post.communityName}/${post.id}`} className='link'> 
 						{post.title}
 					</Link> :
@@ -92,7 +91,7 @@ const PostContent = () => {
 				
 			</p>
 			{
-			 	 postType === 'enlarged' ? 
+			 	 postView === 'open' ? 
 			 	 null :
 			 	 user.settings.feedType === 'list' ?
 			 	 post.image !== '' ?
@@ -110,9 +109,15 @@ const PostContent = () => {
 const EnlargedPostImg = () => {
 	return(
 		<div className='container enlargedPostImg'>
+		{
+			postView === 'open' ?
+			<a href={post.image} target='_blank' className='link'>
+				<img src={post.image} alt='Enlarged post image'/>
+			</a> :
 			<Link to={`/c/${post.communityName}/${post.id}`}className='link'>
 				<img src={post.image} alt='Enlarged post image'/>
 			</Link>
+		}
 		</div>
 	)
 }
@@ -133,28 +138,7 @@ const EnlargedPostText = () => {
 
 const InteractionWindow =() => {
 
-	function timeDifference(date) {
-		const dateNow = new Date()
-		const postDate = new Date(date)
-	    let difference = dateNow.getTime() - postDate.getTime();
-	    let daysDifference = Math.floor(difference/1000/60/60/24);
-	    let hoursDifference = Math.floor(difference/1000/60/60);
-	    let minutesDifference = Math.floor(difference/1000/60);
-	    let secondsDifference = Math.floor(difference/1000);
-	   	if(daysDifference < 1){
-	   		if(hoursDifference < 1){
-	   			if(minutesDifference < 1){
-	   				return '1m'
-	   			} else {
-	   				return `${minutesDifference}m`
-	   			}
-	   		} else if(hoursDifference < 25){
-	   			return `${hoursDifference}h`
-	   		}
-	   	} else {
-	   		return `${daysDifference}d`
-	   	}
-	}
+
 	return(
 		<div className='container interactionWindow'>
 			<span className='postInfoTimePosted'> {timeDifference(post.time)} </span>
@@ -174,7 +158,7 @@ const InteractionWindow =() => {
 			<div className='container'>
 			{
 				windowWidth <= 920 ?
-				postType === 'enlarged' ?
+				postView === 'open' ?
 				null :
 				<Link className='link container' to={`/c/${post.communityName}/${post.id}`}>{post.comments.length} <i class="far fa-comment-dots"></i></Link> : <Link className='link container' to={`/c/${post.communityName}/${post.id}`}>{post.comments.length} <i class="far fa-comment-dots"></i></Link>
 			}
@@ -195,13 +179,13 @@ const InteractionWindow =() => {
 	useEffect(() => {
 		if(user.settings.feedType === 'card'){
 			openEnlargedWindow(true)
-		} else if (user.settings.feedType === 'list' && postType !== 'enlarged'){
+		} else if (user.settings.feedType === 'list' && postView !== 'open'){
 			openEnlargedWindow(false)
 		}
 	},[user])
 
 	useEffect(() => {
-		if(postType === 'enlarged'){
+		if(postView === 'open'){
 			openEnlargedWindow(true)
 		}
 	},[])
@@ -223,7 +207,7 @@ const InteractionWindow =() => {
 				null
 			}	
 			{
-				postType === 'enlarged' && post.text.length !== 0 ?
+				postView === 'open' && post.text.length !== 0 ?
 				<EnlargedPostText /> :
 				null
 			}

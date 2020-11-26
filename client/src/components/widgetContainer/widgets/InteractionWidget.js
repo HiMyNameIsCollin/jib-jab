@@ -25,7 +25,7 @@ const InteractionWidget = ({pageContent}) => {
 				</div>
 				<div>
 					<p> User since: </p>
-					<p> {pageContent.created}</p>
+					<p> {pageContent.createdOn}</p>
 				</div>
 			</div>
 		</div>

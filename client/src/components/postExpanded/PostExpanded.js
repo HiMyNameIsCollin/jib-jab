@@ -2,146 +2,41 @@ import React, { useState, useEffect } from 'react'
 import Post from '../post/Post'
 import CommentFeed from './CommentFeed'
 import Loading from '../loading/Loading'
+import CommentForm from './CommentForm'
 import './_postExpanded.sass'
-const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay}) => {
-let postData = {
-	info: {
-		userName: 'name',
-		time: '3hrs'
-	},
-	karma: 1,
-	comments: [
-		{
-			commentInfo: {
-				userName: 'name',
-				time: '1hrs'
-			},
-			commentContent: 'LoremBlah No child',
-			comments: []
-		},
-		{
-			commentInfo: {
-				userName: 'name',
-				time: '2hrs'
-			},
-			commentContent: 'LoremBlah1',
-			comments: [
-				{
-					commentInfo: {
-						userName: 'name',
-						time: '2hrs'
-					},
-					commentContent: 'LoremBlah1 child2',
-					comments: []
-				},
-				{
-					commentInfo: {
-						userName: 'name',
-						time: '2hrs'
-					},
-					commentContent: 'LoremBlah1 child3',
-					comments: [
-						{
-							commentInfo: {
-								userName: 'name',
-								time: '2hrs'
-							},
-							commentContent: 'LoremBlah1 child child4',
-							comments: [
-							{
-								commentInfo: {
-									userName: 'name',
-									time: '2hrs'
-								},
-								commentContent: 'LoremBlah1 child child5',
-								comments: [
-								{
-									commentInfo: {
-										userName: 'name',
-										time: '2hrs'
-									},
-									commentContent: 'LoremBlah1 child child6',
-									comments: [
-									{
-										commentInfo: {
-											userName: 'name',
-											time: '2hrs'
-										},
-										commentContent: 'LoremBlah1 child child7',
-										comments: [
-											{
-												commentInfo: {
-													userName: 'name',
-													time: '2hrs'
-												},
-												commentContent: 'LoremBlah1 child child8',
-												comments: [
-												
-												],
-											},
-										],
-									},
-									],
-								},
-								],
-							},
-							],
-						},
-						{
-							commentInfo: {
-								userName: 'name',
-								time: '2hrs'
-							},
-							commentContent: 'LoremBlah1 child child 2',
-							comments: [
-							
-							],
-						},
-					],
-				},
-				{
-					commentInfo: {
-						userName: 'name',
-						time: '2hrs'
-					},
-					commentContent: 'LoremBlah1 child',
-					comments: []
-				},
-			],
-		},
-		{
-			commentInfo: {
-				userName: 'name',
-				time: '1hrs'
-			},
-			commentContent: 'LoremBlah2',
-			comments: [
-				{
-					commentInfo: {
-						userName: 'name',
-						time: '2hrs'
-					},
-					commentContent: 'LoremBlah2 child',
-					comments: [
-						{
-							commentInfo: {
-								userName: 'name',
-								time: '2hrs'
-							},
-							commentContent: 'LoremBlah2 child child LoremBlah2 child child LoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child childLoremBlah2 child child LoremBlah2 child child',
-							comments: [
-							
-							],
-						},
-					],
-				},
-			],
-		},
-	],
-}
+
+const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setError}) => {
 
 	const [mainCommentInFocus, setMainCommentInFocus] = useState(false)
 	const [posts, setPosts] = useState(undefined)
+
+	const PostMenuBar = () => {
+		return(
+			<div className='postMenuBar container'>
+				{
+					user.userName !== '' ? 
+					<React.Fragment>
+						<div>
+							<i className="fas fa-bars"></i>
+							<span> Save</span>
+						</div>
+						<div>
+							<i className="fas fa-bars"></i>
+							<span> Report</span>
+						</div>	
+					<div>
+						<i className="fas fa-bars"></i>
+						<span> Share </span>
+					</div>				
+					</React.Fragment> :
+					<div style={{margin: '0 1em 0 auto'}}>
+						<i className="fas fa-bars"></i>
+						<span> Share </span>
+					</div>
+				}
+			</div>
+		)
+	}
 	
 	useEffect(() => {
 			fetch('http://localhost:3000/api/p/', {
@@ -183,53 +78,51 @@ let postData = {
 	}
 
 
-
-	const PostMenuBar = () => {
-		return(
-			<div className='postMenuBar container'>
-				{
-					user.userName !== '' ? 
-					<React.Fragment>
-						<div>
-							<i className="fas fa-bars"></i>
-							<span> Save</span>
-						</div>
-						<div>
-							<i className="fas fa-bars"></i>
-							<span> Report</span>
-						</div>	
-					<div>
-						<i className="fas fa-bars"></i>
-						<span> Share </span>
-					</div>				
-					</React.Fragment> :
-					<div style={{margin: '0 1em 0 auto'}}>
-						<i className="fas fa-bars"></i>
-						<span> Share </span>
-					</div>
-				}
-			</div>
-		)
+	const handleCommentVote = (postId, commentId, request) => {
+		if(user.userName !== '') {
+	  		const accessToken = window.localStorage.getItem('accessToken')
+			fetch('http://localhost:3000/api/comment/vote', {
+				method: 'post',
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					'Content-Type' : 'application/json'
+				},
+				body: JSON.stringify({
+					postId,
+					commentId,
+					request,
+				})
+			})
+			.then(response => response.json())
+			.then(response => {
+				let updatedPosts = [...posts]
+				updatedPosts.forEach((p, i) => {
+					if(p.id === response.id){
+						updatedPosts[i] = response
+					}
+				})
+				setPosts(updatedPosts)
+			})
+			.catch(err => console.log(err))
+			} else {
+				setError('Must be logged in to vote')
+			}
 	}
 
-
-	const CommentForm = () => {
-		return(
-			<div className='commentForm '>
-				<textarea rows='4'/>
-				<div className='container'>
-					<span onClick={() =>  setMainCommentInFocus(!mainCommentInFocus)} > X </span>
-					<input type='button' value='Add comment'/>
-				</div>
-			</div>
-		)
-	}
 
 	
 	if(posts !== undefined){
 		return(
 			<div className='postExpanded'>
-				<Post pageType={pageType} postType={'enlarged'} user={user} setUser={setUser} Link={Link} windowWidth={windowWidth} post={posts[0]} posts={posts} handleVote={handleVote}/>
+				<Post 
+				pageType={pageType} 
+				postView={'open'} 
+				user={user} 
+				setUser={setUser} 
+				Link={Link} 
+				windowWidth={windowWidth} 
+				post={posts[0]} 
+				handleVote={handleVote}/>
 				{
 					windowWidth > 920 ?
 					<PostMenuBar /> :
@@ -247,12 +140,22 @@ let postData = {
 						<img src="https://robohash.org/1" alt=""/>
 						<input type='text' value='Submit a comment' onClick={() =>setMainCommentInFocus(true) }/>
 					</div> :
-					<CommentForm />
+					<CommentForm 
+					func={setMainCommentInFocus} 
+					value={mainCommentInFocus} 
+					post={posts[0]}
+					setPosts={setPosts}/>
 
 				}
 				{
+					
 					posts[0].comments.length > 0 ?
-					<CommentFeed comments={posts.comments} /> :
+					<CommentFeed 
+					handleCommentVote={handleCommentVote} 
+					post={posts[0]} 
+					user={user}
+					setError={setError}
+					setPosts={setPosts}/> :
 					<p style={{padding: '1em'}}> Be the first to leave a comment! </p>
 				}
 

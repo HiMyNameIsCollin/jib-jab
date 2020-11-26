@@ -19,7 +19,12 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 		if(pageContent.posts.length !== 0){
 			handlePostFetch()
 		}
-	},[profileFeedChoice])
+	},[profileFeedChoice, feedSort])
+
+	useEffect(() => {
+			handlePostFetch()
+		
+	},[])
 
 	const handlePostFetch = () => {
 		if(pageType === 'profilePage') {

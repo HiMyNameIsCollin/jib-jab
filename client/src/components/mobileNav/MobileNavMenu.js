@@ -13,32 +13,30 @@ const initialState = {
 
 const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setError}) => {
 
+	const MobileNavCommunity = ({ listItem, Link}) => {
 
+		const [communityImg, setCommunityImg] = useState(undefined)
 
-const MobileNavCommunity = ({ listItem, Link}) => {
-
-	const [communityImg, setCommunityImg] = useState(undefined)
-
-	useEffect(() => {
-		let isMounted = true
-			fetch(`http://localhost:3000/img/${listItem.toLowerCase()}`)
-			.then(response => response.json())
-			.then(response => {
-				if(isMounted) {
-					setCommunityImg(response)
-				}})
-			.catch(err => console.log(err))
-			return () => { isMounted = false }
-	}, [])
-	return(
-		<li className='mobileNavCommunityItem'>
-			<Link to={`/c/${listItem}`} className='link' >
-				<img src={communityImg} alt=""/>
-				<span> {listItem} </span>
-			</Link>
-		</li>	
-		)
-}
+		useEffect(() => {
+			let isMounted = true
+				fetch(`http://localhost:3000/img/${listItem.toLowerCase()}`)
+				.then(response => response.json())
+				.then(response => {
+					if(isMounted) {
+						setCommunityImg(response)
+					}})
+				.catch(err => console.log(err))
+				return () => { isMounted = false }
+		}, [])
+		return(
+			<li className='mobileNavCommunityItem'>
+				<Link to={`/c/${listItem}`} className='link' >
+					<img src={communityImg} alt=""/>
+					<span> {listItem} </span>
+				</Link>
+			</li>	
+			)
+	}
 
 	const handleFeedType = () => {
 		if(user.userName !== ''){

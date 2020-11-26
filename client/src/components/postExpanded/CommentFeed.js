@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Comment from './Comment'
 
+
 const initialSort = {
 	sortOptionsChoice: 'spicy',
 	sortOptionsContChoice: 'day'
 }
 
-const CommentFeed = ({comments, user}) => {
+const CommentFeed = ({post, user, handleCommentVote, setError, setPosts}) => {
 
 	const [commentSort, setCommentSort] = useState(initialSort)
 	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
-
-
 
 	const SortComments = () => {
 		return(
@@ -90,18 +89,26 @@ const CommentFeed = ({comments, user}) => {
 					null
 				}
 				</div>
-				<span className='feedSortCommentsLabel'> {comments.length} comments</span>
+				<span className='feedSortCommentsLabel'> {post.comments.length} comments</span>
 			</div> 
 		)
 	}
-
 
 	return(
 		<div className='commentFeed'>
 		<SortComments/>
 		{
-			comments.map((c, i)=> {
-				return <Comment data={c} commentType='parentComment'/>
+			post.comments.map((c, i)=> {
+				return (
+					<Comment 
+					post={post} 
+					comment={c} 
+					commentType='parentComment' 
+					handleCommentVote={handleCommentVote}
+					user={user}
+					setError={setError}
+					setPosts={setPosts}/>
+				)
 			}) 
 		}
 		</div>

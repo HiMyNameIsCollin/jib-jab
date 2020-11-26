@@ -18,7 +18,7 @@ const FrontPageWidgets = () => {
 	return(
 		<React.Fragment>
 			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user}/>
-			<TopPostListWidget />
+			<TopPostListWidget pageContent={pageContent}/>
 			<AppendixWidget Link={Link}/>				
 		</React.Fragment>
 	)
@@ -28,7 +28,7 @@ const GlobalPageWidgets = () => {
 	return(
 		<React.Fragment>
 			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user}/>
-			<TopPostListWidget />
+			<TopPostListWidget pageContent={pageContent} Link={Link}/>
 			<AppendixWidget />	
 		</React.Fragment> 
 	)
@@ -62,7 +62,7 @@ const CommunityWidgets = () => {
 			<LinkListWidget /> :
 			null
 		}
-			<TopPostListWidget />
+			<TopPostListWidget pageContent={pageContent} Link={Link}/>
 			<ModeratorListWidget /> 
 			<AppendixWidget Link={Link}/>	
 		</React.Fragment>
@@ -85,16 +85,14 @@ const ProfileWidgets = () => {
 		<div className={ pageContent ? pageContent.communityNameLower === 'global'|| pageType === 'postPage' || pageType === 'userPostPage' ? 'widgetContainerGlobalPage container widgetContainer' : 'container widgetContainer' : 'container widgetContainer'}>
 			<div className={pageType === 'frontPage' ? 'widgetSizingContainerFrontPage widgetSizingContainer' : 'widgetSizingContainer'}>
 			{
-				pageType === 'frontPage' || 'userPostPage' ?
+				pageType === 'frontPage' ?
 				<FrontPageWidgets  /> :
-				pageType === 'profilePage' ?
+				pageType === 'profilePage' || pageType === 'userPostPage'  ?
 				<ProfileWidgets /> :
-				pageType === 'communityPage' ?
+				pageType === 'communityPage' ||  pageType === 'postPage'?
 				<CommunityWidgets /> : 
 				pageType === 'globalPage' ?
 				<GlobalPageWidgets /> :
-				pageType === 'postPage' ?
-				<CommunityWidgets /> :
 				null
 			}
 			</div>

@@ -38,18 +38,17 @@ function timeDifference(date, dateType) {
 	const postDate = new Date(date)
     let difference = dateNow.getTime() - postDate.getTime();
     let daysDifference = Math.floor(difference/1000/60/60/24);
-    difference -= daysDifference*1000*60*60*24
-
+/*    difference -= daysDifference*1000*60*60*24
+*/
     let hoursDifference = Math.floor(difference/1000/60/60);
-    difference -= hoursDifference*1000*60*60
-
+/*    difference -= hoursDifference*1000*60*60
+*/
     let minutesDifference = Math.floor(difference/1000/60);
-    difference -= minutesDifference*1000*60
+/*    difference -= minutesDifference*1000*60*/
 
     let secondsDifference = Math.floor(difference/1000);
-
-    if(dateType === undefined || 'default'){
-    	return difference
+    if(dateType === undefined){
+    	return secondsDifference
     } else if (dateType === 'days'){
     	return daysDifference
     } else if (dateType === 'hours'){
@@ -62,43 +61,142 @@ function timeDifference(date, dateType) {
 }
 
 function sortPosts(posts, sortType, sortTypeCont){
-	console.log(sortType)
+	function sortBy(newSortOrder, type){
+		let n = newSortOrder.length
+		for(i = 0; i < n; i++){
+			let current = newSortOrder[i]
+			let j = i - 1
+			if(type ==='score'){
+				while((j > -1) && (current.score > newSortOrder[j].score)){
+					newSortOrder[j+1] = newSortOrder[j]
+					j--
+				}
+				newSortOrder[j+1] = current
+				console.log(newSortOrder)
+			} else if(type === 'age'){
+				while((j > -1) && (current.age < newSortOrder[j].age)){
+					newSortOrder[j+1] = newSortOrder[j]
+					j--
+				}
+				newSortOrder[j+1] = current
+				console.log(newSortOrder)
+			}
+		}
+
+		const match = (raw, sorted) => (m => sorted.map(s => m.get(s.id)))(new Map(raw.map(r => [r.id, r])))
+		return match(posts, newSortOrder)
+	}
 	let newSortOrder = []
 	if(sortType === 'spicy' || sortType === 'communities'){
 		posts.forEach((p, i) => {
 			newSortOrder.push({
 				id: p.id,
-				score: p.karma.upvotes.length - p.karma.downvotes.length ,
+				score: p.karma.upvotes.length - p.karma.downvotes.length - timeDifference(p.time, 'hours') ,
+			})
+		})
+		return sortBy(newSortOrder, 'score')
+
+	} else if (sortType === 'new' || sortType === 'soapBox'){
+		posts.forEach((p, i) => {
+			newSortOrder.push({
+				id: p.id,
 				age: timeDifference(p.time)
 			})
 		})
-		let n = newSortOrder.length
-		for(i = 0; i < n; i++){
-			let current = newSortOrder[i]
-			let j = i - 1
-			while((j > -1)&& (current.score > newSortOrder[j].score)){
-				newSortOrder[j+1] = newSortOrder[j]
-				j--
+		return sortBy(newSortOrder, 'age')
+	} else if(sortType === 'dicey'){
+		if(sortTypeCont === 'day'){
+			posts.forEach((p, i) => {
+				const age = timeDifference(p.time, 'days')
+				if(age < 1){
+					newSortOrder.push({
+						id: p.id,
+						score: p.karma.upvotes.length + p.karma.downvotes.length
+					})
+				}
+			})
 			}
-			newSortOrder[j+1] = current;
-		}
-		for(i = 0; i < n; i++){
-			let current = newSortOrder[i]
-			let j = i - 1
-			while((j > -1)&& (current.score > newSortOrder[j].score) && (current.age > newSortOrder[j].age)){
-				newSortOrder[j+1] = newSortOrder[j]
-				j--
+			else if (sortTypeCont === 'week'){
+				const age = timeDifference(p.time, 'days')
+				posts.forEach((p, i) => {
+				if(age <= 7){
+					newSortOrder.push({
+						id: p.id,
+						score: p.karma.upvotes.length + p.karma.downvotes.length
+					})
+				}
+			})
 			}
-			newSortOrder[j+1] = current;
-		}
-		const match = (raw, sorted) => (m => sorted.map(s => m.get(s.id)))(new Map(raw.map(r => [r.id, r])))
-		const output = match(posts, newSortOrder)
-		return output
-	} else if (sortType === 'new'){
-		
-	} else if(sortType === 'soapBox'){
-
-	} 
+			else if (sortTypeCont === 'month'){
+				const age = timeDifference(p.time, 'days')
+				posts.forEach((p, i) => {
+				if(age <= 30){
+					newSortOrder.push({
+						id: p.id,
+						score: p.karma.upvotes.length + p.karma.downvotes.length
+					})
+				}
+			})
+			}
+			else if (sortTypeCont === 'year'){
+				const age = timeDifference(p.time, 'days')
+				posts.forEach((p, i) => {
+				if(age <= 365){
+					newSortOrder.push({
+						id: p.id,
+						score: p.karma.upvotes.length + p.karma.downvotes.length
+					})
+				}
+			})
+			}
+			return sortBy(newSortOrder, 'score')
+	} else if (sortType === 'top') {
+		if(sortTypeCont === 'day'){
+			posts.forEach((p, i) => {
+				const age = timeDifference(p.time, 'days')
+				if(age < 1){
+					newSortOrder.push({
+						id: p.id,
+						score: p.karma.upvotes.length - p.karma.downvotes.length
+					})
+				}
+			})
+			}
+			else if (sortTypeCont === 'week'){
+			posts.forEach((p, i) => {
+				const age = timeDifference(p.time, 'days')
+				if(age <= 7){
+					newSortOrder.push({
+						id: p.id,
+						score: p.karma.upvotes.length - p.karma.downvotes.length
+					})
+				}
+			})
+			}
+			else if (sortTypeCont === 'month'){
+				posts.forEach((p, i) => {
+					const age = timeDifference(p.time, 'days')
+					if(age <= 30){
+						newSortOrder.push({
+							id: p.id,
+							score: p.karma.upvotes.length - p.karma.downvotes.length
+						})
+					}
+				})
+			}
+			else if (sortTypeCont === 'year'){
+				posts.forEach((p, i) => {
+					const age = timeDifference(p.time, 'days')
+					if(age <= 365){
+						newSortOrder.push({
+							id: p.id,
+							score: p.karma.upvotes.length - p.karma.downvotes.length
+						})
+					}
+				})
+			}
+			return sortBy(newSortOrder, 'score')
+	}
 }
 
 
@@ -123,7 +221,6 @@ app.get('/', authenticateToken, (req, res) => {
 })
 
 app.post('/api/', (req, res) => {
-	console.log(req.body)
 	CommunityModel.findOne({communityName: 'Popular'})
 	.then(pageContent => {
 		const communities = req.body.communities.map((c, i) => c.toLowerCase())
@@ -166,67 +263,12 @@ app.get('/api/c/:communityName/', (req, res) => {
 	.catch(err => console.log(err))		
 })
 
-app.get('/api/c/:communityName/:postID', (req, res) => {
-	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
-	.then((pageContent) => {
-		const posts = []
-		posts.push(req.params.postID)
-		pageContent.posts = posts
-		res.json(pageContent)
-	})
-	.catch(err => console.log(err))
-})
 
-app.post('/api/c/subscription', authenticateToken, async (req, res) => {
-	const community = await CommunityModel.findOne({communityNameLower: req.body.communityName.toLowerCase()})
-	const user = await UserModel.findOne({userName: req.user.userName})
-	if(user && community) {
-		const session = await mongoose.startSession()
-		session.startTransaction()
-		try{
-			if(req.body.request === 'subscribe'){
-				user.communities.push(community.communityName)
-				community.followers.push(user.userName)
-				community.markModified('followers')
-				community.save()
-				user.markModified('communities')
-				user.save()
-				.then(savedUser => {
-					res.json(savedUser)
-				})
-				.catch(err => console.log(err))
-			} else if (req.body.request === 'unsubscribe') {
-				community.followers.forEach((f, i) => {
-					if(f === user.userName){
-						community.followers.splice(i, 1)
-						i--
-					}
-				})
-				user.communities.forEach((c, i) => {
-					if(c === community.communityName){
-						console.log(c, 123)
-						user.communities.splice(i, 1)
-						i--
-					}
-				})
-				community.markModified('followers')
-				community.save()
-				user.markModified('communities')
-				user.save()
-				.then(savedUser => {
-					res.json(savedUser)
-				})
-				.catch(err => console.log(err))
-			}
-		}
-		catch(err){
-			await session.abortTransaction()
-			session.endSession()
-			res.status(400).json({error: 'There has been an error'})
-		}
-	} else {
-		res.status(400).json({error: 'There has been an error'})
-	}
+/*GET COMMUNITY IMAGE*/
+app.get('/img/:communityName' , (req, res) => {
+	CommunityModel.findOne({communityNameLower: req.params.communityName })
+	.then((result) => res.json(result.configuration.communityImg))
+	.catch(err => console.log(err))
 })
 
 
@@ -252,6 +294,34 @@ app.post('/api/p/', (req, res) => {
 	} else if(req.body.posts.length === 0){
 		res.status(400).json({error: 'Not subscribed to anything, try following some people or communities to fill your feed'})
 	}
+})
+
+app.get('/api/topPosts/:communityNameLower', (req, res) => {
+	CommunityModel.findOne({communityNameLower: req.params.communityNameLower})
+	.then(community => {
+		PostModel.find({
+			id: { $in:
+				community.posts
+			}
+		})
+		.then(result =>{
+			const posts = sortPosts(result, 'top', 'day')
+			res.json(posts)
+		})
+		.catch(err => console.log(err))
+	})
+})
+
+
+app.get('/api/c/:communityName/:postID', (req, res) => {
+	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
+	.then((pageContent) => {
+		const posts = []
+		posts.push(req.params.postID)
+		pageContent.posts = posts
+		res.json(pageContent)
+	})
+	.catch(err => console.log(err))
 })
 
 app.post('/api/vote', authenticateToken, async (req, res) => {
@@ -315,14 +385,194 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 	}
 })
 
-
-
-/*GET COMMUNITY IMAGE*/
-app.get('/img/:communityName' , (req, res) => {
-	CommunityModel.findOne({communityNameLower: req.params.communityName })
-	.then((result) => res.json(result.configuration.communityImg))
-	.catch(err => console.log(err))
+app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
+	const {postId, commentId, commentContent } = req.body
+	console.log(postId, commentId, commentContent)
+	const userName = req.user.userName
+	const time = new Date()
+	const newComment = {
+		commentInfo: {
+			userName,
+			time: time.toString(),
+			id: '116',
+		},
+		commentContent,
+		comments: [],
+		karma: {
+			upvotes: [],
+			downvotes: []
+		}
+	}
+	const post = await PostModel.findOne({id: postId.toString()})
+	if(post){
+		try{
+			const postComment = (comments, id, commentId, content) => {
+				comments.map((c, i) => {
+					if(c.commentInfo.id === commentId){
+						c.comments.push(newComment)
+						return
+					} else { 
+						postComment(c.comments, id, commentId, content)
+					}
+				})
+				return 
+			}
+			if(commentId === 'parent'){
+				post.comments.push(newComment)
+			}else {
+				postComment(post.comments, postId, commentId, commentContent)
+			}
+			post.markModified('comments')
+			post.save()
+			.then(result => {
+				res.json([result])
+			})
+			.catch(err => console.log(err))
+		}
+		catch(err){
+			res.status(400).json({error: 'There has been an error :('})
+		}
+	}
 })
+
+app.post('/api/comment/vote', authenticateToken, async (req, res) => {
+	const deepUpvote = (comments, userName, id) => {
+		const output = comments.map((c, i) => {
+			if(c.commentInfo.id === commentId){
+				if(c.karma.upvotes.includes(userName)){
+					c.karma.upvotes.splice(i, 1)
+				} else {
+					if(c.karma.downvotes.includes(userName)){
+						c.karma.downvotes.splice(i, 1)
+					}
+					c.karma.upvotes.push(userName)
+				}
+				return
+			} else {
+				if(c.comments.length > 0) {
+					deepUpvote(c.comments, userName, id)
+				}
+			}
+		})
+		return output
+	}
+
+
+	const deepDownvote = (comments, userName, id) => {
+
+		const output = comments.map((c, i) => {
+			if(c.commentInfo.id === commentId){
+				if(c.karma.downvotes.includes(userName)){
+					c.karma.downvotes.splice(i, 1)
+				} else {
+					if(c.karma.upvotes.includes(userName)){
+						c.karma.upvotes.splice(i, 1)
+					}
+					c.karma.downvotes.push(userName)
+				}
+				return
+			} else {
+				if(c.comments.length > 0) {
+					deepDownvote(c.comments, userName, id)
+				}
+			}
+		})
+		return output
+	}
+
+	const { postId, commentId, request } = req.body
+	const post = await PostModel.findOne({id: postId})
+	if(post){
+		try{
+			if(request === 'upvote'){
+				deepUpvote(post.comments, req.user.userName, commentId)
+			} else if (request === 'downvote'){
+				deepDownvote(post.comments, req.user.userName, commentId)
+			}
+			post.markModified('comments')
+			post.save()
+			.then(result => res.json(result))
+			.catch(err => console.log(err))
+		}
+		catch(err){
+			res.status(400).json({error: 'There was an error'})
+		}
+	} else {
+		res.status(400).json({error: 'There was an error'})
+	}
+})
+
+app.post('/api/c/subscription', authenticateToken, async (req, res) => {
+	const community = await CommunityModel.findOne({communityNameLower: req.body.communityName.toLowerCase()})
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(user && community) {
+		const session = await mongoose.startSession()
+		session.startTransaction()
+		try{
+			if(req.body.request === 'subscribe'){
+				user.communities.push(community.communityName)
+				community.followers.push(user.userName)
+				community.markModified('followers')
+				community.save()
+				user.markModified('communities')
+				user.save()
+				.then(savedUser => {
+					res.json(savedUser)
+				})
+				.catch(err => console.log(err))
+			} else if (req.body.request === 'unsubscribe') {
+				community.followers.forEach((f, i) => {
+					if(f === user.userName){
+						community.followers.splice(i, 1)
+						i--
+					}
+				})
+				user.communities.forEach((c, i) => {
+					if(c === community.communityName){
+						user.communities.splice(i, 1)
+						i--
+					}
+				})
+				community.markModified('followers')
+				community.save()
+				user.markModified('communities')
+				user.save()
+				.then(savedUser => {
+					res.json(savedUser)
+				})
+				.catch(err => console.log(err))
+			}
+		}
+		catch(err){
+			await session.abortTransaction()
+			session.endSession()
+			res.status(400).json({error: 'There has been an error'})
+		}
+	} else {
+		res.status(400).json({error: 'There has been an error'})
+	}
+})
+
+
+app.get('/api/u/settings', authenticateToken , async (req, res) => {
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(user){
+		try{
+			user.settings.feedType === 'card' ? user.settings.feedType = 'list' : user.settings.feedType = 'card'
+			user.markModified('settings')
+			user.save()
+			.then(result => res.json({success: true}))
+			.catch(err => res.status(400).json({error: 'There has been an error'}))
+		}
+		catch(err){
+			res.status(400).json({error: 'There has been an error'})
+		}
+	}
+	else {
+		res.status(400).json({error: 'There has been an error'})
+	}
+})
+
 
 app.get('/api/u/:user', (req, res) => {
 	UserModel.findOne({userNameLower: req.params.user.toLowerCase()})
@@ -332,16 +582,12 @@ app.get('/api/u/:user', (req, res) => {
 	.catch(err => console.log(err))
 })
 
-app.post('/api/u/:user/:postID', (req, res) => {
-	CommunityModel.findOne({communityName: 'Popular'})
-	.then(pageContent => {
-		const posts = []
-		posts.push(req.params.postID)
-		pageContent.communities = req.body.communities
-		pageContent.posts = posts
-		res.json(pageContent)
+app.get('/api/u/:user/:postID', (req, res) => {
+	UserModel.findOne({userNameLower: req.params.user.toLowerCase()})
+	.then(result => {
+		result.posts = [req.params.postID]
+		res.json(result)
 	})
-	.catch(err => console.log(err))
 })
 
 app.listen(myPort, () => {

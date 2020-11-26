@@ -29,7 +29,7 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 	if(pageContent && user) {
 	return(
 		<React.Fragment>
-			<Intro pageType={pageType} windowWidth={windowWidth} />
+			<Intro pageType={pageType} windowWidth={windowWidth} user={user} pageContent={pageContent}/>
 			{
 				windowWidth <= 920 ?
 				<div className='container mobileViewToggle'>

@@ -17,18 +17,12 @@ const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay,
 				})
 				.catch(err => console.log(err))
 			} else {
-				fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`,{
-					method: 'post',
-					headers: {'Content-Type' : 'application/json'},
-					body: JSON.stringify({
-						communities: user.communities
-					})
-				})
+				fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
 				.then(response => response.json())
-					.then(response => {
-						setPageContent(response)
-					})
-					.catch(err => console.log(err))
+				.then(response => {
+					setPageContent(response)
+				})
+				.catch(err => console.log(err))
 			}
 	},[])
 

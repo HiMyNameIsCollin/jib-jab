@@ -1,21 +1,23 @@
 import React, { useState, useRef } from 'react'
+import CommentForm from './CommentForm'
+import timeDifference from '../../utils/timeDifference'
 
 
-
-const Comment = ({data}) => {
+const Comment = ({comment, post, setPosts, handleCommentVote, user, setError}) => {
 	const [commentHidden, setCommentToHidden] = useState(false)
 
-		const CommentBody = ({commentType, data}) => {
+		const CommentBody = ({commentType, comment}) => {
 			const [commentFormOpen, setCommentFormOpen] = useState(false)
 			const [commentHidden, setCommentToHidden] = useState(false)
+
 			const CommentInfo = () => {
 			return(
 				<div className='commentInfo container' onClick={() => setCommentToHidden(!commentHidden)}>
-					<span className='commentUserName'> {data.commentInfo.userName} </span> 
+					<span className='commentUserName'> {comment.commentInfo.userName} </span> 
 					{
 						commentHidden ?
 						null :
-						<span> {data.commentInfo.time} </span>
+						<span> {timeDifference(comment.commentInfo.time)} </span>
 					}
 					<span className='commentKarma'>
 						1 karma
@@ -24,11 +26,11 @@ const Comment = ({data}) => {
 						commentHidden ?
 						<span className='commentsCounter'>
 							{
-								data.comments.length > 0 ?
-								data.comments.length === 1 ?
+								comment.comments.length > 0 ?
+								comment.comments.length === 1 ?
 								'1 comment' :
-								`${data.comments.length} comments` :
-								null
+								`${comment.comments.length} comments` :
+								'0 comments'
 							}
 						</span> :
 						null
@@ -40,7 +42,7 @@ const Comment = ({data}) => {
 		const CommentContent = () => {
 			return(
 				<div className='commentContent container'>
-					<p> {data.commentContent} </p>
+					<p> {comment.commentContent} </p>
 				</div>
 			)
 		}
@@ -48,24 +50,32 @@ const Comment = ({data}) => {
 		const CommentMeta = () => {
 			return(
 				<div className='commentMeta container'>
-					<i class="fas fa-arrow-circle-up"></i>
-					<span> </span>
-					<i class="fas fa-arrow-circle-down"></i>
+				{
+					comment.karma.upvotes.includes(user.userName) ?
+					<i 
+					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
+					class="fas fa-arrow-circle-up"
+					style={{color: 'blue'}}></i> :
+					<i 
+					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
+					class="fas fa-arrow-circle-up"></i>
+				}
+					<span>{comment.karma.upvotes.length - comment.karma.downvotes.length} </span>
+				{
+					comment.karma.downvotes.includes(user.userName) ?
+					<i 
+					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
+					class="fas fa-arrow-circle-down"
+					style={{color: 'red'}}></i> :
+					<i 
+					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
+					class="fas fa-arrow-circle-down"></i> 
+				}
 				</div>
 			)
 		}
 
-		const CommentForm = () => {
-			return(
-				<div className='commentForm '>
-					<textarea rows='4'/>
-					<div className='container'>
-						<span  onClick={() => setCommentFormOpen(!commentFormOpen)}> X </span>
-						<input type='button' value='Add comment'/>
-					</div>
-				</div>
-			)
-		}
+
 	return(
 		<div className={ commentType === 'parentComment' ? 'parentComment comment' : 'comment'}>
 		{
@@ -88,32 +98,43 @@ const Comment = ({data}) => {
 					</span>
 					<span className='commentsCounter'>
 						{
-							data.comments.length > 0 ?
-							data.comments.length === 1 ?
+							comment.comments.length > 0 ?
+							comment.comments.length === 1 ?
 							'1 comment' :
-							`${data.comments.length} comments` :
-							null
+							`${comment.comments.length} comments` :
+							'0 comments'
 						}
 					</span>
-					<i class="far fa-comment"></i>
-					<span onClick={()=> setCommentFormOpen(!commentFormOpen)}> Reply </span>
+					<span 
+						className='container'
+						onClick={()=> {
+						if(user.userName !== ''){
+							setCommentFormOpen(!commentFormOpen)	
+						} else {
+							setError('Must be logged in to comment')
+						}
+					}}><i class="far fa-comment"></i> Reply </span>
 				</div>
 				</React.Fragment>
 			</React.Fragment>
 		}
 			{
 				commentFormOpen ? 
-				<CommentForm /> :
+				<CommentForm 
+				post={post} 
+				setPosts={setPosts}
+				comment={comment} 
+				func={setCommentFormOpen} 
+				value={commentFormOpen} /> :
 				null
 			}
 		</div>
 		)
 	}
 
-	function renderComments(data, n) {
+	function renderComments(comment, n) {
 		if(n === undefined){
 			n = 0
-			console.log(n, data)
 		} else {
 			n++
 		}
@@ -121,13 +142,13 @@ const Comment = ({data}) => {
 			return(
 				<div className={n === 0 ? 'commentTab parentCommentTab' : 'commentTab' } >
 				{
-					data.comments.map((c, i) => {
+					comment.comments.map((c, i) => {
 						if(c.comments.length === 0) {
-							return <CommentBody data={c} />
+							return <CommentBody comment={c} />
 						} else {
 							return(
 								<React.Fragment> 
-									<CommentBody data={c} />
+									<CommentBody comment={c} />
 									{renderComments(c, n)}
 								</React.Fragment>
 							)
@@ -145,15 +166,15 @@ const Comment = ({data}) => {
 	return(
 		<React.Fragment>
 			{
-				data.comments.length === 0 ?
-				<CommentBody commentType={'parentComment'} data={data} /> :
+				comment.comments.length === 0 ?
+				<CommentBody commentType={'parentComment'} comment={comment} /> :
 				<React.Fragment>
 				{
 					commentHidden ? 
-					<CommentBody commentType={'parentComment'} data={data} /> :
+					<CommentBody commentType={'parentComment'} comment={comment} /> :
 					<React.Fragment>
-						<CommentBody commentType={'parentComment'} data={data} />
-						{renderComments(data)}
+						<CommentBody commentType={'parentComment'} comment={comment} />
+						{renderComments(comment)}
 					</React.Fragment>
 				}
 				</React.Fragment>

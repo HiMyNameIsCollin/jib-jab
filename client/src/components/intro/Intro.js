@@ -3,33 +3,55 @@ import Loading from '../loading/Loading'
 import './_intro.sass'
 
 
-const Intro = ({pageType, windowWidth, pageContent}) => {
+const Intro = ({pageType, windowWidth, pageContent, user}) => {
 
 	const TrendingIntro = () => {
 
-		const TrendingBtn = () => {
+		const [trendingPosts, setTrendingPosts] = useState(undefined)
+
+		useEffect(() => {
+			fetch('http://localhost:3000/api/p', {
+				method: 'post',
+				headers: {'Content-Type' : 'application/json'}, 
+				body: JSON.stringify({
+					posts: pageContent.posts,
+					sortType: 'best',
+					sortTypeCont: 'day',
+					limit: 4,
+				})
+			})
+			.then(result => result.json())
+			.catch(err => console.log(err))
+		},[])
+
+		const TrendingBtn = ({post}) => {
 			return(
 				<div>
 					<span class='trendingText'>
-						<h2> Trending title</h2>
-						<p> Trending text </p>
+						<h2>{post.title}</h2>
+						<p> {post.text} </p>
 					</span>
-					<img src="https://robohash.org/1" alt="" />
+					<img src={post.img} alt="" />
 				</div>
 			)
 		}
-
-		return(
-			<div className='container trendingIntro'>
-				<span> Trending today</span>
-				<div className='container'>
-					<TrendingBtn />
-					<TrendingBtn />
-					<TrendingBtn />
-					<TrendingBtn />
+		if(trendingPosts !== undefined) {
+			return(
+				<div className='container trendingIntro'>
+					<span> Trending today</span>
+					<div className='container'>
+						{
+							trendingPosts.map((p , i) => {
+								return <TrendingBtn post={p} />
+							})
+						}
+					</div>
 				</div>
-			</div>
-		)
+			)				
+		} else {
+			return null
+		}
+	
 	}
 
 	const CommunityHeader = () => {
@@ -48,10 +70,12 @@ const Intro = ({pageType, windowWidth, pageContent}) => {
 
 	const ProfileHeader = ({windowWidth}) => {
 		return(
-			<div className='container profileHeader'>
-				<div className='profileAvatar container'>
+			<div className='container profileHeader' style={{backgroundImage: `url(${pageContent.configuration.headerImg})`}} >
+				<div className='profileAvatar container' >
 					<img src={pageContent.configuration.communityImg} alt=""/>
-					<p>{pageContent.userName}</p>
+				</div>
+				<div className=' container'>
+					<p> {pageContent.userName}</p>
 				</div>
 				{
 					windowWidth > 920 ?
