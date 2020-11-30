@@ -15,6 +15,7 @@ const initialUser = {
 	communities: ['Announcements'],
 	karma: 1,
 	followers: [],
+	following: [],
 	settings: {
 		feedType: 'list'
 	}
@@ -35,6 +36,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const history = useHistory()
 
   	useEffect(() => {
+  		tokenRefresh()
   		setCurrentLocation(location.pathname)
 	    function handleResize() {
 	      setWindowWidth(window.innerWidth)
@@ -59,12 +61,6 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
   			setOverlay(undefined)
   		}
   	},[navIsOpen])
-
-  	useEffect(() => {
-  		if(user === undefined){
-  			setUser(initialUser)
-  		}
-  	}, [user])
 
   	useEffect(() => {
   		if(error !== undefined){
@@ -111,7 +107,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					setUser(initialUser)
 				}
 			})
-			.catch(err => console.log)
+			.catch(err => setUser(initialUser))
 		})
 
   	}
@@ -129,7 +125,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 			setOverlay={setOverlay}/>
 			{
 				overlayIsOpen !== undefined ?
-				<Overlay overlayIsOpen={overlayIsOpen} setOverlay={setOverlay} setUser={setUser} user={user}/>
+				<Overlay 
+				overlayIsOpen={overlayIsOpen} 
+				setOverlay={setOverlay} 
+				setUser={setUser} 
+				user={user}/>
 				:
 				null
 			} 
@@ -168,22 +168,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       	<Route exact path="/u/:userName">
 		        	<ProfilePage 
 		        	user={user} 
+		        	setUser={setUser} 
 		        	windowWidth={windowWidth} 
 		        	Link={Link}
 		       		location={location}
 		       		pageType={'profilePage'}
-		       		setError={setError}/>
-		        </Route>
-		       	<Route path="/u/:userName/:postID">
-		        	<PostPage 
-		        	Link={Link}
-		        	user={user} 
-		        	setUser={setUser}
-		        	windowWidth={windowWidth}
-		        	overlayIsOpen={overlayIsOpen} 
-		        	setOverlay={setOverlay}
-		       		location={location}
-		       		pageType={'userPostPage'}
 		       		setError={setError}/>
 		        </Route>
 		        <Route exact path="/c/:communityName">
@@ -197,7 +186,19 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					pageType={'communityPage'} 
 		       		setError={setError}/>
 		        </Route>
-		        <Route path='/c/:communityName/:postID'>
+		       	<Route exact path="/u/:userName/:postID/">
+		        	<PostPage 
+		        	Link={Link}
+		        	user={user} 
+		        	setUser={setUser}
+		        	windowWidth={windowWidth}
+		        	overlayIsOpen={overlayIsOpen} 
+		        	setOverlay={setOverlay}
+		       		location={location}
+		       		pageType={'userPostPage'}
+		       		setError={setError}/>
+		        </Route>
+		        <Route exact path='/c/:communityName/:postID'>
 		        	<PostPage 
 		        	Link={Link}
 		        	user={user} 

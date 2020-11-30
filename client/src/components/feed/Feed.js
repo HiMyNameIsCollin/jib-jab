@@ -145,15 +145,16 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 				posts !== null && posts !== undefined ?
 				posts.map((p, i) => {
 					return <Post 
-						pageType={pageType} 
-						Link={Link} 
-						user={user} 
-						setUser={setUser}
-						windowWidth={windowWidth}
-						post={p}
-						key={i}
-						handleVote={handleVote}
-						setError={setError}/> 
+							pageType={pageType} 
+							Link={Link} 
+							user={user} 
+							setUser={setUser}
+							windowWidth={windowWidth}
+							post={p}
+							key={i}
+							handleVote={handleVote}
+							setError={setError}
+							pageContent={pageContent}/> 
 						
 				}): <Loading /> :
 				<p style={{textAlign: 'center', padding: '1em'}}> There are no posts by anybody you are following, or communities you are subscribed too :( </p>

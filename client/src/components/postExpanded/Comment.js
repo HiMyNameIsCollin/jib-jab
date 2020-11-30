@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import CommentForm from './CommentForm'
 import timeDifference from '../../utils/timeDifference'
 
 
-const Comment = ({comment, post, setPosts, handleCommentVote, user, setError}) => {
-	const [commentHidden, setCommentToHidden] = useState(false)
+const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComments, user, setError, Link}) => {
 
 		const CommentBody = ({commentType, comment}) => {
 			const [commentFormOpen, setCommentFormOpen] = useState(false)
@@ -93,7 +92,9 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError}) =
 				<CommentContent />
 				<CommentMeta />
 				<div className='container commentReply'>
-					<span onClick={() => setCommentToHidden(!commentHidden)}>
+					<span 
+						className='hideCommentButton'
+						onClick={() => setCommentToHidden(!commentHidden)}>
 						Hide
 					</span>
 					<span className='commentsCounter'>
@@ -106,14 +107,14 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError}) =
 						}
 					</span>
 					<span 
-						className='container'
+						className='container replyButton'
 						onClick={()=> {
 						if(user.userName !== ''){
 							setCommentFormOpen(!commentFormOpen)	
 						} else {
 							setError('Must be logged in to comment')
 						}
-					}}><i class="far fa-comment"></i> Reply </span>
+					}}>Reply <i class="far fa-comment"></i>  </span>
 				</div>
 				</React.Fragment>
 			</React.Fragment>
@@ -133,6 +134,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError}) =
 	}
 
 	function renderComments(comment, n) {
+		let current 
 		if(n === undefined){
 			n = 0
 		} else {
@@ -158,10 +160,12 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError}) =
 				</div>
 			)			
 		} else {
-			return <p className='seeMoreComments'> See more comments </p>
+			return <p onClick={() => handleSeeMoreComments(comment, post)}
+					className='seeMoreComments'> See more comments </p>
 		}
 	}
 
+	const [commentHidden, setCommentToHidden] = useState(false)
 
 	return(
 		<React.Fragment>

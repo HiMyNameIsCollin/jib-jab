@@ -3,57 +3,41 @@ import PostMenu from './PostMenu'
 import './_post.sass'
 import timeDifference from '../../utils/timeDifference'
 
-
-const Post = ({user, setUser, windowWidth, Link, postView, post, pageType, handleVote, setError}) => {
-
-		const handleSubscription = (communityName, request) => {
-  		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('http://localhost:3000/api/c/subscription', {
-			method: 'post',
-			headers: {
-				authorization: `Bearer ${accessToken}`,
-				'Content-Type' : 'application/json'
-			},
-			body: JSON.stringify({
-				communityName,
-				request,
-			})
-		})
-		.then(response => response.json())
-		.then(response => {
-			console.log(response)
-			setUser(response)
-		})
-		.catch(err => console.log(err))
-	}
+const Post = ({user, setUser, windowWidth, Link, postView, post, pageType, handleVote, setError, pageContent}) => {
 	
 const PostInfo = () => {
-
 	return(
 		<div className='container postInfo'>
 			{
 				/*IF POST IS NOT OPEN OR SOAPBOX*/
-				postView !== 'open' ?
-				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.communityName}`}> {post.communityName}</Link></span>:
-				null
+				postView === 'open' ?
+				null :
+				post.postType === 'soapBox' ?
+				<span className='postInfoCommunityName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName}</Link></span> :
+				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.communityName}`}>/c/{post.communityName}</Link></span>
+
 			}
 			{
-				user.userName !== '' ?
+				user.userName !== '' && user.userName !== post.userName?
+				post.postType === 'community' ? 
 				user.communities.includes(post.communityName) ?
-				<span class='joinedCommunity' onClick={() => handleSubscription(post.communityName, 'unsubscribe') }> Unsubscribe </span> :
-				<span class='joinCommunity' onClick={() => handleSubscription(post.communityName, 'subscribe')}> Subscibe </span> :
+				<span class='joinedCommunity' onClick={() => { handleSubscription(post.communityName, 'unsubscribe', 'community')}}> Unsubscribe </span> :
+				<span class='joinCommunity' onClick={() => {handleSubscription(post.communityName, 'subscribe', 'community')}}> Subscibe </span> :
+				user.following.includes(post.userName) ?
+				<span class='joinedCommunity' onClick={() => handleSubscription(post.userName, 'unsubscribe', 'user') }> Un-follow </span> :
+				<span class='joinCommunity' onClick={() => handleSubscription(post.userName, 'subscribe', 'user')}> Follow </span> :
 				null
 			}
 
 			{
 				/*IF POST IS NOT OPEN AND LESS THAN TABLET RESOLUTION*/
 				postView === 'open' && windowWidth <= 576 ?
-				<span className='postInfoUserName'><Link className='link' to={`/u/${post.user}`}> /u/{post.user} </Link></span> :
+				<span className='postInfoUserName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName} </Link></span> :
 				null
 			}
 			{
 				windowWidth > 576 ?
-				<span className='postInfoUserName'><Link className='link' to={`/u/${post.user}`}> /u/{post.user} </Link></span> :
+				<span className='postInfoUserName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName} </Link></span> :
 				null
 			}
 			{
@@ -137,8 +121,6 @@ const EnlargedPostText = () => {
 
 
 const InteractionWindow =() => {
-
-
 	return(
 		<div className='container interactionWindow'>
 			<span className='postInfoTimePosted'> {timeDifference(post.time)} </span>
@@ -190,9 +172,50 @@ const InteractionWindow =() => {
 		}
 	},[])
 
+	const handleSubscription = (target, request, type) => {
+	const accessToken = window.localStorage.getItem('accessToken')
+	if(type === 'community'){
+		fetch('http://localhost:3000/api/c/subscribe', {
+			method: 'post',
+			headers: {
+				authorization: `Bearer ${accessToken}`,
+				'Content-Type' : 'application/json'
+			},
+			body: JSON.stringify({
+				communityName: target,
+				request,
+			})
+		})
+		.then(response => response.json())
+		.then(response => {
+			setUser(response)
+		})
+		.catch(err => console.log(err))
+	} else if(type === 'user'){
+		fetch('http://localhost:3000/api/u/subscribe', {
+			method: 'post',
+			headers: {
+				authorization: `Bearer ${accessToken}`,
+				'Content-Type' : 'application/json'
+			},
+			body: JSON.stringify({
+				userName: target,
+				request,
+			})
+		})
+		.then(response => response.json())
+		.then(response => {
+			setUser(response)
+		})
+		.catch(err => console.log(err))
+	} 
+}
+
+
+
 	return(
 		<div className='post'>
-			<PostInfo Link={Link} postInfoIsOpen={postInfoIsOpen} openPostInfo={openPostInfo} user={user} openEnlargedWindow={openEnlargedWindow}/>
+			<PostInfo />
 			{
 				postInfoIsOpen ?
 				<PostMenu post={post} Link={Link} user={user}/> :

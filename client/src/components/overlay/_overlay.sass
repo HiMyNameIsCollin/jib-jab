@@ -41,6 +41,11 @@ $gloomyBlue: #D0D2D4
 	margin: auto
 	min-height: 50vh
 	width: calc(100% - 1em)
+	input, textarea
+		border: solid 1px black
+		border-radius: 5px
+		margin-bottom: 2em
+		padding: .5em
 	h3
 		margin-bottom: .5em
 	h4
@@ -60,24 +65,34 @@ $gloomyBlue: #D0D2D4
 		justify-content: space-around
 		padding: 1em 0
 		position: relative
-		input, textarea
-			border: solid 1px black
-			margin-bottom: 2em
-			padding: .5em
 		p
 			color: red
 
 .closeOverlay
 	font-size: 1.5em
+	cursor: pointer
 	position: absolute
 	top: .5em
 	right: .5em
 
+.targetCommunity 
+	align-items: center
+	border-radius: 5px
+	justify-content: flex-start
+	padding: .5em 0
+	img
+		background: black
+		border-radius: 50%
+		margin: 0 .5em
+		height: 2em
+		width: 2em
 
 .postSelectionMenu
 	justify-content: space-around
-	margin: 1em 0
 	flex-wrap: wrap
+	.postSelectionSelected
+		background: $purple
+		color: white
 	span
 		@include button
 		text-align: center
@@ -85,6 +100,7 @@ $gloomyBlue: #D0D2D4
 		margin: .5em 0
 	span:nth-of-type(3)
 		width: auto
+
 
 @media only screen and (min-width: 420px)
 	.login, .register .submitMessage, .submitPost

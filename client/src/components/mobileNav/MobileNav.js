@@ -49,7 +49,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setError
 				<React.Fragment>
 					<div className='navItem navUserName'>
 						<Link className='link' to='/profile/'> 
-							<img src={user.settings.image} alt='User avatar'/>
+							<img src={user.image} alt='User avatar'/>
 							<span> {user.userName}</span>
 						</Link>
 					</div>

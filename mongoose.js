@@ -33,6 +33,7 @@ const userSchema = new Schema({
 	posts: Array,
 	soapBox: Array,
 	followers: Array,
+	following: Array,
 	settings: Object,
 	savedPosts: Array
 })
@@ -41,6 +42,7 @@ const postSchema = new Schema({
 	community: String,
 	comments: Array,
 	image: String,
+	media: String,
 	text: Array,
 	title: String,
 	time: String,

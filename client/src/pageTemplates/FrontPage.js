@@ -11,11 +11,13 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 
 	useEffect(() => {
+		console.log(user)
 			fetch(`http://localhost:3000/api/`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
-					communities: user.communities
+					communities: user.communities,
+					following: user.following,
 				})
 			})
 			.then(response => response.json())

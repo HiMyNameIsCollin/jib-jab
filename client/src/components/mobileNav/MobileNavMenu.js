@@ -10,6 +10,17 @@ const initialState = {
 	}
 }
 
+const initialUser = {
+	userName: '',
+	communities: ['Announcements'],
+	karma: 1,
+	followers: [],
+	following: [],
+	settings: {
+		feedType: 'list'
+	}
+}
+
 
 const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setError}) => {
 
@@ -131,7 +142,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setError}
 					})
 				})
 				.then(response => {
-					setUser(undefined)
+					setUser(initialUser)
 		  			window.localStorage.removeItem("accessToken")
 					window.localStorage.removeItem("refreshToken")
 				})

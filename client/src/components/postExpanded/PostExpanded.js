@@ -7,9 +7,6 @@ import './_postExpanded.sass'
 
 const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setError}) => {
 
-	const [mainCommentInFocus, setMainCommentInFocus] = useState(false)
-	const [posts, setPosts] = useState(undefined)
-
 	const PostMenuBar = () => {
 		return(
 			<div className='postMenuBar container'>
@@ -110,11 +107,14 @@ const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, 
 	}
 
 
+	const [mainCommentInFocus, setMainCommentInFocus] = useState(false)
+	const [posts, setPosts] = useState(undefined)
 	
 	if(posts !== undefined){
 		return(
 			<div className='postExpanded'>
 				<Post 
+				pageContent={pageContent}
 				pageType={pageType} 
 				postView={'open'} 
 				user={user} 
@@ -151,11 +151,13 @@ const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, 
 					
 					posts[0].comments.length > 0 ?
 					<CommentFeed 
+					pageContent={pageContent}
 					handleCommentVote={handleCommentVote} 
 					post={posts[0]} 
 					user={user}
 					setError={setError}
-					setPosts={setPosts}/> :
+					setPosts={setPosts}
+					Link={Link}/> :
 					<p style={{padding: '1em'}}> Be the first to leave a comment! </p>
 				}
 

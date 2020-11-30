@@ -56,6 +56,7 @@ app.post('/api/register', (req, res) => {
 					communities: ['Announcements'],
 					karma: 1,
 					followers: [],
+					following: [],
 					settings: {
 						feedType: 'list'
 					},
@@ -66,7 +67,7 @@ app.post('/api/register', (req, res) => {
 					image: 'http://robohash.org/12'
 				})
 				user.save().then(() => {
-					CommunityModel.findOneAndUpdate({'communityName': 'announcements'}, {$push:{'followers': userName}})
+					CommunityModel.findOneAndUpdate({'communityName': 'Announcements'}, {$push:{'followers': userName}})
 					.then(() => res.json({success: true}))
 				})
 			})

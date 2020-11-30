@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import Comment from './Comment'
 
 
@@ -7,10 +7,7 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const CommentFeed = ({post, user, handleCommentVote, setError, setPosts}) => {
-
-	const [commentSort, setCommentSort] = useState(initialSort)
-	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
+const CommentFeed = ({pageContent, post, user, Link, handleCommentVote, setError, setPosts}) => {
 
 	const SortComments = () => {
 		return(
@@ -94,9 +91,45 @@ const CommentFeed = ({post, user, handleCommentVote, setError, setPosts}) => {
 		)
 	}
 
+	const [commentSort, setCommentSort] = useState(initialSort)
+	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
+	let prevRender = useRef()
+
+
+	const handleSeeMoreComments = (comment, currentPost) => {
+		if(prevRender.current){
+			prevRender.current.push(currentPost)
+		}else {
+			prevRender.current = [currentPost]
+		}
+		let updatedPost = {...post}
+		updatedPost.comments = [comment]
+		setPosts([updatedPost])
+	}
+
+
 	return(
 		<div className='commentFeed'>
-		<SortComments/>
+		{
+			prevRender.current ?
+			<div className='commentNavigation container'>
+				<span onClick={() => {
+					setPosts([prevRender.current[0]])
+					prevRender.current = false
+				}}>
+					Back to feed </span>
+				{
+					prevRender.current.length > 1 ?
+					<span onClick={() => {
+					setPosts([prevRender.current[prevRender.current.length -1]])
+					prevRender.current.pop()
+					}}>	 Prev comments </span> :
+					null
+				}
+
+			</div> :
+			<SortComments/>
+		}
 		{
 			post.comments.map((c, i)=> {
 				return (
@@ -105,9 +138,11 @@ const CommentFeed = ({post, user, handleCommentVote, setError, setPosts}) => {
 					comment={c} 
 					commentType='parentComment' 
 					handleCommentVote={handleCommentVote}
+					handleSeeMoreComments={handleSeeMoreComments}
 					user={user}
 					setError={setError}
-					setPosts={setPosts}/>
+					setPosts={setPosts}
+					Link={Link}/>
 				)
 			}) 
 		}

@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import SearchBar from '../searchBar/SearchBar'
 import './_header.sass'
 
 const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay}) => {
@@ -60,11 +61,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 					To top
 				</span>
 			}
-			<form>
-			 	<button> <i className="fas fa-search"></i></button>
-			 	<input type="text" value='Search' />
-			</form>
-
+				<SearchBar Link={Link} searchBarType='header'/>
 			{
 
 				user.userName === '' ?

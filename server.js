@@ -2,36 +2,68 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
+const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto')
+const multer  = require('multer')
+const GridFsStorage = require('multer-gridfs-storage')
+const Grid = require('gridfs-stream')
 require('dotenv').config()
-
 const {mongoose, postSchema, tokenSchema, userSchema, communitySchema} = require('./mongoose')
 const url = 'mongodb://127.0.0.1:27017/jibjab'
+const app = express()
+const path = require("path")
+const myPort = process.env.PORT || 3000
 
-mongoose.connect(url, { useNewUrlParser: true , useFindAndModify: false })
+/*MiddleWare*/
+app.use(cors())
+app.use(bodyParser.json())
 
-const conn = mongoose.connection
+/*Declare DB and Stream*/
+let conn
+let gfs 
+/*Declare Mongo Models*/
 let PostModel
 let UserModel
 let CommunityModel
+
+conn = mongoose.createConnection(url, { useNewUrlParser: true , useFindAndModify: false })
 
 conn.once('open', () => {
 	console.log('Database connected', url)
 	PostModel = conn.model('posts', postSchema)
 	UserModel = conn.model('users', userSchema)
 	CommunityModel = conn.model('communities', communitySchema)
+	gfs = Grid(conn.db, mongoose.mongo)
+	gfs.collection('uploads')
 })
 
 conn.on('error', () => {
 	console.log('Database error' , url)
 })
 
-const app = express()
+/*Enable storage engine*/
+let storage = new GridFsStorage({
+	url: url,
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if(err) {
+					return reject(err)
+				}
+				const filename = buf.toString('hex') + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: 'uploads'
+				}
+				resolve(fileInfo)
+			})
+		})
+	}
+})
 
-const myPort = process.env.PORT || 3000
+/*Initilize  file upload*/
+const upload = multer({ storage }).array('myImage' ,12)
 
-/*MiddleWare*/
-app.use(cors())
-app.use(bodyParser.json())
 
 function timeDifference(date, dateType) {
 	const dateNow = new Date()
@@ -72,14 +104,12 @@ function sortPosts(posts, sortType, sortTypeCont){
 					j--
 				}
 				newSortOrder[j+1] = current
-				console.log(newSortOrder)
 			} else if(type === 'age'){
 				while((j > -1) && (current.age < newSortOrder[j].age)){
 					newSortOrder[j+1] = newSortOrder[j]
 					j--
 				}
 				newSortOrder[j+1] = current
-				console.log(newSortOrder)
 			}
 		}
 
@@ -220,32 +250,51 @@ app.get('/', authenticateToken, (req, res) => {
 	})
 })
 
-app.post('/api/', (req, res) => {
-	CommunityModel.findOne({communityName: 'Popular'})
-	.then(pageContent => {
-		const communities = req.body.communities.map((c, i) => c.toLowerCase())
-		CommunityModel.find({
-			communityNameLower : { $in:
-				communities
-			}
-		})
-		.then(result => {
-			pageContent.communities = req.body.communities
-			result.map((r, i) => pageContent.posts.push(...r.posts))
-			res.json(pageContent)
-		})
+app.post('/api/', async (req, res) => {
+	console.log(req.body)
+	const communityQuery = req.body.communities.map((c, i) => c.toLowerCase())
+	const followingQuery = req.body.following.map((f, i) => f.toLowerCase())
+	const communities = await CommunityModel.find({
+		communityNameLower: { $in: 
+			communityQuery
+		}
 	})
+	const users = await UserModel.find({
+		userNameLower: { $in: 
+			followingQuery
+		}
+	})
+	const popularPage = await CommunityModel.findOne({communityName: 'Popular'})
+	if(communities, users, popularPage){
+		try{
+			/*#Grab posts from subscribed communities*/
+			let posts = []
+			communities.map((c, i) => posts.push(...c.posts))
+			users.map((u, i) => posts.push(...u.soapBox))
+			popularPage.communities = req.body.communities
+			popularPage.posts = posts
+			res.json(popularPage)
+		}
+		catch(err){
+			res.status(400).json({error: 'There has been an error'})
+		}
+	} else {
+		console.log(123)
+	}
 })
 
 
 
-/*GET COMMUNITY DATA AND POSTS */
+/*GET COMMUNITY DATA  */
 app.get('/api/c/:communityName/', (req, res) => {
 	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
 	.then((pageContent) => {
 		if(pageContent.communityNameLower !== 'global'){
 			res.json(pageContent)
 		} else {
+			/*JUSTIFICATION FOR GRABBING ALL POST IDS FROM THE COMMUNITIES AS OPPOSED TO JUST PUTTING POST IDS INTO GLOBAL
+			WITH EVERY POST THAT GETS SUBMITTED IS BECAUSE I WANT TO GIVE THE OPTION FOR COMMUNITIES TO OPT OUT OF THE 
+			GLOBAL PAGE*/
 			const communities = pageContent.communities.map((r, i) => r.toLowerCase())
 			CommunityModel.find({
 				communityNameLower: { $in:
@@ -271,7 +320,20 @@ app.get('/img/:communityName' , (req, res) => {
 	.catch(err => console.log(err))
 })
 
+/*COMMUNITY DATA FOR WHEN VIEWING A POST*/
+app.get('/api/c/:communityName/:postID', (req, res) => {
+	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
+	.then((pageContent) => {
+		const posts = []
+		posts.push(req.params.postID)
+		pageContent.posts = posts
+		res.json(pageContent)
+	})
+	.catch(err => console.log(err))
+})
 
+
+/*Catch all fetching posts*/
 app.post('/api/p/', (req, res) => {
 	if(req.body.posts.length > 1){
 		PostModel.find({
@@ -284,7 +346,7 @@ app.post('/api/p/', (req, res) => {
 			res.json(posts)
 		})
 		.catch(err => console.log(err))
-	} else if(req.body.posts.length === 1) {
+	} else if(req.body.posts.length === 1) { 
 		PostModel.findOne({id: req.body.posts[0]})
 		.then(result => {
 			const posts = [result]
@@ -296,6 +358,7 @@ app.post('/api/p/', (req, res) => {
 	}
 })
 
+/*Route for top posts of the day and popular page's trending section*/
 app.get('/api/topPosts/:communityNameLower', (req, res) => {
 	CommunityModel.findOne({communityNameLower: req.params.communityNameLower})
 	.then(community => {
@@ -312,18 +375,7 @@ app.get('/api/topPosts/:communityNameLower', (req, res) => {
 	})
 })
 
-
-app.get('/api/c/:communityName/:postID', (req, res) => {
-	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
-	.then((pageContent) => {
-		const posts = []
-		posts.push(req.params.postID)
-		pageContent.posts = posts
-		res.json(pageContent)
-	})
-	.catch(err => console.log(err))
-})
-
+/*ROUTE FOR UPVOTING AND DOWNVOTING POSTS*/
 app.post('/api/vote', authenticateToken, async (req, res) => {
 	let { request , postID } = req.body
 	let { userName } = req.user
@@ -385,6 +437,42 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 	}
 })
 
+/*SUBMIT A POST ROUTE*/
+app.post('/api/c/:communityName/submit', authenticateToken, (req, res) => {
+	upload(req, res, async (err) => {
+		if(err) return res.sendStatus(400)
+		let community = await CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
+		let user = await UserModel.findOne({userName: req.user.userName})
+		let imageRefs = []
+		if(req.files){
+			req.files.map((file, i) => {
+				imageRefs.push(file.filename)
+			})
+		} 
+		if(user && community){
+			console.log(123)
+		}
+	})
+})
+
+/*SUBMIT A SOAPBOX POST ROUTE*/
+app.post('/api/u/submit', authenticateToken, (req, res) => {
+	upload(req, res, async (err) => {
+		if(err) return res.sendStatus(400)
+		let user = await UserModel.findOne({userName: req.user.userName})
+		let imageRefs = []
+		if(req.files){
+			req.files.map((file, i) => {
+				imageRefs.push(file.filename)
+			})
+		} 
+		if(user){
+			console.log(321)
+		}
+	})
+})
+
+/*SUBMIT A COMMENT ROUTE*/
 app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
 	const {postId, commentId, commentContent } = req.body
 	console.log(postId, commentId, commentContent)
@@ -394,7 +482,7 @@ app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
 		commentInfo: {
 			userName,
 			time: time.toString(),
-			id: '116',
+			id: uuidv4(),
 		},
 		commentContent,
 		comments: [],
@@ -435,6 +523,7 @@ app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
 	}
 })
 
+/*ROUTE FOR VOTING ON A COMMENT*/
 app.post('/api/comment/vote', authenticateToken, async (req, res) => {
 	const deepUpvote = (comments, userName, id) => {
 		const output = comments.map((c, i) => {
@@ -502,7 +591,8 @@ app.post('/api/comment/vote', authenticateToken, async (req, res) => {
 	}
 })
 
-app.post('/api/c/subscription', authenticateToken, async (req, res) => {
+/*ROUTE FOR SUBSCRIBING TO A COMMUNITY*/
+app.post('/api/c/subscribe', authenticateToken, async (req, res) => {
 	const community = await CommunityModel.findOne({communityNameLower: req.body.communityName.toLowerCase()})
 	const user = await UserModel.findOne({userName: req.user.userName})
 	if(user && community) {
@@ -552,8 +642,45 @@ app.post('/api/c/subscription', authenticateToken, async (req, res) => {
 		res.status(400).json({error: 'There has been an error'})
 	}
 })
+/*ROUTE FOR FOLLOWING A USER*/
+app.post('/api/u/subscribe', authenticateToken, async (req, res) => {
+	console.log(req.body)
+	const targetUser =  await UserModel.findOne({userName: req.body.userName})
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(targetUser, user){
+		try{
+			if(req.body.request === 'subscribe'){
+				targetUser.followers.push(user.userName)
+				user.following.push(targetUser.userName)
+			} else if (req.body.request === 'unsubscribe'){
+				targetUser.followers.forEach((f, i) => {
+					if(f === user.userName){
+						targetUser.followers.splice(i, 1)
+					}
+				})
+				user.following.forEach((f, i) => {
+					if(f === targetUser.userName){
+						user.following.splice(i, 1)
+					}
+				})
+			}
+			targetUser.markModified('followers')
+			user.markModified('following')
+			targetUser.save()
+			.then( () => {
+				user.save()
+				.then(updatedUser => res.json(updatedUser))
+			})		
+		}
+		catch(err){
+			res.status(400).json({error: 'There has been an error'})
+		}
+	}else{
+		res.status(400).json({error: 'There has been an error'})
+	}
+})
 
-
+/*ROUTE FOR CHANGING USERS VIEW SETTING*/
 app.get('/api/u/settings', authenticateToken , async (req, res) => {
 	const user = await UserModel.findOne({userName: req.user.userName})
 	if(user){
@@ -588,6 +715,25 @@ app.get('/api/u/:user/:postID', (req, res) => {
 		result.posts = [req.params.postID]
 		res.json(result)
 	})
+})
+
+app.post('/api/search', async (req, res) => {
+	const communities = await CommunityModel.find()
+	if(communities){
+		let communityArray = []
+		communities.forEach((c, i) => {
+			if(c.communityName !== 'Popular' && c.communityName !== 'Global'){
+				if(c.communityNameLower.substr(0, req.body.query.length) === req.body.query.toLowerCase()){
+					communityArray.push(c.communityName)
+					communityArray.push(c.communityName)
+					communityArray.push(c.communityName)
+					communityArray.push(c.communityName)
+					communityArray.push(c.communityName)
+				}
+			}
+		})
+		res.json(communityArray)
+	}
 })
 
 app.listen(myPort, () => {

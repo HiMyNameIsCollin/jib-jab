@@ -9,21 +9,12 @@ const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay,
 	const [pageContent, setPageContent] = useState(undefined)
 
 	useEffect(() => {
-			if(pageType !== 'userPostPage'){
 				fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
 					setPageContent(response)
 				})
 				.catch(err => console.log(err))
-			} else {
-				fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
-				.then(response => response.json())
-				.then(response => {
-					setPageContent(response)
-				})
-				.catch(err => console.log(err))
-			}
 	},[])
 
 		{
