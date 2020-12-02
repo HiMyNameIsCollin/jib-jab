@@ -62,7 +62,7 @@ let storage = new GridFsStorage({
 })
 
 /*Initilize  file upload*/
-const upload = multer({ storage }).array('myImage' ,12)
+const upload = multer({ storage }).single('myImage')
 
 
 function timeDifference(date, dateType) {
@@ -121,8 +121,9 @@ function sortPosts(posts, sortType, sortTypeCont){
 		posts.forEach((p, i) => {
 			newSortOrder.push({
 				id: p.id,
-				score: p.karma.upvotes.length - p.karma.downvotes.length - timeDifference(p.time, 'hours') ,
+				score: p.karma.upvotes.length - p.karma.downvotes.length - timeDifference(p.time, 'minutes')/60 ,
 			})
+		
 		})
 		return sortBy(newSortOrder, 'score')
 
@@ -286,48 +287,76 @@ app.post('/api/', async (req, res) => {
 
 
 /*GET COMMUNITY DATA  */
-app.get('/api/c/:communityName/', (req, res) => {
-	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
-	.then((pageContent) => {
-		if(pageContent.communityNameLower !== 'global'){
-			res.json(pageContent)
-		} else {
-			/*JUSTIFICATION FOR GRABBING ALL POST IDS FROM THE COMMUNITIES AS OPPOSED TO JUST PUTTING POST IDS INTO GLOBAL
-			WITH EVERY POST THAT GETS SUBMITTED IS BECAUSE I WANT TO GIVE THE OPTION FOR COMMUNITIES TO OPT OUT OF THE 
-			GLOBAL PAGE*/
-			const communities = pageContent.communities.map((r, i) => r.toLowerCase())
-			CommunityModel.find({
-				communityNameLower: { $in:
-					communities
+app.get('/api/c/:communityName/', async (req, res) => {
+		const community = await CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
+		if(community){
+			try{
+				if(community.communityNameLower !== 'global'){
+					res.json(community)
+				} else {
+					/*JUSTIFICATION FOR GRABBING ALL POST IDS FROM THE COMMUNITIES AS OPPOSED TO JUST PUTTING POST IDS INTO GLOBAL
+					WITH EVERY POST THAT GETS SUBMITTED IS BECAUSE I WANT TO GIVE THE OPTION FOR COMMUNITIES TO OPT OUT OF THE 
+					GLOBAL PAGE*/
+					const communities = community.communities.map((r, i) => r.toLowerCase())
+					const soapBox = await PostModel.find({postType: 'soapBox'})
+					const globalCommunities = await	CommunityModel.find({
+						communityNameLower: { $in:
+							communities
+						}
+					})
+					if(soapBox && globalCommunities){
+						try{
+							globalCommunities.map((c, i) => {
+								community.posts.push(...c.posts)
+							})
+							soapBox.map((p, i) => {
+								community.posts.push(p.id)
+							})
+							res.json(community)
+						}
+						catch(err){
+							res.sendStatus(400)
+						}
+					}
 				}
-			})
-			.then(result => {
-				const posts = []
-				result.map((r, i) => posts.push(...r.posts))
-				pageContent.posts = posts
-				res.json(pageContent)
-			})
+			}
+			catch(err){
+				res.sendStatus(400)
+			}
 		}
-	})
-	.catch(err => console.log(err))		
 })
 
 
 /*GET COMMUNITY IMAGE*/
-app.get('/img/:communityName' , (req, res) => {
+app.get('/api/c/img/:communityName' , (req, res) => {
 	CommunityModel.findOne({communityNameLower: req.params.communityName })
 	.then((result) => res.json(result.configuration.communityImg))
 	.catch(err => console.log(err))
 })
 
+app.get('/api/p/img/:filename', async (req, res) => {
+	gfs.files.findOne({filename: req.params.filename})
+	.then(file => {
+		const readstream = gfs.createReadStream(file.filename)
+		readstream.pipe(res)
+	})
+	.catch(err => res.sendStatus(400))
+
+})
+
+
 /*COMMUNITY DATA FOR WHEN VIEWING A POST*/
 app.get('/api/c/:communityName/:postID', (req, res) => {
 	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
 	.then((pageContent) => {
-		const posts = []
-		posts.push(req.params.postID)
-		pageContent.posts = posts
-		res.json(pageContent)
+		if(pageContent !== null){
+			const posts = []
+			posts.push(req.params.postID)
+			pageContent.posts = posts
+			res.json(pageContent)
+		} else {
+			res.sendStatus(400)
+		}
 	})
 	.catch(err => console.log(err))
 })
@@ -342,19 +371,29 @@ app.post('/api/p/', (req, res) => {
 			}
 		})
 		.then(result => {
-			const posts = sortPosts(result, req.body.sortType, req.body.sortTypeCont)
-			res.json(posts)
+			if(result !== null){
+				const posts = sortPosts(result, req.body.sortType, req.body.sortTypeCont)
+				res.json(posts)			
+			} else {
+				res.sendStatus(400)
+			}
 		})
-		.catch(err => console.log(err))
+		.catch(err => {
+			res.sendStatus(400)
+		})
 	} else if(req.body.posts.length === 1) { 
 		PostModel.findOne({id: req.body.posts[0]})
 		.then(result => {
-			const posts = [result]
-			res.json(posts)
+			if(result !== null){
+				const posts = [result]
+				res.json(posts)
+			}else {
+				res.sendStatus(400)
+			}
 		})
-		.catch(err => console.log(err))
+		.catch(err => res.sendStatus(400))
 	} else if(req.body.posts.length === 0){
-		res.status(400).json({error: 'Not subscribed to anything, try following some people or communities to fill your feed'})
+		res.sendStatus(400)
 	}
 })
 
@@ -444,13 +483,51 @@ app.post('/api/c/:communityName/submit', authenticateToken, (req, res) => {
 		let community = await CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
 		let user = await UserModel.findOne({userName: req.user.userName})
 		let imageRefs = []
-		if(req.files){
-			req.files.map((file, i) => {
-				imageRefs.push(file.filename)
-			})
+		if(req.file){
+			imageRefs.push(req.file.filename)
 		} 
+		let title
+		let text
+		if(req.body.data){
+			title = req.body.data.postTitle
+			text = req.body.data.postText
+			link = req.body.data.link
+		} else {
+			title = req.body.postTitle
+			text = req.body.postText
+			link = req.body.link
+		}
 		if(user && community){
-			console.log(123)
+			try{
+				const newPost = new PostModel({
+					postType: 'community',
+					communityName: community.communityName,
+					communityNameLower: community.communityNameLower,
+					comments: [],
+					imageLink: req.body.imageLink ? req.body.imageLink : '',
+					imageRefs: imageRefs,
+					link: link,
+					text: text,
+					title: title,
+					time: new Date(),
+					userName: req.user.userName,
+					karma: {upvotes: [req.user.userName], downvotes: []},
+					id: uuidv4(),
+					postTag: '',
+				})
+				community.posts.push(newPost.id)
+				user.posts.push(newPost.id)
+				community.markModified('posts')
+				user.markModified('posts')
+				community.save()
+				user.save()
+				newPost.save()
+				.then(savedPost => res.send('Success'))
+				.catch(err => sendStatus(400))
+			}
+			catch(err){
+				res.sendStatus(400)
+			}
 		}
 	})
 })
@@ -461,13 +538,49 @@ app.post('/api/u/submit', authenticateToken, (req, res) => {
 		if(err) return res.sendStatus(400)
 		let user = await UserModel.findOne({userName: req.user.userName})
 		let imageRefs = []
-		if(req.files){
-			req.files.map((file, i) => {
-				imageRefs.push(file.filename)
-			})
+		if(req.file){
+			imageRefs.push(req.file.filename)
 		} 
+		let title
+		let text
+		if(req.body.data){
+			title = req.body.data.postTitle
+			text = req.body.data.postText
+			link = req.body.data.link
+		} else {
+			title = req.body.postTitle
+			text = req.body.postText
+			link = req.body.link
+		}
 		if(user){
-			console.log(321)
+			try{
+				const newPost = new PostModel({
+					postType: 'soapBox',
+					communityName: req.user.userName,
+					communityNameLower: req.user.userName.toLowerCase(),
+					comments: [],
+					imageLink: req.body.imageLink ? req.body.imageLink : '',
+					imageRefs: imageRefs,
+					link: link,
+					text: text,
+					title: title,
+					time: new Date(),
+					userName: req.user.userName,
+					karma: {upvotes: [req.user.userName], downvotes: []},
+					id: uuidv4(),
+					postTag: ''
+				})
+				user.soapBox.push(newPost.id)
+				user.markModified('soapBox')
+				user.save()
+				newPost.save()
+				.then(res.send('Success'))
+				.catch(err => console.log(err))
+			}
+			catch(err){
+				res.sendStatus(400)
+			}
+
 		}
 	})
 })
@@ -475,7 +588,6 @@ app.post('/api/u/submit', authenticateToken, (req, res) => {
 /*SUBMIT A COMMENT ROUTE*/
 app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
 	const {postId, commentId, commentContent } = req.body
-	console.log(postId, commentId, commentContent)
 	const userName = req.user.userName
 	const time = new Date()
 	const newComment = {
@@ -596,8 +708,6 @@ app.post('/api/c/subscribe', authenticateToken, async (req, res) => {
 	const community = await CommunityModel.findOne({communityNameLower: req.body.communityName.toLowerCase()})
 	const user = await UserModel.findOne({userName: req.user.userName})
 	if(user && community) {
-		const session = await mongoose.startSession()
-		session.startTransaction()
 		try{
 			if(req.body.request === 'subscribe'){
 				user.communities.push(community.communityName)
@@ -634,8 +744,6 @@ app.post('/api/c/subscribe', authenticateToken, async (req, res) => {
 			}
 		}
 		catch(err){
-			await session.abortTransaction()
-			session.endSession()
 			res.status(400).json({error: 'There has been an error'})
 		}
 	} else {
@@ -644,7 +752,6 @@ app.post('/api/c/subscribe', authenticateToken, async (req, res) => {
 })
 /*ROUTE FOR FOLLOWING A USER*/
 app.post('/api/u/subscribe', authenticateToken, async (req, res) => {
-	console.log(req.body)
 	const targetUser =  await UserModel.findOne({userName: req.body.userName})
 	const user = await UserModel.findOne({userName: req.user.userName})
 	if(targetUser, user){
@@ -704,9 +811,13 @@ app.get('/api/u/settings', authenticateToken , async (req, res) => {
 app.get('/api/u/:user', (req, res) => {
 	UserModel.findOne({userNameLower: req.params.user.toLowerCase()})
 	.then(result => {
-		res.json(result)
+		if(result !== null){
+			res.json(result)
+		} else {
+			res.sendStatus(400)
+		}
 	})
-	.catch(err => console.log(err))
+	.catch(err => res.sendStatus(400))
 })
 
 app.get('/api/u/:user/:postID', (req, res) => {
@@ -715,6 +826,7 @@ app.get('/api/u/:user/:postID', (req, res) => {
 		result.posts = [req.params.postID]
 		res.json(result)
 	})
+	.catch(err => res.sendStatus(400))
 })
 
 app.post('/api/search', async (req, res) => {
@@ -724,10 +836,6 @@ app.post('/api/search', async (req, res) => {
 		communities.forEach((c, i) => {
 			if(c.communityName !== 'Popular' && c.communityName !== 'Global'){
 				if(c.communityNameLower.substr(0, req.body.query.length) === req.body.query.toLowerCase()){
-					communityArray.push(c.communityName)
-					communityArray.push(c.communityName)
-					communityArray.push(c.communityName)
-					communityArray.push(c.communityName)
 					communityArray.push(c.communityName)
 				}
 			}

@@ -6,7 +6,7 @@ import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
 
-const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType, setError}) => {
+const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType, setMessage}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
@@ -21,7 +21,10 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 			.then(response => {
 					setPageContent(response)
 			})
-			.catch(err => console.log(err))
+			.catch(err => {
+				setMessage('There doesnt seem to be anything here...')
+				history.push('/')
+			})	
 		}
 	},[location.pathname])
 
@@ -54,7 +57,8 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 						setUser={setUser}
 						windowWidth={windowWidth}
 						pageContent={pageContent} 
-						setError={setError} />
+						setMessage={setMessage}
+						history={history} />
 						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 					</React.Fragment> :
 					mobileViewIsFeed ?
@@ -65,7 +69,7 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 					setUser={setUser} 
 					windowWidth={windowWidth}
 					pageContent={pageContent}
-					setError={setError}/>:
+					setMessage={setMessage}/>:
 					<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 				}
 

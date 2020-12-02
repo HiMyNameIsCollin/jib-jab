@@ -23,7 +23,7 @@ const PostMenu = ({post, Link, user}) => {
 			<div>
 				<Link to={`/u/${post.user}`} className='link'>
 					<i class="fa fa-users"></i>
-					<span> {post.user}'s profile </span>
+					<span> {post.userName}'s profile </span>
 				</Link>
 			</div>
 			{

@@ -39,16 +39,20 @@ const userSchema = new Schema({
 })
 
 const postSchema = new Schema({
-	community: String,
+	postType: String,
+	communityName: String,
+	communityNameLower: String,
 	comments: Array,
-	image: String,
-	media: String,
-	text: Array,
+	imageLink: String,
+	imageRefs: Array,
+	link: String,
+	text: String,
 	title: String,
 	time: String,
-	user: String,
+	userName: String,
 	karma: Object,
-	id: String
+	id: String,
+	postTag: String,
 })
 
 const tokenSchema = new Schema({

@@ -12,7 +12,9 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 			const CommentInfo = () => {
 			return(
 				<div className='commentInfo container' onClick={() => setCommentToHidden(!commentHidden)}>
-					<span className='commentUserName'> {comment.commentInfo.userName} </span> 
+					<Link className='commentUserName' to={`/u/${comment.commentInfo.userName}`}> 
+					{comment.commentInfo.userName} 
+					</Link> 
 					{
 						commentHidden ?
 						null :

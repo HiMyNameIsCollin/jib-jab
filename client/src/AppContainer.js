@@ -7,6 +7,7 @@ import CommunityPage from './pageTemplates/CommunityPage'
 import ProfilePage from './pageTemplates/ProfilePage'
 import PostPage from './pageTemplates/PostPage'
 import AboutPage from './pageTemplates/AboutPage'
+import InboxPage from './pageTemplates/inboxPage/InboxPage'
 import Loading from './components/loading/Loading'
 
 
@@ -30,7 +31,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
 	const [user, setUser] = useState(undefined)
-	const [error, setError] = useState(undefined)
+	const [message, setMessage] = useState(undefined)
 
 	const location = useLocation()
 	const history = useHistory()
@@ -63,15 +64,15 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
   	},[navIsOpen])
 
   	useEffect(() => {
-  		if(error !== undefined){
+  		if(message !== undefined){
   			setTimeout(() => {
-  				document.getElementsByClassName('error')[0].classList.add('errorSlideOut')
+  				document.getElementsByClassName('message')[0].classList.add('messageSlideOut')
   			}, 3000)
   			setTimeout(() => {
-  				setError(undefined)
+  				setMessage(undefined)
   			}, 5000)
   		}
-  	},[error])
+  	},[message])
 
   	function tokenRefresh() {
   		const accessToken = window.localStorage.getItem('accessToken')
@@ -129,14 +130,16 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				overlayIsOpen={overlayIsOpen} 
 				setOverlay={setOverlay} 
 				setUser={setUser} 
-				user={user}/>
+				user={user}
+				setMessage={setMessage}
+				history={history}/>
 				:
 				null
 			} 
 			{
-				error !== undefined ?
-				<div className='error errorSlideIn container'> 
-					<p> {error }</p>
+				message !== undefined ?
+				<div className='message messageSlideIn container'> 
+					<p> {message }</p>
 				</div> :
 				null
 			}
@@ -150,7 +153,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					navIsOpen={navIsOpen}
 					Link={Link}
 					setOverlay={setOverlay} 
-					setError={setError}/>
+					setMessage={setMessage}/>
 				</div> :
 				null
 			}
@@ -163,7 +166,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		windowWidth={windowWidth}
 		       		location={location}
 		       		pageType={'frontPage'}
-		       		setError={setError} />
+		       		setMessage={setMessage} />
 		        </Route>
 		       	<Route exact path="/u/:userName">
 		        	<ProfilePage 
@@ -173,7 +176,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	Link={Link}
 		       		location={location}
 		       		pageType={'profilePage'}
-		       		setError={setError}/>
+		       		setMessage={setMessage}
+		       		history={history}/>
 		        </Route>
 		        <Route exact path="/c/:communityName">
 		        	<CommunityPage 
@@ -184,7 +188,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		location={location}
 		       		history={history}
 					pageType={'communityPage'} 
-		       		setError={setError}/>
+		       		setMessage={setMessage}/>
 		        </Route>
 		       	<Route exact path="/u/:userName/:postID/">
 		        	<PostPage 
@@ -196,7 +200,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	setOverlay={setOverlay}
 		       		location={location}
 		       		pageType={'userPostPage'}
-		       		setError={setError}/>
+		       		setMessage={setMessage}
+		       		history={history}/>
 		        </Route>
 		        <Route exact path='/c/:communityName/:postID'>
 		        	<PostPage 
@@ -208,7 +213,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	setOverlay={setOverlay}
 		       		location={location}
 					pageType={'postPage'} 
-					setError={setError}/>
+					setMessage={setMessage}
+					history={history}/>
 		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage />

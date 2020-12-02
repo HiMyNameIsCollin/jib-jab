@@ -3,10 +3,9 @@ import Loading from '../loading/Loading'
 import './_intro.sass'
 
 
-const Intro = ({pageType, windowWidth, pageContent, user}) => {
+const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 
 	const TrendingIntro = () => {
-
 		const [trendingPosts, setTrendingPosts] = useState(undefined)
 
 		useEffect(() => {
@@ -15,24 +14,33 @@ const Intro = ({pageType, windowWidth, pageContent, user}) => {
 				headers: {'Content-Type' : 'application/json'}, 
 				body: JSON.stringify({
 					posts: pageContent.posts,
-					sortType: 'best',
+					sortType: 'top',
 					sortTypeCont: 'day',
-					limit: 4,
 				})
 			})
 			.then(result => result.json())
+			.then(result => {
+				setTrendingPosts(result)
+			})
 			.catch(err => console.log(err))
 		},[])
 
 		const TrendingBtn = ({post}) => {
 			return(
-				<div>
+				<Link className='trendingBtn' to={post.postType === 'community' ? `/c/${post.communityName}/${post.id}` : `/u/${post.userName}/${post.id}`} >
 					<span class='trendingText'>
 						<h2>{post.title}</h2>
-						<p> {post.text} </p>
+						<p> {post.text && post.text !== '' ? post.text.length > 50 ? post.text.slice(0, 50) + '...' : post.text : null } </p>
 					</span>
-					<img src={post.img} alt="" />
-				</div>
+					{
+						post.imageLink !== '' ?
+						<img src={post.imageLink} alt="" /> :
+						post.imageRefs.length > 0 ?
+						<img src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`}/> :
+						<img src='http://source.unsplash.com/random/200x200' alt='' />
+					}
+				</Link>
+			
 			)
 		}
 		if(trendingPosts !== undefined) {
@@ -42,7 +50,9 @@ const Intro = ({pageType, windowWidth, pageContent, user}) => {
 					<div className='container'>
 						{
 							trendingPosts.map((p , i) => {
-								return <TrendingBtn post={p} />
+								if(i < 4){
+									return <TrendingBtn post={p} />
+								}
 							})
 						}
 					</div>
@@ -108,6 +118,8 @@ const Intro = ({pageType, windowWidth, pageContent, user}) => {
 			</div>
 		)
 	}
+
+
 
 	return(
 		<div className='intro'>

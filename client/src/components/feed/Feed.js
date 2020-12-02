@@ -16,7 +16,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 	const [profileFeedChoice, setProfileFeedChoice] = useState('soapBox')
 
 	useEffect(() => {
-		if(pageContent.posts.length !== 0){
+		if(pageContent.posts.length !== 0 || pageContent.soapBox && pageContent.soapBox.length !== 0){
 			handlePostFetch()
 		}
 	},[profileFeedChoice, feedSort])
@@ -29,43 +29,55 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 	const handlePostFetch = () => {
 		if(pageType === 'profilePage') {
 			if(profileFeedChoice === 'soapBox'){
+				if(pageContent.soapBox.length > 0){
 				fetch(`http://localhost:3000/api/p/`,{
+						method: 'post',
+						headers: {'Content-Type' : 'application/json'},
+						body: JSON.stringify({
+							posts: pageContent.soapBox,
+							sortType: profileFeedChoice
+						})
+					})
+					.then(response => response.json())
+					.then(response => setPosts(response))
+					.catch(err => console.log(err))							
+				} else {
+					setPosts([])
+				}
+			}else {
+				if(pageContent.posts.length > 0){
+					fetch(`http://localhost:3000/api/p/`,{
 					method: 'post',
 					headers: {'Content-Type' : 'application/json'},
 					body: JSON.stringify({
-						posts: pageContent.soapBox,
+						posts: pageContent.posts,
 						sortType: profileFeedChoice
+						})
 					})
-				})
-				.then(response => response.json())
-				.then(response => setPosts(response))
-				.catch(err => console.log(err))					
-			}else {
-				fetch(`http://localhost:3000/api/p/`,{
-				method: 'post',
-				headers: {'Content-Type' : 'application/json'},
-				body: JSON.stringify({
-					posts: pageContent.posts,
-					sortType: profileFeedChoice
-					})
-				})
-				.then(response => response.json())
-				.then(response => setPosts(response))
-				.catch(err => console.log(err))				
+					.then(response => response.json())
+					.then(response => setPosts(response))
+					.catch(err => console.log(err))				
+				} else {
+					setPosts([])
+				}
 			}
 		} else {
-			fetch(`http://localhost:3000/api/p/`, {
-				method: 'post',
-				headers: {'Content-Type' : 'application/json'}, 
-				body: JSON.stringify({
-					posts: pageContent.posts,
-					sortType: feedSort.sortOptionsChoice,
-					sortTypeCont: feedSort.sortOptionsContChoice
+			if(pageContent.posts.length > 0){
+				fetch(`http://localhost:3000/api/p/`, {
+					method: 'post',
+					headers: {'Content-Type' : 'application/json'}, 
+					body: JSON.stringify({
+						posts: pageContent.posts,
+						sortType: feedSort.sortOptionsChoice,
+						sortTypeCont: feedSort.sortOptionsContChoice
+					})
 				})
-			})
-			.then(response => response.json())
-			.then(response => setPosts(response))
-			.catch(err => console.log)
+				.then(response => response.json())
+				.then(response => setPosts(response))
+				.catch(err => {
+					setPosts([])
+				})
+			}
 		}
 	}
 
@@ -141,8 +153,8 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 				setError={setError}/>
 			}
 			{
-				pageContent.posts.length !== 0 ?
 				posts !== null && posts !== undefined ?
+				posts.length !== 0 ?
 				posts.map((p, i) => {
 					return <Post 
 							pageType={pageType} 
@@ -156,7 +168,8 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 							setError={setError}
 							pageContent={pageContent}/> 
 						
-				}): <Loading /> :
+				}): 
+				<Loading /> :
 				<p style={{textAlign: 'center', padding: '1em'}}> There are no posts by anybody you are following, or communities you are subscribed too :( </p>
 			}
 

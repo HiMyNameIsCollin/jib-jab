@@ -1,16 +1,22 @@
 import React, {useState, useEffect} from 'react'
 
+
+const TopPostListWidget = ({pageContent, Link}) => {
+
 	const TopPostListWidgetItem = ({post}) => {
 		return(
 			<li className='topPostListWidgetItem'>
+			<Link className='link' to={`/c/${post.communityName}/${post.id}`}>
 				<span> {post.title} </span> 
 				<span>{post.comments.length} comments</span>
-				 <span> {post.karma.upvotes.length - post.karma.downvotes.length} upvotes</span>
+				<span> {post.karma.upvotes.length - post.karma.downvotes.length} upvotes</span>
+			</Link>
 			</li>
 		)
 	}
 
-const TopPostListWidget = ({pageContent}) => {
+
+
 
 	const [topPosts, setTopPosts] = useState(undefined)
 

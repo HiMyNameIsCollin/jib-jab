@@ -4,56 +4,42 @@ import './_post.sass'
 import timeDifference from '../../utils/timeDifference'
 
 const Post = ({user, setUser, windowWidth, Link, postView, post, pageType, handleVote, setError, pageContent}) => {
-	
+
 const PostInfo = () => {
 	return(
 		<div className='container postInfo'>
 			{
-				/*IF POST IS NOT OPEN OR SOAPBOX*/
-				postView === 'open' ?
-				null :
+			
 				post.postType === 'soapBox' ?
 				<span className='postInfoCommunityName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName}</Link></span> :
 				<span className='postInfoCommunityName'><Link className='link' to={`/c/${post.communityName}`}>/c/{post.communityName}</Link></span>
 
 			}
 			{
-				user.userName !== '' && user.userName !== post.userName?
+				user.userName !== '' ?
 				post.postType === 'community' ? 
 				user.communities.includes(post.communityName) ?
 				<span class='joinedCommunity' onClick={() => { handleSubscription(post.communityName, 'unsubscribe', 'community')}}> Unsubscribe </span> :
 				<span class='joinCommunity' onClick={() => {handleSubscription(post.communityName, 'subscribe', 'community')}}> Subscibe </span> :
 				user.following.includes(post.userName) ?
+				user.userName !== post.userName ?
+				null :
 				<span class='joinedCommunity' onClick={() => handleSubscription(post.userName, 'unsubscribe', 'user') }> Un-follow </span> :
 				<span class='joinCommunity' onClick={() => handleSubscription(post.userName, 'subscribe', 'user')}> Follow </span> :
 				null
 			}
 
 			{
-				/*IF POST IS NOT OPEN AND LESS THAN TABLET RESOLUTION*/
-				postView === 'open' && windowWidth <= 576 ?
+				
+				windowWidth > 576 && post.communityName !== post.userName ?
 				<span className='postInfoUserName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName} </Link></span> :
 				null
 			}
-			{
-				windowWidth > 576 ?
-				<span className='postInfoUserName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName} </Link></span> :
-				null
-			}
-			{
-				postView !== 'open' ?
-				user.userName === '' ?
-				<i style={{margin: '0 .5em 0 auto'}}
+				<i 
 				onClick={() => {
 				openPostInfo(!postInfoIsOpen)
 				openEnlargedWindow(false)}}
-				className="fa fa-ellipsis-h"></i> :
-				<i onClick={() => {
-				openPostInfo(!postInfoIsOpen)
-				openEnlargedWindow(false)}}
-				className="fa fa-ellipsis-h"></i> : 
-				null
-			}	
+				className="fa fa-ellipsis-h"></i>
 		</div>
 	)
 }
@@ -78,10 +64,14 @@ const PostContent = () => {
 			 	 postView === 'open' ? 
 			 	 null :
 			 	 user.settings.feedType === 'list' ?
-			 	 post.image !== '' ?
+			 	 post.imageLink !== '' ?
 				<img onClick={() => {
 					openEnlargedWindow(!enlargedImgOpen)
-				}} src={post.image} alt='Post image' /> :
+				}} src={post.imageLink} alt='Post image' /> :
+				post.imageRefs.length > 0 ?
+				<img onClick={() => {
+					openEnlargedWindow(!enlargedImgOpen)
+				}} src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`} alt=''/> : 
 				null : null
 			}
 		</div> 
@@ -95,12 +85,24 @@ const EnlargedPostImg = () => {
 		<div className='container enlargedPostImg'>
 		{
 			postView === 'open' ?
-			<a href={post.image} target='_blank' className='link'>
-				<img src={post.image} alt='Enlarged post image'/>
+			post.imageLink !== '' ?
+			<a href={post.imageLink} target='_blank' className='link'>
+				<img src={post.imageLink} alt='Enlarged post image'/>
 			</a> :
-			<Link to={`/c/${post.communityName}/${post.id}`}className='link'>
-				<img src={post.image} alt='Enlarged post image'/>
-			</Link>
+			post.imageRefs.length > 0 ?
+			<Link to={`/i/${post.imageRefs[0]}`} className='link'>
+				<img src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`} alt=''/>
+			</Link> :
+			null :
+			post.imageLink !== '' ?
+			<Link to={post.postType ==='community' ? `/c/${post.communityName}/${post.id}` : `/u/${post.communityName}/${post.id}`}className='link'>
+				<img src={post.imageLink} alt='Enlarged post image'/>
+			</Link> :
+			post.imageRefs.length > 0 ?
+			<Link to={ post.postType ==='community' ? `/c/${post.communityName}/${post.id}` : `/u/${post.communityName}/${post.id}`}className='link'>
+				<img src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`} alt=''/>
+			</Link> :
+			null
 		}
 		</div>
 	)
@@ -109,12 +111,9 @@ const EnlargedPostImg = () => {
 const EnlargedPostText = () => {
 	return(
 		<div className='container enlargedPostText' >
-		<span> Post tag </span>	
-		{
-			post.text.map((t, i) =>  {
-				return <p> {t} </p>
-			})
-		}
+		{post.postTag && post.postTag !== '' ? <span> {post.postTag}</span> : null}
+		{post.link && post.link !== '' ? <a> {post.link} </a> : null}
+		{post.text && post.text !== '' ? <p> {post.text} </p> : null}
 		</div>
 	)
 }
@@ -225,12 +224,12 @@ const InteractionWindow =() => {
 				</React.Fragment>
 			}
 			{
-				enlargedImgOpen && post.image !== '' ?
+				enlargedImgOpen && (post.imageLink !== '' || post.imageRefs.length !== 0) ?
 				<EnlargedPostImg /> :
 				null
 			}	
 			{
-				postView === 'open' && post.text.length !== 0 ?
+				postView === 'open' && post.text !== '' ?
 				<EnlargedPostText /> :
 				null
 			}

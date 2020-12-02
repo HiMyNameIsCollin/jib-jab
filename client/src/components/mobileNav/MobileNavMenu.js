@@ -22,7 +22,7 @@ const initialUser = {
 }
 
 
-const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setError}) => {
+const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessage}) => {
 
 	const MobileNavCommunity = ({ listItem, Link}) => {
 
@@ -59,8 +59,8 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setError}
 				}
 			})
 			.then(response => response.json())
-			.then(response => response.success !== true ? setError('There seems to have been an error') : null)
-			.catch(err => setError('There seems to have been an error'))
+			.then(response => response.success !== true ? setMessage('There seems to have been an error') : null)
+			.catch(err => setMessage('There seems to have been an error'))
 		}
 
 	}

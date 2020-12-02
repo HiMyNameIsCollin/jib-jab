@@ -8,7 +8,7 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 
 		useEffect(() => {
 			let isMounted = true
-				fetch(`http://localhost:3000/img/${community.toLowerCase()}`)
+				fetch(`http://localhost:3000/api/c/img/${community.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
 					if(isMounted) {
@@ -48,7 +48,6 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 	const [searchResults, setSearchResults] = useState([])
 	const searchRef = useRef()
 	const handleSearch = (e) => {
-		if(e.target.value.length > 1){
 		fetch('http://localhost:3000/api/search', {
 			method: 'post',
 			headers: {'Content-Type' : 'application/json'},
@@ -59,7 +58,6 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 		.then(response => response.json())
 		.then(response => setSearchResults(response))
 		.catch(err => console.log(err))
-		}
 	}
 
 	return(

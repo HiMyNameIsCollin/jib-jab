@@ -5,7 +5,7 @@ import Loading from '../loading/Loading'
 import CommentForm from './CommentForm'
 import './_postExpanded.sass'
 
-const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setError}) => {
+const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setMessage, history}) => {
 
 	const PostMenuBar = () => {
 		return(
@@ -45,7 +45,10 @@ const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, 
 			})
 			.then(response => response.json())
 			.then(response => setPosts(response))
-			.catch(err => console.log)
+			.catch(err => {
+				setMessage('There doesnt seem to be anything here')
+				history.push('/')
+			})
 	}, [])
 
 	const handleVote = (postID, request) => {
@@ -102,7 +105,7 @@ const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, 
 			})
 			.catch(err => console.log(err))
 			} else {
-				setError('Must be logged in to vote')
+				setMessage('Must be logged in to vote')
 			}
 	}
 
@@ -123,11 +126,7 @@ const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, 
 				windowWidth={windowWidth} 
 				post={posts[0]} 
 				handleVote={handleVote}/>
-				{
-					windowWidth > 920 ?
-					<PostMenuBar /> :
-					null
-				}
+				<PostMenuBar /> 
 				{
 					user.userName === '' ?
 					<div className='commentLoginBox container'>
@@ -149,13 +148,13 @@ const PostExpanded = ({Link, user, setUser, windowWidth, pageContent, pageType, 
 				}
 				{
 					
-					posts[0].comments.length > 0 ?
+					posts[0] && posts[0].comments.length > 0 ?
 					<CommentFeed 
 					pageContent={pageContent}
 					handleCommentVote={handleCommentVote} 
 					post={posts[0]} 
 					user={user}
-					setError={setError}
+					setMessage={setMessage}
 					setPosts={setPosts}
 					Link={Link}/> :
 					<p style={{padding: '1em'}}> Be the first to leave a comment! </p>

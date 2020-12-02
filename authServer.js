@@ -56,7 +56,7 @@ app.post('/api/register', (req, res) => {
 					communities: ['Announcements'],
 					karma: 1,
 					followers: [],
-					following: [],
+					following: ['Collin'],
 					settings: {
 						feedType: 'list'
 					},
