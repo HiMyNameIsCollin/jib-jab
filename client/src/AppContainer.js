@@ -216,6 +216,19 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					setMessage={setMessage}
 					history={history}/>
 		        </Route>
+		        <Route path='/inbox'>
+		        	<InboxPage 
+		        	Link={Link}
+		        	user={user} 
+		        	setUser={setUser}
+		        	windowWidth={windowWidth}
+		        	overlayIsOpen={overlayIsOpen} 
+		        	setOverlay={setOverlay}
+		       		location={location}
+					pageType={'postPage'} 
+					setMessage={setMessage}
+					history={history}/>
+		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage />
 		        </Route>
