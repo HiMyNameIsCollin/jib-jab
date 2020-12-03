@@ -24,6 +24,8 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage}) => {
 		<Register setOverlay={setOverlay} setLoading={setLoading}/> :
 		overlayIsOpen === 'submitPost' ?
 		<SubmitPost setOverlay={setOverlay} setLoading={setLoading} user={user} setMessage={setMessage}/> :
+		overlayIsOpen === 'submitMessage' ?
+		<SubmitMessage setOverlay={setOverlay} setLoading={setLoading} user={user} setMessage={setMessage}/>:
 		null
 	}
 		</div>

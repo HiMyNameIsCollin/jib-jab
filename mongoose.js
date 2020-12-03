@@ -35,7 +35,8 @@ const userSchema = new Schema({
 	followers: Array,
 	following: Array,
 	settings: Object,
-	savedPosts: Array
+	savedPosts: Array,
+	inbox: Object
 })
 
 const postSchema = new Schema({

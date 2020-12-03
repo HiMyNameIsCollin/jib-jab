@@ -66,7 +66,10 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
   	useEffect(() => {
   		if(message !== undefined){
   			setTimeout(() => {
-  				document.getElementsByClassName('message')[0].classList.add('messageSlideOut')
+  				const messagePopUp = document.getElementsByClassName('message')
+  				if(messagePopUp[0]){
+  					messagePopUp[0].classList.add('messageSlideOut')
+  				}
   			}, 3000)
   			setTimeout(() => {
   				setMessage(undefined)

@@ -5,8 +5,78 @@ $black: #011C27
 $gloomyBlue: #D0D2D4
 
 .inboxPage
+	
+.inboxHeader
 	background: white
+	justify-content: space-between
+	padding: .5em 
+	
+.inboxBtns
+	border: $grey solid 1px
+	border-left: none
+	border-right: none
+	justify-content: space-around
+	padding: .5em 0
+	div
+		display: block
+		text-align: center
+	.selectedBtn
+		color: $red
+		text-decoration: underline
 
+.inboxMessage
+	border-bottom: $black solid 1px
+	padding: .5em .5em 1em .5em
+	div
+		display: grid
+		grid-template-rows: auto auto
+		grid-template-columns: 1fr auto
+		padding: .5em 0
+		p
+			font-weight: 700
+			width: 80%
+		p:nth-of-type(2)
+			font-size: .7em
+		i
+			grid-column: 2/3
+			grid-row: 1/2
+			margin: .5em .5em 0 0 
+	.messageSender
+		font-weight: 700
+		font-size: .7em
+		text-align: end
+
+.messageEnlarged
+	.inboxHeader
+		justify-content: flex-start
+		i
+			padding-right: .5em
+		h3
+			position: relative
+			overflow: hidden
+			white-space: nowrap
+			width: 100%
+			&::before
+				background: linear-gradient(to right, transparent 50%, white)
+				content: ''
+				pointer-events: none
+				position: absolute
+				height: 100%
+				width: 100%
+
+.messageContent
+	border-bottom: 1px solid $grey
+	padding: .5em
+	p:nth-of-type(1)
+		font-weight: 700
+		font-size: .7em
+	p:nth-of-type(3)
+		font-weight: 700
+		font-size: .7em
+		text-align: end
+	p:nth-of-type(4)
+		color: blue
+		text-decoration: underline
 
 @media only screen and (min-width: 920px)
 	.inboxPage

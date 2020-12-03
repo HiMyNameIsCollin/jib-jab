@@ -1,22 +1,11 @@
 import React, {useState, useEffect, useRef}from 'react'
 import './_searchBar.sass'
 
+const initialResults = {communityArray: [], userArray: []}
+
 const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 
-	const SearchResult = ({community}) => {
-	const [communityImg, setCommunityImg] = useState(undefined)
-
-		useEffect(() => {
-			let isMounted = true
-				fetch(`http://localhost:3000/api/c/img/${community.toLowerCase()}`)
-				.then(response => response.json())
-				.then(response => {
-					if(isMounted) {
-						setCommunityImg(response)
-					}})
-				.catch(err => console.log(err))
-				return () => { isMounted = false }
-		}, [])
+	const SearchResult = ({result}) => {
 
 			if(searchBarType === 'header'){
 				return(
@@ -25,27 +14,38 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 						setSearchResults([])
 						searchRef.current.value = searchRef.current.placeholder
 					}}
-					to={`/c/${community}`} 
+					to={ result.type === 'community' ? `/c/${result.name}` : `/u/${result.name}`} 
 					className='searchResult container'>
-					<img src={communityImg} alt='' />
-					{community}
+					<img src={result.image} alt='' />
+					{result.name}
 				</Link>
 				)
 			}else if(searchBarType === 'submitPost'){
 				return(
 					<div onClick={() => {
-						setTargetCommunity({name: community, image: communityImg, type: 'community'})
-						setSearchResults([])
+						setTargetCommunity({name: result.name, image: result.image, type: result.type })
+						setSearchResults(initialResults)
 						searchRef.current.value = searchRef.current.placeholder
 					}} className='searchResult container'>
-						<img src={communityImg} alt='' />
-						{community}
+						<img src={result.image} alt='' />
+						{result.name}
 					</div>
 				)
+			} else if(searchBarType === 'submitMessage') {
+				return(
+					<div onClick={() => {
+						setTargetCommunity({name: result.name, image: result.image, type: result.type})
+						setSearchResults(initialResults)
+						searchRef.current.value = searchRef.current.placeholder
+					}} className='searchResult container'>
+						<img src={result.image} alt='' />
+						{result.name}
+					</div>
+					)
 			}
 		}
 
-	const [searchResults, setSearchResults] = useState([])
+	const [searchResults, setSearchResults] = useState(() => initialResults)
 	const searchRef = useRef()
 	const handleSearch = (e) => {
 		fetch('http://localhost:3000/api/search', {
@@ -64,37 +64,56 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 		<form className='searchBarDropDown container'>
 			<div className='searchBar'>
 				<input 
-				onClick={() => searchRef.current.value = ''}
+				onClick={() => {
+					searchRef.current.value = ''
+					setSearchResults(initialResults)
+				}}
 				ref={searchRef}
 				className='searchBarInput' 
 				onChange={handleSearch} 
 				type="text" 
-				placeholder='Search for community'/>
+				placeholder='Search JibJab' />
 				<i className="fas fa-search"></i>
 			</div>
-		{
-			searchResults.length > 0 ?
 			<div className='searchResultContainer'>
+		{
+			searchResults.communityArray &&
+			searchResults.userArray &&
+			(searchResults.communityArray.length > 0 || 
+			searchResults.userArray.length > 0 ) ?
+			<React.Fragment>
 			{
-				searchBarType === 'submitPost' ?
-				<div onClick={() => {
-					setSearchResults([])
-					searchRef.current.value = searchRef.current.placeholder
-					setTargetCommunity({name: user.userName, image: user.image, type: 'soapBox'})
-				}} className='searchResult container'>
-					<img src={user.image} alt='' />
-					{user.userName}
-				</div> :
+				searchBarType !== 'submitMessage' ?
+				<React.Fragment>
+				<h3> Communities ({searchResults.communityArray.length}) </h3>
+				{
+					searchResults.communityArray.map((r, i) => {
+						return <SearchResult result={r} />
+					})
+				}
+				<h3> You: </h3>
+				<SearchResult result={{name: user.userName, image: user.configuration.image, type: 'soapBox'}} />
+				</React.Fragment> :
 				null
 			}
 			{
-				searchResults.map((r, i) => {
-					return <SearchResult community={r} />
-				}) 
+				searchBarType !== 'submitPost' ?
+				<React.Fragment>
+				<h3>Users ({searchResults.userArray.length}) </h3>
+				{
+					searchResults.userArray.map((r, i) => {
+						return <SearchResult result={r} />
+					})
+				} 
+				</React.Fragment> :
+				null
 			}
-			</div> :
+
+			</React.Fragment> :
 			null
 		}
+			</div> 
+		
 		</form>
 	)
 }

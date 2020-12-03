@@ -46,7 +46,7 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 		if(trendingPosts !== undefined) {
 			return(
 				<div className='container trendingIntro'>
-					<span> Trending today</span>
+					<span> Currently trending </span>
 					<div className='container'>
 						{
 							trendingPosts.map((p , i) => {

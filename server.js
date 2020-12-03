@@ -498,6 +498,7 @@ app.post('/api/c/:communityName/submit', authenticateToken, (req, res) => {
 			link = req.body.link
 		}
 		if(user && community){
+			console.log(user, community)
 			try{
 				const newPost = new PostModel({
 					postType: 'community',
@@ -553,6 +554,7 @@ app.post('/api/u/submit', authenticateToken, (req, res) => {
 			link = req.body.link
 		}
 		if(user){
+			console.log(user, req.body)
 			try{
 				const newPost = new PostModel({
 					postType: 'soapBox',
@@ -831,17 +833,32 @@ app.get('/api/u/:user/:postID', (req, res) => {
 
 app.post('/api/search', async (req, res) => {
 	const communities = await CommunityModel.find()
-	if(communities){
-		let communityArray = []
-		communities.forEach((c, i) => {
-			if(c.communityName !== 'Popular' && c.communityName !== 'Global'){
-				if(c.communityNameLower.substr(0, req.body.query.length) === req.body.query.toLowerCase()){
-					communityArray.push(c.communityName)
+	const users = await UserModel.find()
+	if(communities, users){
+		let results = {
+			communityArray: [],
+			userArray: []
+		}
+		if(req.body.query.length > 0){
+			communities.forEach((c, i) => {
+				if(c.communityName !== 'Popular' && c.communityName !== 'Global'){
+					if(c.communityNameLower.substr(0, req.body.query.length) === req.body.query.toLowerCase()){
+						results.communityArray.push({name: c.communityName, image: c.configuration.communityImg, type: 'community'})
+					}
 				}
-			}
-		})
-		res.json(communityArray)
+			})
+			users.forEach((u, i) => {
+					if(u.userNameLower.substr(0, req.body.query.length) === req.body.query.toLowerCase()){
+						results.userArray.push({name: u.userName, image: u.configuration.image, type: 'soapBox'})
+					}
+			})
+			res.json(results)
+		}
 	}
+})
+
+app.post('/api/message' , authenticateToken, async (req, res) => {
+	console.log(req.body, req.user.userName)
 })
 
 app.listen(myPort, () => {

@@ -25,7 +25,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 
 	return(
 		<nav className='container mobileNav'>
-			<SearchBar Link={Link} searchBarType='header'/>
+			<SearchBar Link={Link} user={user} searchBarType='header'/>
 			{
 				user.userName === '' ?
 				<div className='navItem container'>
