@@ -46,13 +46,13 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 				</div> :
 				<React.Fragment>
 					<div className='navItem navUserName'>
-						<Link className='link' to='/profile/'> 
-							<img src={user.image} alt='User avatar'/>
+						<Link className='link' to={`/u/${user.userNameLower}`}> 
+							<img src={user.configuration.image} alt='User avatar'/>
 							<span> {user.userName}</span>
 						</Link>
 					</div>
 					<div className='navItem'>
-						<Link className='link' to='/inbox/'>
+						<Link className='link' to='/inbox'>
 							<i class="fas fa-inbox "></i>
 							<span>Inbox</span>
 						</Link>

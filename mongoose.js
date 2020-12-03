@@ -23,6 +23,17 @@ const loginSchema = new Schema({
 	cookie: String
 })
 
+const messageSchema = new Schema({
+	type: String,
+	subject: String,
+	body: String, 
+	seen: Boolean,
+	sender: String,
+	recipient: Array,
+	id: String
+}) 
+
+
 const userSchema = new Schema({
 	createdOn: String,
 	userName: String,
@@ -36,7 +47,7 @@ const userSchema = new Schema({
 	following: Array,
 	settings: Object,
 	savedPosts: Array,
-	inbox: Object
+	unseenMessages: Array
 })
 
 const postSchema = new Schema({
@@ -66,5 +77,6 @@ module.exports = {
 	userSchema,
 	postSchema,
 	tokenSchema,
-	communitySchema
+	communitySchema,
+	messageSchema
 }

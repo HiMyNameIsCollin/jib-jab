@@ -19,13 +19,13 @@ const PostInfo = () => {
 				user.userName !== '' ?
 				post.postType === 'community' ? 
 				user.communities.includes(post.communityName) ?
-				<span class='joinedCommunity' onClick={() => { handleSubscription(post.communityName, 'unsubscribe', 'community')}}> Unsubscribe </span> :
-				<span class='joinCommunity' onClick={() => {handleSubscription(post.communityName, 'subscribe', 'community')}}> Subscibe </span> :
-				user.following.includes(post.userName) ?
+				<span class='joinedCommunity' onClick={() => { handleSubscription(post.communityNameLower, 'unsubscribe', 'community')}}> Unsubscribe </span> :
+				<span class='joinCommunity' onClick={() => {handleSubscription(post.communityNameLower, 'subscribe', 'community')}}> Subscibe </span> :
 				user.userName !== post.userName ?
+				user.following.includes(post.userName) ?
+				<span class='joinedCommunity' onClick={() => handleSubscription(post.userName.toLowerCase(), 'unsubscribe', 'user') }> Un-follow </span> :
+				<span class='joinCommunity' onClick={() => handleSubscription(post.userName.toLowerCase(), 'subscribe', 'user')}> Follow </span> :
 				null :
-				<span class='joinedCommunity' onClick={() => handleSubscription(post.userName, 'unsubscribe', 'user') }> Un-follow </span> :
-				<span class='joinCommunity' onClick={() => handleSubscription(post.userName, 'subscribe', 'user')}> Follow </span> :
 				null
 			}
 
@@ -163,7 +163,7 @@ const InteractionWindow =() => {
 		} else if (user.settings.feedType === 'list' && postView !== 'open'){
 			openEnlargedWindow(false)
 		}
-	},[user])
+	},[user, postInfoIsOpen])
 
 	useEffect(() => {
 		if(postView === 'open'){
@@ -204,6 +204,7 @@ const InteractionWindow =() => {
 		})
 		.then(response => response.json())
 		.then(response => {
+			console.log(response)
 			setUser(response)
 		})
 		.catch(err => console.log(err))
@@ -224,7 +225,7 @@ const InteractionWindow =() => {
 				</React.Fragment>
 			}
 			{
-				enlargedImgOpen && (post.imageLink !== '' || post.imageRefs.length !== 0) ?
+				enlargedImgOpen && (post.imageLink !== '' || post.imageRefs.length !== 0) && !postInfoIsOpen ?
 				<EnlargedPostImg /> :
 				null
 			}	

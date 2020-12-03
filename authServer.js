@@ -64,7 +64,8 @@ app.post('/api/register', (req, res) => {
 					posts: [],
 					soapBox: [],
 					savedPosts: [],
-					image: 'http://robohash.org/12'
+					image: 'http://robohash.org/12',
+					unseenMessages: []
 				})
 				user.save().then(() => {
 					CommunityModel.findOneAndUpdate({'communityName': 'Announcements'}, {$push:{'followers': userName}})

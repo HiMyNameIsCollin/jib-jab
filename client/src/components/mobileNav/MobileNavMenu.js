@@ -30,7 +30,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 
 		useEffect(() => {
 			let isMounted = true
-				fetch(`http://localhost:3000/img/${listItem.toLowerCase()}`)
+				fetch(`http://localhost:3000/api/c/img/${listItem.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
 					if(isMounted) {

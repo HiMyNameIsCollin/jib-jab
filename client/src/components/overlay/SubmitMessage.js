@@ -1,15 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchBar from '../searchBar/SearchBar'
 import { useForm } from 'react-hook-form'
 
-const SubmitMessage = ({setOverlay, user, setMessage}) => {
+const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 
 	const [formSent, setFormSent] = useState(false)
 	const { register, handleSubmit, errors} = useForm()
 	const [targetCommunity, setTargetCommunity] = useState(undefined)
 
+	useEffect(() => {
+		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/c/'){
+			console.log(location.pathname.substr(0, 3))
+			fetch('http://localhost:3000/api/search', {
+				method: 'post',
+				headers: {'Content-Type' : 'application/json'},
+				body: JSON.stringify({
+					query: location.pathname.substr(3, location.pathname.length - 3)
+				})
+			})
+			.then(response => response.json())
+			.then(response => setTargetCommunity(response.userArray[0]))
+			.catch(err => console.log(err))
+		} 
+	},[])
+
 	const onSubmit = (data) => {
-		console.log(123)
 		if(formSent === false){
 			setFormSent(true)
 			if(targetCommunity !== undefined) {
@@ -23,11 +38,20 @@ const SubmitMessage = ({setOverlay, user, setMessage}) => {
 					body: JSON.stringify({
 						target: targetCommunity.name,
 						subject: data.messageSubject,
-						text: data.messageText
+						body: data.messageBody,
+						type: 'user'
 					})
 				})
-				.then(response => response.json())
-				.catch(err => console.log(err))
+				.then(response => response.text())
+				.then(response => {
+					if(response === 'Success'){
+						setMessage('Message successfully sent')
+						setOverlay(undefined)
+					} else{
+						setMessage('Something went wrong...')
+					}
+				})
+				.catch(err => setMessage('Something went wrong...'))
 			} else {
 				setMessage('Who you sending this to?')
 				setFormSent(false)
@@ -56,8 +80,8 @@ const SubmitMessage = ({setOverlay, user, setMessage}) => {
 				{errors.messageSubject && errors.messageSubject.type === 'required' && <p> Posts need titles! </p>}
 				{errors.messageSubject && errors.messageSubject.type === 'maxLength' && <p> Whoa whoa, why not make that title a bit more concise? </p>}
 				<input type='text' placeholder='Subject' name='messageSubject' ref={register({required: true, maxLength: 150})}/>
-				{errors.messageText && errors.messageText.type === 'maxLength' && <p> Cool story bro, lets summarize just a bit. </p>}
-				<textarea rows='4' placeholder="What's going on?" name="messageText" ref={register({required: false, maxLength: 2000})} />
+				{errors.messageBody && errors.messageBody.type === 'maxLength' && <p> Cool story bro, lets summarize just a bit. </p>}
+				<textarea rows='4' placeholder="What's going on?" name="messageBody" ref={register({required: false, maxLength: 2000})} />
 				<button> Submit </button>
 			</form>
 		</div>

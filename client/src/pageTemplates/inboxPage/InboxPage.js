@@ -73,8 +73,9 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 					<i onClick={() => setOverlay('submitMessage')} class="fas fa-pencil-alt fa-2x "></i> 
 				</div>
 				<InboxBtnsContainer />
-				<InboxMessage />
-				<InboxMessage />
+				{
+					<InboxMessage />	
+				}
 			</React.Fragment> :
 			<MessageEnlarged />
 		}

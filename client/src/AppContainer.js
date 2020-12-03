@@ -19,6 +19,10 @@ const initialUser = {
 	following: [],
 	settings: {
 		feedType: 'list'
+	},
+	configuration: {
+		image: 'http://robohash.org/100',
+		headerImg: ''
 	}
 }
 
@@ -30,7 +34,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const [navIsOpen, setNav] = useState(false)
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
-	const [user, setUser] = useState(undefined)
+	const [user, setUser] = useState(initialUser)
 	const [message, setMessage] = useState(undefined)
 
 	const location = useLocation()
@@ -135,7 +139,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				setUser={setUser} 
 				user={user}
 				setMessage={setMessage}
-				history={history}/>
+				history={history}
+				location={location}/>
 				:
 				null
 			} 
@@ -180,7 +185,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		location={location}
 		       		pageType={'profilePage'}
 		       		setMessage={setMessage}
-		       		history={history}/>
+		       		history={history}
+		       		setOverlay={setOverlay}/>
 		        </Route>
 		        <Route exact path="/c/:communityName">
 		        	<CommunityPage 
@@ -191,7 +197,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		location={location}
 		       		history={history}
 					pageType={'communityPage'} 
-		       		setMessage={setMessage}/>
+		       		setMessage={setMessage}
+		       		setOverlay={setOverlay}/>
 		        </Route>
 		       	<Route exact path="/u/:userName/:postID/">
 		        	<PostPage 
@@ -225,7 +232,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	user={user} 
 		        	setUser={setUser}
 		        	windowWidth={windowWidth}
-		        	overlayIsOpen={overlayIsOpen} 
+		        	overlayIsOpen={overlayIsOpen}
+		        	setMessage={setMessage} 
 		        	setOverlay={setOverlay}
 		       		location={location}
 					pageType={'postPage'} 

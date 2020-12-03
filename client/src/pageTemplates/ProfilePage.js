@@ -5,7 +5,7 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
-const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setMessage, history}) => {
+const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setMessage, setOverlay, history}) => {
 	const [profileInfo, setProfileInfo] = useState(undefined)
 	const [pageContent, setPageContent] = useState(undefined)
 
@@ -38,7 +38,14 @@ const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setM
 				history={history}/>
 			{
 				windowWidth > 920 ?
-				<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> :
+				<WidgetContainer 
+					user={user} 
+					setUser={setUser}
+					setMessage={setMessage} 
+					Link={Link} 
+					pageType={pageType} 
+					pageContent={pageContent}
+					setOverlay={setOverlay}/> :
 				null
 			}
 

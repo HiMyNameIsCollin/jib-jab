@@ -9,7 +9,7 @@ import AppendixWidget from './widgets/AppendixWidget'
 import InteractionWidget from './widgets/InteractionWidget'
 import AnnouncementWithLinkWidget from './widgets/AnnouncementWithLinkWidget'
 import './_widgetContainer.sass'
-const WidgetContainer = ({pageType, Link, pageContent, user}) => {
+const WidgetContainer = ({pageType, Link, pageContent, user, setUser, setMessage, setOverlay}) => {
 
 
 /*###########################TYPE OF MENU#######################################*/
@@ -22,7 +22,7 @@ const FrontPageWidgets = () => {
 			<AppendixWidget Link={Link}/>				
 		</React.Fragment>
 	)
-}
+} 
 
 const GlobalPageWidgets = () => {
 	return(
@@ -72,7 +72,12 @@ const CommunityWidgets = () => {
 const ProfileWidgets = () => {
 	return(
 		<React.Fragment>
-			<InteractionWidget pageContent={pageContent}/>
+			<InteractionWidget 
+				user={user} 
+				pageContent={pageContent} 
+				setMessage={setMessage} 
+				setOverlay={setOverlay}
+				setUser={setUser}/>
 			<AppendixWidget Link={Link}/>	
 		</React.Fragment>
 	)

@@ -82,7 +82,7 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 		return(
 			<div className='container profileHeader' style={{backgroundImage: `url(${pageContent.configuration.headerImg})`}} >
 				<div className='profileAvatar container' >
-					<img src={pageContent.configuration.communityImg} alt=""/>
+					<img src={pageContent.configuration.image} alt=""/>
 				</div>
 				<div className=' container'>
 					<p> {pageContent.userName}</p>

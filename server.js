@@ -8,7 +8,7 @@ const multer  = require('multer')
 const GridFsStorage = require('multer-gridfs-storage')
 const Grid = require('gridfs-stream')
 require('dotenv').config()
-const {mongoose, postSchema, tokenSchema, userSchema, communitySchema} = require('./mongoose')
+const {mongoose, postSchema, tokenSchema, userSchema, communitySchema, messageSchema} = require('./mongoose')
 const url = 'mongodb://127.0.0.1:27017/jibjab'
 const app = express()
 const path = require("path")
@@ -25,6 +25,7 @@ let gfs
 let PostModel
 let UserModel
 let CommunityModel
+let MessageSchem
 
 conn = mongoose.createConnection(url, { useNewUrlParser: true , useFindAndModify: false })
 
@@ -33,6 +34,7 @@ conn.once('open', () => {
 	PostModel = conn.model('posts', postSchema)
 	UserModel = conn.model('users', userSchema)
 	CommunityModel = conn.model('communities', communitySchema)
+	MessageModel = conn.model('messages', messageSchema)
 	gfs = Grid(conn.db, mongoose.mongo)
 	gfs.collection('uploads')
 })
@@ -754,7 +756,8 @@ app.post('/api/c/subscribe', authenticateToken, async (req, res) => {
 })
 /*ROUTE FOR FOLLOWING A USER*/
 app.post('/api/u/subscribe', authenticateToken, async (req, res) => {
-	const targetUser =  await UserModel.findOne({userName: req.body.userName})
+	console.log(req.body)
+	const targetUser =  await UserModel.findOne({userNameLower: req.body.userName})
 	const user = await UserModel.findOne({userName: req.user.userName})
 	if(targetUser, user){
 		try{
@@ -782,10 +785,10 @@ app.post('/api/u/subscribe', authenticateToken, async (req, res) => {
 			})		
 		}
 		catch(err){
-			res.status(400).json({error: 'There has been an error'})
+			res.sendStatus(400)
 		}
 	}else{
-		res.status(400).json({error: 'There has been an error'})
+		res.sendStatus(400)
 	}
 })
 
@@ -858,7 +861,29 @@ app.post('/api/search', async (req, res) => {
 })
 
 app.post('/api/message' , authenticateToken, async (req, res) => {
-	console.log(req.body, req.user.userName)
+	const {target, subject, body, type } = req.body
+	const targetUser = await UserModel.findOne({userName: target})
+	const newMessage = new MessageModel({
+		type: type,
+		subject: subject,
+		body: body,
+		seen: false,
+		time: new Date(),
+		sender: req.user.userName,
+		recipient: [target],
+		id: uuidv4()
+	})
+	if(targetUser){
+		try{
+		targetUser.unseenMessages.push(newMessage.id)
+		newMessage.save()
+		targetUser.markModified('unseenMessages')
+		targetUser.save()
+		.then(res.send('Success'))
+		} catch(err){
+			res.status(400)
+		}
+	}
 })
 
 app.listen(myPort, () => {

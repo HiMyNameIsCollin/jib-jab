@@ -6,7 +6,7 @@ import SubmitPost from './SubmitPost'
 import Loading from '../loading/Loading'
 import './_overlay.sass'
 
-const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage}) => {
+const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location}) => {
 
 	const [loading, setLoading] = useState(false)
 
@@ -25,7 +25,7 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage}) => {
 		overlayIsOpen === 'submitPost' ?
 		<SubmitPost setOverlay={setOverlay} setLoading={setLoading} user={user} setMessage={setMessage}/> :
 		overlayIsOpen === 'submitMessage' ?
-		<SubmitMessage setOverlay={setOverlay} setLoading={setLoading} user={user} setMessage={setMessage}/>:
+		<SubmitMessage location={location} setOverlay={setOverlay} setLoading={setLoading} user={user} setMessage={setMessage}/>:
 		null
 	}
 		</div>

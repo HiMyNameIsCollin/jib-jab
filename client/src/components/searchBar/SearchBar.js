@@ -91,8 +91,14 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 						return <SearchResult result={r} />
 					})
 				}
-				<h3> You: </h3>
-				<SearchResult result={{name: user.userName, image: user.configuration.image, type: 'soapBox'}} />
+				{
+					user.userName !== '' ?
+					<React.Fragment>
+						<h3> You: </h3>
+						<SearchResult result={{name: user.userName, image: user.configuration.image, type: 'soapBox'}} />
+					</React.Fragment> :
+					null
+				}
 				</React.Fragment> :
 				null
 			}
