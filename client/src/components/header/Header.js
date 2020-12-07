@@ -10,11 +10,19 @@ const initialUser = {
 	following: [],
 	settings: {
 		feedType: 'list'
+	},
+	configuration: {
+		image: 'http://robohash.org/100',
+		headerImg: ''
+	},
+	unseenMessages: {
+		user: false,
+		replies: false,
+		mentions: false
 	}
 }
 
-
-const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay}) => {
+const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay, history}) => {
 
 	const [headerIsSticky, setHeaderIsSticky] = useState(false)
 	const [userDropDownOpen, setUserDropDown] = useState(false)
@@ -60,7 +68,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 		<div id='header' className='container header'>
 			{
 				windowWidth > 920 ?
-				<Link to='/' className='link '> Jib-Jab </Link> :
+				<Link to='/c/popular' className='link '> Jib-Jab </Link> :
 				null
 			}
 			{
@@ -87,9 +95,15 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 				user.userName === '' ?
 				<span className='headerBtn' onClick={() => setOverlay('login')}> Login <i className="fas fa-sign-in-alt"></i> </span> :
 				<React.Fragment>
-					<span className='headerBtn inbox'>
+					<Link
+					to='/inbox' 
+					className={user.unseenMessages.user === true ||
+								user.unseenMessages.replies === true ||
+								user.unseenMessages.mentions == true ? 
+								'headerBtn inbox newMsgIndicator' :
+								 'headerBtn inbox'}>
 						<i class="fas fa-inbox"></i>
-					</span>
+					</Link>
 					<span className='headerBtn' onClick={() => setOverlay('submitPost')}><i class="fas fa-pencil-alt"></i> </span>
 				</React.Fragment>
 			}
@@ -97,7 +111,11 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 				windowWidth <= 920 ?
 				<span 
 					onClick={() => setNav(!navIsOpen)} 
-					className='navBtn'> 
+					className={user.unseenMessages.user === true ||
+								user.unseenMessages.replies === true ||
+								user.unseenMessages.mentions == true ? 
+								'navBtn newMsgIndicator' :
+								 'navBtn'}> 
 					<i className="fas fa-ellipsis-h"></i> 
 				</span> :
 				user.userName !== '' ?
@@ -134,6 +152,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 									setUser(initialUser)
 						  			window.localStorage.removeItem("accessToken")
 									window.localStorage.removeItem("refreshToken")
+									history.push('/c/popular')
 								})
 								.catch(err => console.log(err))
 							}}><i class="fas fa-sign-out-alt"></i> Logout</div>

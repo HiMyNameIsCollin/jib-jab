@@ -3,7 +3,7 @@ import CommentForm from './CommentForm'
 import timeDifference from '../../utils/timeDifference'
 
 
-const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComments, user, setError, Link}) => {
+const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Link, setMessage}) => {
 
 		const CommentBody = ({commentType, comment}) => {
 			const [commentFormOpen, setCommentFormOpen] = useState(false)
@@ -128,7 +128,8 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 				setPosts={setPosts}
 				comment={comment} 
 				func={setCommentFormOpen} 
-				value={commentFormOpen} /> :
+				value={commentFormOpen}
+				setMessage={setMessage} /> :
 				null
 			}
 		</div>
@@ -162,8 +163,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 				</div>
 			)			
 		} else {
-			return <p onClick={() => handleSeeMoreComments(comment, post)}
-					className='seeMoreComments'> See more comments </p>
+			return <Link className='seeMoreComments' to={`/c/${post.communityName}/${post.id}/${comment.commentInfo.id}`} > <p>See more comments </p> </Link>
 		}
 	}
 

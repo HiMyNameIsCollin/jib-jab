@@ -12,19 +12,21 @@ const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay,
 				fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
+
 					setPageContent(response)
 				})
 				.catch(err => {
 					setMessage('There doesnt seem to be anything there...')
 					history.push('/')
 				})
-	},[])
+	},[location])
 
 		{
 			if (pageContent) {
 				return(
 				<React.Fragment>
 					<PostExpanded 
+					location={location}
 					Link={Link} 
 					user={user} 
 					setUser={setUser}

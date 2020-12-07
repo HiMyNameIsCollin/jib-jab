@@ -65,7 +65,11 @@ app.post('/api/register', (req, res) => {
 					soapBox: [],
 					savedPosts: [],
 					image: 'http://robohash.org/12',
-					unseenMessages: []
+					unseenMessages: {
+						user: [],
+						replies: [],
+						mentions: []
+					}
 				})
 				user.save().then(() => {
 					CommunityModel.findOneAndUpdate({'communityName': 'Announcements'}, {$push:{'followers': userName}})
@@ -114,7 +118,6 @@ app.post('/api/token', (req, res) => {
 	if(refreshToken === null) return res.sendStatus(401)
 	TokenModel.findOne({token: refreshToken})
 	.then(result => {
-		console.log(result)
 		if(result === null) return res.sendStatus(403)
 		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 			if(err) return res.sendStatus(403)

@@ -8,6 +8,7 @@ import ProfilePage from './pageTemplates/ProfilePage'
 import PostPage from './pageTemplates/PostPage'
 import AboutPage from './pageTemplates/AboutPage'
 import InboxPage from './pageTemplates/inboxPage/InboxPage'
+import CreateCommunity from './pageTemplates/createCommunity/CreateCommunity'
 import Loading from './components/loading/Loading'
 
 
@@ -23,7 +24,8 @@ const initialUser = {
 	configuration: {
 		image: 'http://robohash.org/100',
 		headerImg: ''
-	}
+	},
+	unseenMessages: []
 }
 
 
@@ -124,6 +126,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
   	return(
 		<div id='AppContainer'>
 			<Header 
+			location={location}
 			navIsOpen={navIsOpen} 
 			Link={Link} 
 			setNav={setNav} 
@@ -161,7 +164,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					navIsOpen={navIsOpen}
 					Link={Link}
 					setOverlay={setOverlay} 
-					setMessage={setMessage}/>
+					setMessage={setMessage}
+					history={history}/>
 				</div> :
 				null
 			}
@@ -216,6 +220,21 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        <Route exact path='/c/:communityName/:postID'>
 		        	<PostPage 
 		        	Link={Link}
+		        	location={location}
+		        	user={user} 
+		        	setUser={setUser}
+		        	windowWidth={windowWidth}
+		        	overlayIsOpen={overlayIsOpen} 
+		        	setOverlay={setOverlay}
+		       		location={location}
+					pageType={'postPage'} 
+					setMessage={setMessage}
+					history={history}/>
+		        </Route>
+		        <Route exact path='/c/:communityName/:postID/:commentID'>
+		        	<PostPage 
+		        	Link={Link}
+		        	location={location}
 		        	user={user} 
 		        	setUser={setUser}
 		        	windowWidth={windowWidth}
@@ -235,10 +254,12 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	overlayIsOpen={overlayIsOpen}
 		        	setMessage={setMessage} 
 		        	setOverlay={setOverlay}
-		       		location={location}
 					pageType={'postPage'} 
 					setMessage={setMessage}
 					history={history}/>
+		        </Route>
+		        <Route path='/createCommunity'>
+		        	<CreateCommunity user={user} />
 		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage />

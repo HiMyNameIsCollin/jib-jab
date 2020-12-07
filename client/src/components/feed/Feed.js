@@ -104,7 +104,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 		)
 	}
 
-	const handleVote = (postID, request) => {
+	const handleVote = (postID, postUserName,  request) => {
 		if(user.userName !== '') {
 	  		const accessToken = window.localStorage.getItem('accessToken')
 			fetch('http://localhost:3000/api/vote', {
@@ -115,6 +115,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 				},
 				body: JSON.stringify({
 					postID,
+					postUserName, 
 					request,
 				})
 			})
@@ -169,8 +170,14 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 							pageContent={pageContent}/> 
 						
 				}): 
-				<Loading /> :
-				<p style={{textAlign: 'center', padding: '1em'}}> There are no posts by anybody you are following, or communities you are subscribed too :( </p>
+				<p style={{textAlign: 'center', padding: '1em'}}> 
+				{
+				pageType === 'frontPage' || pageContent.communityName === 'Global' ?
+					'There are no posts by anybody you are following, or communities you are subscribed too :( ' :
+					'There doesnt seem to be anything here :('
+				}
+				</p>:
+				<Loading /> 
 			}
 
 			

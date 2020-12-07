@@ -3,7 +3,7 @@ import './_mobileNav.sass'
 import MobileNavMenu from './MobileNavMenu'
 import SearchBar from '../searchBar/SearchBar'
 
-const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessage}) => {
+const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay, setMessage}) => {
 	const [commIsOpen, setComm]  = useState(false)
 	const [myCommIsOpen, setMyComm] = useState(false)
 	const [settingIsOpen, setSettings] = useState(false)
@@ -54,7 +54,11 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 					<div className='navItem'>
 						<Link className='link' to='/inbox'>
 							<i class="fas fa-inbox "></i>
-							<span>Inbox</span>
+							<span className={user.unseenMessages.user === true ||
+								user.unseenMessages.replies === true ||
+								user.unseenMessages.mentions == true ? 
+								'inboxNewMessage' : 
+								null }>Inbox</span>
 						</Link>
 					</div>
 				</React.Fragment>
@@ -86,7 +90,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 			</div>
 			{
 				settingIsOpen ?
-				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} setMessage={setMessage}/> :
+				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} setMessage={setMessage} history={history}/> :
 				null
 			}
 			<Link to='/c/global' className='navItem link'>

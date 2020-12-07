@@ -1,13 +1,29 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchBar from '../searchBar/SearchBar'
 import { useForm } from 'react-hook-form'
 
-const SubmitPost = ({submitPost, setOverlay, user, setMessage}) => {
+const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 
 	const [postType, setPostType] = useState('text')
 	const [formSent, setFormSent] = useState(false)
 	const { register, handleSubmit, errors} = useForm()
 	const [targetCommunity, setTargetCommunity] = useState(undefined)
+
+	useEffect(() => {
+		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/u/'){
+			console.log(location.pathname.substr(0, 3))
+			fetch('http://localhost:3000/api/search', {
+				method: 'post',
+				headers: {'Content-Type' : 'application/json'},
+				body: JSON.stringify({
+					query: location.pathname.substr(3, location.pathname.length - 3)
+				})
+			})
+			.then(response => response.json())
+			.then(response => setTargetCommunity(response.communityArray[0]))
+			.catch(err => console.log(err))
+		} 
+	},[])
 
 	const onSubmit = (data) => {
 		if(!formSent){
@@ -53,6 +69,7 @@ const SubmitPost = ({submitPost, setOverlay, user, setMessage}) => {
 								setOverlay(undefined)
 								setMessage('Thanks for your submission!')
 							} else{
+								setFormSent(false)
 								setMessage('There was an error making this post, please try again')
 							}
 						})

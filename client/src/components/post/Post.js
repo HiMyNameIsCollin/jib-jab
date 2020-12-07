@@ -35,11 +35,16 @@ const PostInfo = () => {
 				<span className='postInfoUserName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName} </Link></span> :
 				null
 			}
+			{
+				post.postType === 'open' ?
 				<i 
 				onClick={() => {
 				openPostInfo(!postInfoIsOpen)
 				openEnlargedWindow(false)}}
-				className="fa fa-ellipsis-h"></i>
+				className="fa fa-ellipsis-h"></i> :
+				null				
+			}
+
 		</div>
 	)
 }
@@ -81,6 +86,7 @@ const PostContent = () => {
 
 
 const EnlargedPostImg = () => {
+
 	return(
 		<div className='container enlargedPostImg'>
 		{
@@ -91,7 +97,7 @@ const EnlargedPostImg = () => {
 			</a> :
 			post.imageRefs.length > 0 ?
 			<Link to={`/i/${post.imageRefs[0]}`} className='link'>
-				<img src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`} alt=''/>
+				<img className='enlargedPostImgOpen' src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`} alt=''/>
 			</Link> :
 			null :
 			post.imageLink !== '' ?
@@ -126,14 +132,14 @@ const InteractionWindow =() => {
 			<div className='container'>
 			{
 				post.karma.upvotes.includes(user.userName) ?
-				<i onClick={() => handleVote(post.id, 'upvote')} class="fas fa-arrow-circle-up" style={{color: 'blue'}}></i>:
-				<i onClick={() => handleVote(post.id, 'upvote')} class="fas fa-arrow-circle-up"></i>
+				<i onClick={() => handleVote(post.id, post.userName, 'upvote')} class="fas fa-arrow-circle-up" style={{color: 'blue'}}></i>:
+				<i onClick={() => handleVote(post.id, post.userName, 'upvote')} class="fas fa-arrow-circle-up"></i>
 			}
 				<span> {post.karma.upvotes.length - post.karma.downvotes.length}</span>
 			{
 				post.karma.downvotes.includes(user.userName) ?
-				<i onClick={() => handleVote(post.id, 'downvote')} class="fas fa-arrow-circle-down" style={{color: 'red'}}></i>:
-				<i onClick={() => handleVote(post.id, 'downvote')} class="fas fa-arrow-circle-down"></i>
+				<i onClick={() => handleVote(post.id, post.userName, 'downvote')} class="fas fa-arrow-circle-down" style={{color: 'red'}}></i>:
+				<i onClick={() => handleVote(post.id, post.userName, 'downvote')} class="fas fa-arrow-circle-down"></i>
 			}
 			</div>
 			<div className='container'>

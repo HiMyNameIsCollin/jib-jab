@@ -81,7 +81,7 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 				{errors.messageSubject && errors.messageSubject.type === 'maxLength' && <p> Whoa whoa, why not make that title a bit more concise? </p>}
 				<input type='text' placeholder='Subject' name='messageSubject' ref={register({required: true, maxLength: 150})}/>
 				{errors.messageBody && errors.messageBody.type === 'maxLength' && <p> Cool story bro, lets summarize just a bit. </p>}
-				<textarea rows='4' placeholder="What's going on?" name="messageBody" ref={register({required: false, maxLength: 2000})} />
+				<textarea rows='4' placeholder="What's going on?" name="messageBody" ref={register({required: true, maxLength: 2000})} />
 				<button> Submit </button>
 			</form>
 		</div>

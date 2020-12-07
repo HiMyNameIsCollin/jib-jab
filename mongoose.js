@@ -27,10 +27,11 @@ const messageSchema = new Schema({
 	type: String,
 	subject: String,
 	body: String, 
-	seen: Boolean,
 	sender: String,
 	recipient: Array,
-	id: String
+	time: String,
+	id: String, 
+	seen: Boolean
 }) 
 
 
@@ -47,7 +48,7 @@ const userSchema = new Schema({
 	following: Array,
 	settings: Object,
 	savedPosts: Array,
-	unseenMessages: Array
+	unseenMessages: Object
 })
 
 const postSchema = new Schema({

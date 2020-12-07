@@ -20,6 +20,7 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 			})
 			.then(result => result.json())
 			.then(result => {
+				console.log(result)
 				setTrendingPosts(result)
 			})
 			.catch(err => console.log(err))

@@ -18,6 +18,15 @@ const initialUser = {
 	following: [],
 	settings: {
 		feedType: 'list'
+	},
+	configuration: {
+		image: 'http://robohash.org/100',
+		headerImg: ''
+	},
+	unseenMessages: {
+		user: false,
+		replies: false,
+		mentions: false
 	}
 }
 
@@ -145,6 +154,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 					setUser(initialUser)
 		  			window.localStorage.removeItem("accessToken")
 					window.localStorage.removeItem("refreshToken")
+					history.push('/c/popular')
 				})
 				.catch(err => console.log(err))
 			}}> 

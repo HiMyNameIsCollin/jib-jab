@@ -12,7 +12,19 @@ $gloomyBlue: #D0D2D4
 	padding: .5em 1em
 	transition: .25s ease-out all
 
-
+.newMsgIndicator
+	&::before
+		background: red
+		border: solid white 2px
+		border-radius: 50%
+		color: white
+		content: 'N'
+		height: 50%
+		position: absolute
+		text-align: center
+		top: 1%
+		left: 1%
+		width: 50%
 
 .header
 	background: $black
@@ -33,10 +45,14 @@ $gloomyBlue: #D0D2D4
 		@include headerFlair
 		font-weight: 700
 		margin: auto .5em
+		overflow: hidden
+		position: relative
 		text-decoration: none
 	.navBtn
 		@include headerFlair
 		margin: auto .5em auto .5em
+		position: relative
+		overflow: hidden
 		i
 			transition: .25s ease-out all
 	.backToTopBtn

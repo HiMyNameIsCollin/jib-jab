@@ -363,6 +363,21 @@ app.get('/api/c/:communityName/:postID', (req, res) => {
 	.catch(err => console.log(err))
 })
 
+app.get('/api/c/:communityName/:postID/:commentID', (req, res) => {
+	CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
+	.then((pageContent) => {
+		if(pageContent !== null){
+			const posts = []
+			posts.push(req.params.postID)
+			pageContent.posts = posts
+			res.json(pageContent)
+		} else {
+			res.sendStatus(400)
+		}
+	})
+	.catch(err => console.log(err))
+})
+
 
 /*Catch all fetching posts*/
 app.post('/api/p/', (req, res) => {
@@ -418,10 +433,11 @@ app.get('/api/topPosts/:communityNameLower', (req, res) => {
 
 /*ROUTE FOR UPVOTING AND DOWNVOTING POSTS*/
 app.post('/api/vote', authenticateToken, async (req, res) => {
-	let { request , postID } = req.body
+	let { request , postID, postUserName} = req.body
 	let { userName } = req.user
 	const post = await PostModel.findOne({id: postID})
-	if(post){
+	const targetUser = await UserModel.findOne({userNameLower: postUserName.toLowerCase()})
+	if(post, targetUser){
 		let {upvotes, downvotes} = post.karma
 		try{
 			if(request === 'downvote'){
@@ -432,6 +448,7 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 							i--
 						}
 					})
+					targetUser.karma = targetUser.karma + 1
 				} else {
 					if(upvotes.includes(userName)){
 						upvotes.forEach((u, i) => {
@@ -442,7 +459,10 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 						})
 					}
 					downvotes.push(userName)
+					targetUser.karma = targetUser.karma - 1
 				}
+					targetUser.markModified('karma')
+					targetUser.save()
 					post.markModified('karma')
 					post.save()
 					.then(savedPost => res.json(savedPost))
@@ -455,6 +475,7 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 							i--
 						}
 					})
+					targetUser.karma = targetUser.karma - 1
 				} else {
 					if(downvotes.includes(userName)){
 						downvotes.forEach((u, i) => {
@@ -465,7 +486,10 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 						})
 					}
 					upvotes.push(userName)
+					targetUser.karma = targetUser.karma + 1
 				}
+				targetUser.markModified('karma')
+				targetUser.save()
 				post.markModified('karma')
 				post.save()
 				.then(savedPost => res.json(savedPost))
@@ -490,24 +514,31 @@ app.post('/api/c/:communityName/submit', authenticateToken, (req, res) => {
 		} 
 		let title
 		let text
+		let link
+		let imageLink
 		if(req.body.data){
 			title = req.body.data.postTitle
 			text = req.body.data.postText
 			link = req.body.data.link
+			imageLink = req.body.data.imageLink ? req.body.data.imageLink : ''
 		} else {
 			title = req.body.postTitle
 			text = req.body.postText
 			link = req.body.link
+			imageLink = req.body.imageLink ? req.body.imageLink : ''
+		}
+		if(imageLink !== '' && (imageLink.substr(0, 7) !== 'http://' || imageLink.substr(0, 8) !== 'https://')){
+			imageLink = `http://${imageLink}`
+			console.log(imageLink)
 		}
 		if(user && community){
-			console.log(user, community)
 			try{
 				const newPost = new PostModel({
 					postType: 'community',
 					communityName: community.communityName,
 					communityNameLower: community.communityNameLower,
 					comments: [],
-					imageLink: req.body.imageLink ? req.body.imageLink : '',
+					imageLink:  imageLink,
 					imageRefs: imageRefs,
 					link: link,
 					text: text,
@@ -556,7 +587,6 @@ app.post('/api/u/submit', authenticateToken, (req, res) => {
 			link = req.body.link
 		}
 		if(user){
-			console.log(user, req.body)
 			try{
 				const newPost = new PostModel({
 					postType: 'soapBox',
@@ -594,6 +624,8 @@ app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
 	const {postId, commentId, commentContent } = req.body
 	const userName = req.user.userName
 	const time = new Date()
+	let targetMentionedUser 
+
 	const newComment = {
 		commentInfo: {
 			userName,
@@ -603,17 +635,19 @@ app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
 		commentContent,
 		comments: [],
 		karma: {
-			upvotes: [],
+			upvotes: [userName],
 			downvotes: []
 		}
 	}
 	const post = await PostModel.findOne({id: postId.toString()})
 	if(post){
 		try{
+			let target 
 			const postComment = (comments, id, commentId, content) => {
 				comments.map((c, i) => {
 					if(c.commentInfo.id === commentId){
 						c.comments.push(newComment)
+						target = c.commentInfo.userName
 						return
 					} else { 
 						postComment(c.comments, id, commentId, content)
@@ -623,18 +657,72 @@ app.post('/api/comment/submit' , authenticateToken, async (req, res) => {
 			}
 			if(commentId === 'parent'){
 				post.comments.push(newComment)
+				target = newComment.commentInfo.userName
 			}else {
 				postComment(post.comments, postId, commentId, commentContent)
 			}
-			post.markModified('comments')
-			post.save()
-			.then(result => {
-				res.json([result])
-			})
-			.catch(err => console.log(err))
+			const targetUser = await UserModel.findOne({userName: target})
+			if(targetUser){
+				post.markModified('comments')
+				post.save()
+				.then(result => {
+					const newMessage = new MessageModel({
+						type: 'reply',
+						subject: `${userName} replied to you!`,
+						body: `Ill figure out how to link to that soon enough. `, 
+						sender: 'Jibbers the jabber',
+						recipient: targetUser.userName,
+						time: new Date() ,
+						id: uuidv4(),
+						seen: false
+					})
+					if(commentContent.includes('/u/')){
+							let commentArray = commentContent.split(' ')
+							let mentionedUsers = commentArray.filter((value) => {
+								return value.includes('/u/')
+							})
+							mentionedUsers.forEach(async (u, i) => {
+								targetMentionedUser = await UserModel.findOne({userNameLower: u.substr(3).toLowerCase()})
+								if(targetMentionedUser){
+								let mentionedMessage = new MessageModel({
+									type: 'mentions',
+									subject: `${userName} mentioned you!`,
+									body: `Ill figure out how to link to that soon enough. `, 
+									sender: 'Jibbers the jabber',
+									recipient: targetMentionedUser.userName,
+									time: new Date() ,
+									id: uuidv4(),
+									seen: false
+								})
+							
+									mentionedMessage.save()
+									.then((result => {
+										targetMentionedUser.unseenMessages.mentions = true
+										targetMentionedUser.markModified('unseenMessages')
+										targetMentionedUser.save()	
+									}))
+								}
+							})
+						}
+					newMessage.save()
+					.then(savedMessage => {
+						targetUser.unseenMessages.replies = true
+						targetUser.markModified('unseenMessages')
+						targetUser.save()
+						.then(() => res.json([result]))
+					})
+				})
+				.catch(err => {
+					console.log(err)
+					res.sendStatus(400)
+				})
+			} else {
+				res.sendStatus(400)
+			}
+
 		}
 		catch(err){
-			res.status(400).json({error: 'There has been an error :('})
+			res.sendStatus(400)
 		}
 	}
 })
@@ -687,14 +775,19 @@ app.post('/api/comment/vote', authenticateToken, async (req, res) => {
 
 	const { postId, commentId, request } = req.body
 	const post = await PostModel.findOne({id: postId})
-	if(post){
+	const targetUser = await UserModel.findOne({userNameLower: post.userName.toLowerCase()})
+	if(post, targetUser){
 		try{
 			if(request === 'upvote'){
 				deepUpvote(post.comments, req.user.userName, commentId)
+				targetUser.karma + 1
 			} else if (request === 'downvote'){
 				deepDownvote(post.comments, req.user.userName, commentId)
+				targetUser.karma - 1
 			}
+			targetUser.markModified('karma')
 			post.markModified('comments')
+			targetUser.save()
 			post.save()
 			.then(result => res.json(result))
 			.catch(err => console.log(err))
@@ -860,6 +953,80 @@ app.post('/api/search', async (req, res) => {
 	}
 })
 
+app.get('/api/inbox/:type', authenticateToken, async (req, res) => {
+	const type  = req.params.type
+	const messages = await MessageModel.find()
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(messages, user){
+		try{
+			let inbox = {}
+			if(type === 'user'){
+				let sent = []
+				let received = []
+				messages.forEach((m, i) => {
+					if(m.type === 'user'){
+						m.recipient.map((r, j) => {
+						if(r === user.userName){
+							let reci = { ...m._doc}
+							received.unshift(reci)
+						}
+						m.seen = true
+						messages[i].markModified('seen')
+						messages[i].save()
+					})
+					if(m.sender === user.userName){
+							sent.unshift(m)
+						}					
+					}
+				})
+				inbox['received'] = received
+				inbox['sent'] = sent
+				user.unseenMessages.user = false
+			} else if(type === 'replies'){
+				let replies = []
+				messages.forEach((m, i) => {
+					if(m.type === 'reply'){
+					m.recipient.map((r, j) => {
+						if(r === user.userName){
+							let reci = { ...m._doc}
+							replies.unshift(reci)
+						}
+						m.seen = true
+						messages[i].markModified('seen')
+						messages[i].save()
+						})
+					}
+				})
+				inbox['replies'] = replies
+				user.unseenMessages.replies = false
+			} else if(type === 'mentions'){
+				let mentions = []
+				messages.forEach((m, i) => {
+					if(m.type === 'mentions'){
+						m.recipient.map((r, j) => {
+							if(r === user.userName){
+								let reci = { ...m._doc}
+								mentions.unshift(reci)
+							}
+							m.seen = true
+							messages[i].markModified('seen')
+							messages[i].save()
+						})						
+					}
+
+				})
+				inbox['mentions'] = mentions
+				user.unseenMessages.mentions = false
+			}
+			user.markModified('unseenMessages')
+			user.save()
+			res.json(inbox)
+		}catch(err){
+			console.log(err, 123)
+		}
+	}
+})
+
 app.post('/api/message' , authenticateToken, async (req, res) => {
 	const {target, subject, body, type } = req.body
 	const targetUser = await UserModel.findOne({userName: target})
@@ -867,15 +1034,23 @@ app.post('/api/message' , authenticateToken, async (req, res) => {
 		type: type,
 		subject: subject,
 		body: body,
-		seen: false,
 		time: new Date(),
 		sender: req.user.userName,
 		recipient: [target],
-		id: uuidv4()
+		id: uuidv4(),
+		seen: false
 	})
 	if(targetUser){
 		try{
-		targetUser.unseenMessages.push(newMessage.id)
+			if(type === 'user'){
+				targetUser.unseenMessages.user = true
+			}
+			if(type === 'replies'){
+				targetUser.unseenMessages.replies = true
+			}
+			if(type === 'mentions'){
+				targetUser.unseenMessages.mentions = true
+			}
 		newMessage.save()
 		targetUser.markModified('unseenMessages')
 		targetUser.save()

@@ -19,13 +19,29 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location
 	}
 	{
 		overlayIsOpen === 'login' ?
-		<Login  setOverlay={setOverlay} setLoading={setLoading} user={user} setUser={setUser} /> :
+		<Login  
+		setOverlay={setOverlay} 
+		setLoading={setLoading} 
+		user={user} 
+		setUser={setUser} /> :
 		overlayIsOpen === 'register' ?
-		<Register setOverlay={setOverlay} setLoading={setLoading}/> :
+		<Register 
+		setOverlay={setOverlay} 
+		setLoading={setLoading}/> :
 		overlayIsOpen === 'submitPost' ?
-		<SubmitPost setOverlay={setOverlay} setLoading={setLoading} user={user} setMessage={setMessage}/> :
+		<SubmitPost 
+		location={location}  
+		setOverlay={setOverlay} 
+		setLoading={setLoading} 
+		user={user} 
+		setMessage={setMessage}/> :
 		overlayIsOpen === 'submitMessage' ?
-		<SubmitMessage location={location} setOverlay={setOverlay} setLoading={setLoading} user={user} setMessage={setMessage}/>:
+		<SubmitMessage 
+		location={location} 
+		setOverlay={setOverlay} 
+		setLoading={setLoading} 
+		user={user} 
+		setMessage={setMessage}/>:
 		null
 	}
 		</div>
