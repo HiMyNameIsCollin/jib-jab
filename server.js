@@ -22,7 +22,6 @@ app.use(bodyParser.json())
 
 if(process.env.NODE_ENV === 'production'){
 	app.use(express.static('client/build'))
-
 	app.get('/', (req, res) => {
 		res.sendFile(path.resolve('client', 'build', 'index.html'))
 	})
@@ -37,11 +36,13 @@ let CommunityModel
 let MessageModel
 let LoginModel
 let TokenModel
-/*Lies*/
+
+
 conn = mongoose.createConnection(process.env.MONGODB_URI || url, { useNewUrlParser: true , useFindAndModify: false })
 
 conn.once('open', () => {
-	console.log('Database connected', url)
+	console.log(process.env.MONGODB_URI)
+	console.log('Database connected on port', myPort )
 	PostModel = conn.model('posts', postSchema)
 	UserModel = conn.model('users', userSchema)
 	CommunityModel = conn.model('communities', communitySchema)
