@@ -143,7 +143,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 			<div onClick={() => {
 				const refreshToken = window.localStorage.getItem('refreshToken')
 				setNav(false)
-				fetch('http://localhost:4000/api/logout', {
+				fetch('http://localhost:3000/api/logout', {
 					method: 'delete',
 					headers: {'Content-Type' : 'application/json'},
 					body: JSON.stringify({

@@ -158,15 +158,12 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 		})
 	}, [inboxType])
 
->>>>>>> inbox
 
 	return(
 		<div className='inboxPage'>
-<<<<<<< HEAD
 			<div className='container'>
 				<h3> Inbox </h3>
 			</div>
-=======
 			{
 				replyWindowOpen !== undefined ?
 				<MessageReply /> :
@@ -226,7 +223,6 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 				}
 				
 			</React.Fragment>
->>>>>>> inbox
 		</div> 
 	)
 }

@@ -14,7 +14,7 @@ const Login = ({setOverlay, setLoading, user, setUser}) => {
 			setLoading(true)
 			setError(false)
 			setIncorrect(false)
-			fetch('http://localhost:4000/api/login', {
+			fetch('http://localhost:3000/api/login', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({

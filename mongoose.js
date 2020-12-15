@@ -2,17 +2,6 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const postReportSchema = new Schema({
-	user: String,
-	reportOption: String,
-	reportReason: String,
-	community: String, 
-	post: Object,
-	id: String,
-	postStatus: String,
-	moderatedBy: String,
-})
-
 const communitySchema = new Schema({
 	communityName: String,
 	communityNameLower: String,
@@ -94,5 +83,4 @@ module.exports = {
 	tokenSchema,
 	communitySchema,
 	messageSchema,
-	postReportSchema
 }

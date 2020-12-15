@@ -14,7 +14,7 @@ const Register = ({setOverlay, setLoading}) => {
 			setFormSent(true)
 			setLoading(true)
 			setError(false)
-			fetch('http://localhost:4000/api/register', {
+			fetch('http://localhost:3000/api/register', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
