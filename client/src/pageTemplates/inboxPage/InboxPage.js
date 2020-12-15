@@ -74,7 +74,6 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 		const { register, handleSubmit, errors} = useForm()		
 
 		const onSubmit = (data) => {
-			console.log(data)
 			if(formSent === false){
 			setFormSent(true)
 			const accessToken = window.localStorage.getItem('accessToken')
@@ -133,8 +132,6 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 
 
 	const [inboxMessages, setInboxMessages] = useState(undefined)
-	const [replies, setReplies] = useState(undefined)
-	const [mentions, setMentions] = useState(undefined)
 	const [messageOptions, setMessageOptions] = useState('received')
 	const [inboxType, setInboxType] = useState('user')
 	const [replyWindowOpen, setReplyWindowOpen] = useState(undefined)
@@ -152,7 +149,6 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 		.then(response => {
 			let updatedUser = { ...user }
 			updatedUser.unseenMessages[inboxType] = false
-			console.log(updatedUser.unseenMessages[inboxType])
 			setUser(updatedUser)
 			setInboxMessages(response)
 		})

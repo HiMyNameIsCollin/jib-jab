@@ -9,6 +9,7 @@ import PostPage from './pageTemplates/PostPage'
 import AboutPage from './pageTemplates/AboutPage'
 import InboxPage from './pageTemplates/inboxPage/InboxPage'
 import CreateCommunity from './pageTemplates/createCommunity/CreateCommunity'
+import ReportOverlay from './components/reportOverlay/ReportOverlay'
 import Loading from './components/loading/Loading'
 
 
@@ -38,7 +39,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const [overlayIsOpen, setOverlay] = useState(undefined)
 	const [user, setUser] = useState(initialUser)
 	const [message, setMessage] = useState(undefined)
-
+	const [reportOverlayIsOpen, setReportOverlayIsOpen] = useState(undefined)
+	const [loading, setLoading] = useState(false)
 	const location = useLocation()
 	const history = useHistory()
 
@@ -135,6 +137,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 			windowWidth={windowWidth}
 			setOverlay={setOverlay}/>
 			{
+				loading ?
+				<Loading /> :
+				null
+			}
+			{
 				overlayIsOpen !== undefined ?
 				<Overlay 
 				overlayIsOpen={overlayIsOpen} 
@@ -147,6 +154,19 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				:
 				null
 			} 
+			{
+				reportOverlayIsOpen !== undefined ?
+				<ReportOverlay 
+				setUser={setUser} 
+				user={user}
+				setMessage={setMessage}
+				history={history}
+				location={location}
+				setReportOverlayIsOpen={setReportOverlayIsOpen}
+				reportOverlayIsOpen={reportOverlayIsOpen}
+				Link={Link}/> :
+				null
+			}
 			{
 				message !== undefined ?
 				<div className='message messageSlideIn container'> 
@@ -178,7 +198,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		windowWidth={windowWidth}
 		       		location={location}
 		       		pageType={'frontPage'}
-		       		setMessage={setMessage} />
+		       		setMessage={setMessage}
+		       		setOverlay={setOverlay}
+		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
+		       		setLoading={setLoading}
+		       		history={history} />
 		        </Route>
 		       	<Route exact path="/u/:userName">
 		        	<ProfilePage 
@@ -190,7 +214,9 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		pageType={'profilePage'}
 		       		setMessage={setMessage}
 		       		history={history}
-		       		setOverlay={setOverlay}/>
+		       		setOverlay={setOverlay}
+		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
+		       		setLoading={setLoading} />
 		        </Route>
 		        <Route exact path="/c/:communityName">
 		        	<CommunityPage 
@@ -202,7 +228,9 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		history={history}
 					pageType={'communityPage'} 
 		       		setMessage={setMessage}
-		       		setOverlay={setOverlay}/>
+		       		setOverlay={setOverlay}
+		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
+		       		setLoading={setLoading} />
 		        </Route>
 		       	<Route exact path="/u/:userName/:postID/">
 		        	<PostPage 
@@ -215,7 +243,9 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		location={location}
 		       		pageType={'userPostPage'}
 		       		setMessage={setMessage}
-		       		history={history}/>
+		       		history={history}
+		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
+		       		setLoading={setLoading} />
 		        </Route>
 		        <Route exact path='/c/:communityName/:postID'>
 		        	<PostPage 
@@ -226,10 +256,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	windowWidth={windowWidth}
 		        	overlayIsOpen={overlayIsOpen} 
 		        	setOverlay={setOverlay}
-		       		location={location}
 					pageType={'postPage'} 
 					setMessage={setMessage}
-					history={history}/>
+					history={history}
+					setReportOverlayIsOpen={setReportOverlayIsOpen}
+					setLoading={setLoading} />
 		        </Route>
 		        <Route exact path='/c/:communityName/:postID/:commentID'>
 		        	<PostPage 
@@ -240,10 +271,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	windowWidth={windowWidth}
 		        	overlayIsOpen={overlayIsOpen} 
 		        	setOverlay={setOverlay}
-		       		location={location}
 					pageType={'postPage'} 
 					setMessage={setMessage}
-					history={history}/>
+					history={history}
+					setReportOverlayIsOpen={setReportOverlayIsOpen}
+					setLoading={setLoading} />
 		        </Route>
 		        <Route path='/inbox'>
 		        	<InboxPage 
@@ -255,11 +287,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	setMessage={setMessage} 
 		        	setOverlay={setOverlay}
 					pageType={'postPage'} 
-					setMessage={setMessage}
-					history={history}/>
+					history={history}
+					setReportOverlayIsOpen={setReportOverlayIsOpen}/>
 		        </Route>
 		        <Route path='/createCommunity'>
-		        	<CreateCommunity user={user} />
+		        	<CreateCommunity user={user} setMessage={setMessage} history={history} />
 		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage />

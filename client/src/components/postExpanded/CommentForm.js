@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
 const CommentForm = ({func, value, post, setPosts, comment, setMessage}) => {
-	const [error, setError] = useState(false)
 	const [formSent, setFormSent] = useState(false)
-	const { register, handleSubmit, errors, watch} = useForm()
+	const { register, handleSubmit, errors} = useForm()
 	const [commentId, setCommentId] = useState(comment !== undefined ? comment.commentInfo.id : 'parent')
 
 	const onSubmit = (data) => {

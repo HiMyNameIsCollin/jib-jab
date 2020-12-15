@@ -6,7 +6,7 @@ import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
 
-const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType, setMessage}) => {
+const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType, setMessage, setOverlay, setReportOverlayIsOpen, setLoading}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
@@ -38,7 +38,7 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 	if(pageContent){
 		return(
 			<React.Fragment>
-					<Intro pageType={pageType} windowWidth={windowWidth} pageContent={pageContent}/> 
+					<Intro pageType={pageType} windowWidth={windowWidth} pageContent={pageContent} user={user} setOverlay={setOverlay}/> 
 				{
 					windowWidth <= 920 ?
 					<div className='container mobileViewToggle'>
@@ -58,7 +58,10 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 						windowWidth={windowWidth}
 						pageContent={pageContent} 
 						setMessage={setMessage}
-						history={history} />
+						history={history} 
+						setOverlay={setOverlay}
+						setReportOverlayIsOpen={setReportOverlayIsOpen} 
+						setLoading={setLoading} />
 						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 					</React.Fragment> :
 					mobileViewIsFeed ?
@@ -69,7 +72,9 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 					setUser={setUser} 
 					windowWidth={windowWidth}
 					pageContent={pageContent}
-					setMessage={setMessage}/>:
+					setMessage={setMessage}
+					setLoading={setLoading} 
+					history={history}/>:
 					<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
 				}
 

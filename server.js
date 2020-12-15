@@ -8,7 +8,7 @@ const multer  = require('multer')
 const GridFsStorage = require('multer-gridfs-storage')
 const Grid = require('gridfs-stream')
 require('dotenv').config()
-const {mongoose, postSchema, tokenSchema, userSchema, communitySchema, messageSchema} = require('./mongoose')
+const {mongoose, postSchema, tokenSchema, userSchema, communitySchema, messageSchema, postReportSchema} = require('./mongoose')
 const url = 'mongodb://127.0.0.1:27017/jibjab'
 const app = express()
 const path = require("path")
@@ -25,7 +25,8 @@ let gfs
 let PostModel
 let UserModel
 let CommunityModel
-let MessageSchem
+let MessageModel
+let PostReportModel
 
 conn = mongoose.createConnection(url, { useNewUrlParser: true , useFindAndModify: false })
 
@@ -35,6 +36,7 @@ conn.once('open', () => {
 	UserModel = conn.model('users', userSchema)
 	CommunityModel = conn.model('communities', communitySchema)
 	MessageModel = conn.model('messages', messageSchema)
+	PostReportModel = conn.model('postReports', postReportSchema)
 	gfs = Grid(conn.db, mongoose.mongo)
 	gfs.collection('uploads')
 })
@@ -332,7 +334,7 @@ app.get('/api/c/:communityName/', async (req, res) => {
 /*GET COMMUNITY IMAGE*/
 app.get('/api/c/img/:communityName' , (req, res) => {
 	CommunityModel.findOne({communityNameLower: req.params.communityName })
-	.then((result) => res.json(result.configuration.communityImg))
+	.then((result) => res.json(result.configuration.image))
 	.catch(err => console.log(err))
 })
 
@@ -381,6 +383,7 @@ app.get('/api/c/:communityName/:postID/:commentID', (req, res) => {
 
 /*Catch all fetching posts*/
 app.post('/api/p/', (req, res) => {
+	console.log(123)
 	if(req.body.posts.length > 1){
 		PostModel.find({
 			id: { $in: 
@@ -410,7 +413,8 @@ app.post('/api/p/', (req, res) => {
 		})
 		.catch(err => res.sendStatus(400))
 	} else if(req.body.posts.length === 0){
-		res.sendStatus(400)
+		console.log(123)
+		res.json([])
 	}
 })
 
@@ -425,7 +429,13 @@ app.get('/api/topPosts/:communityNameLower', (req, res) => {
 		})
 		.then(result =>{
 			const posts = sortPosts(result, 'top', 'day')
-			res.json(posts)
+			let postsArray = []
+			posts.map((p, i) => {
+				if(i < 4){
+					postsArray.push(p)
+				}
+			})
+			res.json(postsArray)
 		})
 		.catch(err => console.log(err))
 	})
@@ -519,49 +529,58 @@ app.post('/api/c/:communityName/submit', authenticateToken, (req, res) => {
 		if(req.body.data){
 			title = req.body.data.postTitle
 			text = req.body.data.postText
-			link = req.body.data.link
+			link = req.body.data.link ? req.body.link : ''
 			imageLink = req.body.data.imageLink ? req.body.data.imageLink : ''
 		} else {
 			title = req.body.postTitle
 			text = req.body.postText
-			link = req.body.link
+			link = req.body.link ? req.body.link : ''
 			imageLink = req.body.imageLink ? req.body.imageLink : ''
 		}
-		if(imageLink !== '' && (imageLink.substr(0, 7) !== 'http://' || imageLink.substr(0, 8) !== 'https://')){
-			imageLink = `http://${imageLink}`
-			console.log(imageLink)
+		if(imageLink !== '' && imageLink.substr(0, 7) !== 'http://'){
+			if(imageLink.substr(0, 8) !== 'https://'){
+				imageLink = `http://${imageLink}`
+			}
 		}
 		if(user && community){
-			try{
-				const newPost = new PostModel({
-					postType: 'community',
-					communityName: community.communityName,
-					communityNameLower: community.communityNameLower,
-					comments: [],
-					imageLink:  imageLink,
-					imageRefs: imageRefs,
-					link: link,
-					text: text,
-					title: title,
-					time: new Date(),
-					userName: req.user.userName,
-					karma: {upvotes: [req.user.userName], downvotes: []},
-					id: uuidv4(),
-					postTag: '',
-				})
-				community.posts.push(newPost.id)
-				user.posts.push(newPost.id)
-				community.markModified('posts')
-				user.markModified('posts')
-				community.save()
-				user.save()
-				newPost.save()
-				.then(savedPost => res.send('Success'))
-				.catch(err => sendStatus(400))
+			if(community.configuration.postPermission === 'open' || 
+			(community.configuration.postPermission === 'locked' && community.moderators.includes(req.user.userName))){
+				try{
+					const newPost = new PostModel({
+						postStatus: 'active',
+						postType: 'community',
+						communityName: community.communityName,
+						communityNameLower: community.communityNameLower,
+						comments: [],
+						imageLink:  imageLink,
+						imageRefs: imageRefs,
+						link: link,
+						text: text,
+						title: title,
+						time: new Date(),
+						userName: req.user.userName,
+						karma: {upvotes: [req.user.userName], downvotes: []},
+						id: uuidv4(),
+						postTag: '',
+						reports: []
+					})
+					community.posts.push(newPost.id)
+					user.posts.push(newPost.id)
+					community.markModified('posts')
+					user.markModified('posts')
+					community.save()
+					user.save()
+					newPost.save()
+					.then(savedPost => res.send('Success'))
+					.catch(err => sendStatus(400))
+				}
+				catch(err){
+					res.sendStatus(400)
+				}				
+			} else {
+				res.send('You do not have permission to post there')
 			}
-			catch(err){
-				res.sendStatus(400)
-			}
+
 		}
 	})
 })
@@ -905,6 +924,83 @@ app.get('/api/u/settings', authenticateToken , async (req, res) => {
 	}
 })
 
+app.post('/api/editProfile', authenticateToken, async (req, res) => {
+	console.log(req.user.userName)
+	console.log(req.body)
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(user){
+		try{
+			user.configuration.image = req.body.image !== '' ? req.body.image : `http://robohash.org/${req.user.userName}`,
+			user.configuration.headerImg = req.body.headerImg !== '' ? req.body.headerImg : 'https://source.unsplash.com/random/800x1200'
+			user.markModified('configuration')
+			user.save()
+			.then(savedUser => res.json({success: true}))
+		}catch(err){
+			res.sendStatus(400)
+			console.log(err)
+		}
+	}
+})
+
+app.get('/api/manageCommunity/:communityName', async (req, res) =>{
+	const community = await CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
+	const posts = await PostModel.find({communityNameLower: req.params.communityName.toLowerCase()})
+	if(community, posts){
+		try{
+			let reportedPosts = []
+			posts.map((p, i) => {
+				if(p.reports.length > 0) {
+					reportedPosts.push(p)
+				}
+			})
+			res.json({community: community, reportedPosts: reportedPosts})
+		}catch(err){
+			res.sendStatus(400)
+		}
+	} else{
+		res.sendStatus(400)
+	}
+})
+
+app.post('/api/manageCommunity/:communityName', async (req, res) => {
+	const community = await CommunityModel.findOne({communityNameLower: req.params.communityName.toLowerCase()})
+	const { data } = req.body
+	console.log(data)
+	if(community){
+		if(req.body.request === 'banner'){
+			community.configuration.image = req.body.data.image !== '' ? req.body.data.image : community.configuration.image
+			community.configuration.headerImg = req.body.data.headerImg !== '' ? req.body.data.headerImg : community.configuration.headerImg
+			community.configuration.postPermission = req.body.data.postPermission
+			community.configuration.visibility = req.body.data.visibility
+			community.markModified('configuration')
+			community.save()
+			.then(savedUser => res.json({success: true}))		
+		} else if(req.body.request === 'widgets'){
+			const {aboutWidget, communityListWidget, announcementWidget, rulesWidget, linkListWidget } = community.configuration.widgets
+			aboutWidget.active = data.aboutWidgetActive
+			aboutWidget.header = data.aboutWidgetHeader
+			aboutWidget.body = data.aboutWidgetBody
+			communityListWidget.active = data.communityListWidgetActive
+			communityListWidget.header = data.communityListWidgetHeader
+			announcementWidget.active = data.announcementWidgetActive
+			announcementWidget.header = data.announcementWidgetHeader
+			announcementWidget.body = data.announcementWidgetBody
+			rulesWidget.active = data.communityRulesWidgetActive
+			rulesWidget.header = data.communityRulesWidgetHeader
+			rulesWidget.rules = data.communityRulesWidgetRules
+			linkListWidget.active = data.linkListWidgetActive
+			linkListWidget.header = data.linkListWidgetHeader
+			linkListWidget.links = data.linkListWidgetLinks
+			community.markModified('configuration')
+			community.communities = data.communityListWidgetCommunities
+			community.markModified('communities')
+			community.save()
+			.then(savedUser => res.json({success: true}))
+		} else if(req.body.request === 'moderation'){
+
+		}
+	} 
+})
 
 app.get('/api/u/:user', (req, res) => {
 	UserModel.findOne({userNameLower: req.params.user.toLowerCase()})
@@ -939,7 +1035,7 @@ app.post('/api/search', async (req, res) => {
 			communities.forEach((c, i) => {
 				if(c.communityName !== 'Popular' && c.communityName !== 'Global'){
 					if(c.communityNameLower.substr(0, req.body.query.length) === req.body.query.toLowerCase()){
-						results.communityArray.push({name: c.communityName, image: c.configuration.communityImg, type: 'community'})
+						results.communityArray.push({name: c.communityName, image: c.configuration.image, type: 'community'})
 					}
 				}
 			})
@@ -1057,6 +1153,194 @@ app.post('/api/message' , authenticateToken, async (req, res) => {
 		.then(res.send('Success'))
 		} catch(err){
 			res.status(400)
+		}
+	}
+})
+
+app.post('/api/createCommunity', authenticateToken, async (req, res) => {
+	const { communityName, communityHeaderBlurb, image, headerImg, communityVisibility, postPermission} = req.body.pageOne
+	const {aboutWidget, communityListWidget, announcementWidget, rulesWidget, linkListWidget}  = req.body.pageTwo
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(communityVisibility === 'public'){
+		CommunityModel.findOneAndUpdate(
+			{communityName: 'Global'},
+			{ $push: { communities: communityName}}
+		)
+	}
+	if(user){
+		try{
+			let relatedCommunities = []
+			communityListWidget.communities.map((c, i) => {
+				relatedCommunities.push(c)
+			})
+			const {communities, ...remaining} = communityListWidget
+			const newCommunity = new CommunityModel({
+				communityName: communityName,
+				communityNameLower: communityName.toLowerCase(),
+				followers: [req.user.userName],
+				moderators: [req.user.userName],
+				communities: relatedCommunities,
+				posts: [],
+				settings: {},
+				modMail: [],
+				modLogs: [], 
+				configuration: {
+					headerImg: headerImg,
+					image: image,
+					communityHeader: communityHeaderBlurb ,
+					visibility: communityVisibility,
+					postPermission: postPermission,
+					widgets: {
+						aboutWidget,
+						communityListWidget: remaining, 
+						announcementWidget,
+						rulesWidget,
+						linkListWidget			
+					}
+
+				},
+				createdOn: new Date(),
+			})
+			newCommunity.save()	
+			user.communities.push(communityName)
+			user.markModified('communities')
+			user.save()
+			.then(savedUser => {
+				req.body.moderators.map((m, i) => {
+				const newMessage = new MessageModel({
+					recipient: m.name,
+					type: 'user',
+					subject: `${communityName} invites you to be a moderator!`,
+					body: `${req.user.userName} has invited you to become a moderator at ${communityName}, Click here to accept, if you have no interest in moderating this community, ignore this message`,
+					time: new Date(),
+					sender: req.user.userName,
+					id: uuidv4(),
+					seen: false
+				})
+				newMessage.save()
+				.then(msg => console.log(msg))
+				.catch(err => res.sendStatus(400))
+			})
+				res.json({success: true})
+			})
+		} catch(err){
+			res.sendStatus(400)
+		}			
+	}
+
+	
+})
+
+app.post('/api/reportPost' , authenticateToken, async (req, res) => {
+	const post = await PostModel.findOne({id: req.body.postId})
+	if(post){
+		post.reports.push({
+			reportedBy: req.user.userName,
+			category: req.body.reportOption,
+			reason: req.body.reportReason,
+		})
+		post.markModified('reports')
+		post.save()
+		.then(() => res.json({success: true}))
+	} else{
+		res.sendStatus(400)
+	}
+})
+
+
+app.post('/api/reportComment' , authenticateToken, async (req, res) => {
+	const community = await CommunityModel.findOne({communityNameLower: req.body.post.communityNameLower})
+	if(community){
+		console.log(req.body)
+	} else{
+		res.sendStatus(400)
+	}
+})
+
+app.post('/api/deletePost', authenticateToken, async (req, res) => {
+	const post = await PostModel.findOne({id: req.body.post.id})
+	if(post){
+		try{
+			if(post.imageRefs.length > 0){
+				console.log('need to remove images')
+			}
+			post.title = '-Deleted-'
+			post.text = '-Deleted-'
+			post.imageLink = ''
+			post.link = ''
+			post.postStatus = 'deleted'
+			post.markModified('title')
+			post.markModified('text')
+			post.markModified('imageLink')
+			post.markModified('link')
+			post.markModified('postStatus')
+			post.save()
+			.then(() => res.json({success: true}))
+		}catch(err){
+			res.sendStatus(400)
+		}
+	} else{
+		res.sendStatus(400)
+	}
+})
+
+app.post('/api/mod/deletePost', authenticateToken, async (req, res) => {
+	const post = await PostModel.findOne({id: req.body.post.id})
+	const community = await CommunityModel.findOne({communityNameLower: req.body.post.communityNameLower})
+	if(post, community){
+		try{
+			community.modLogs.push({
+				postTitle: post.title,
+				postID: post.id,
+				poster: post.userName,
+				removedBy: req.user.userName,
+				numberOfReports: post.reports.length,
+				timeOfRemoval: new Date()
+			})
+			community.markModified('modLogs')
+			if(post.imageRefs.length > 0){
+				console.log('need to remove images')
+			}
+			post.title = '-Removed-'
+			post.text = '-Removed-'
+			post.imageLink = ''
+			post.link = ''
+			post.postStatus = 'removed'
+			post.markModified('title')
+			post.markModified('text')
+			post.markModified('imageLink')
+			post.markModified('link')
+			post.markModified('postStatus')
+			community.save()
+			post.save()
+			.then(savedPost => {
+				res.json(savedPost)
+			})
+		}catch(err){
+			res.sendStatus(400)
+			console.log('err')
+		}
+	} else {
+		console.log('No results')
+		res.sendStatus(400)
+	}
+})
+
+app.post('/api/savePost', authenticateToken, async (req, res) => {
+	const user = await UserModel.findOne({userName: req.user.userName})
+	if(user){
+		try{
+			if(user.savedPosts.includes(req.body.postId)){
+				res.send('Post already saved')
+			} else {
+				user.savedPosts.push(req.body.postId)
+				user.markModified('savedPosts')
+				user.save()
+				.then(() => res.send('Post successfully saved'))				
+			}
+
+		}catch(err){
+			res.sendStatus(400)
 		}
 	}
 })

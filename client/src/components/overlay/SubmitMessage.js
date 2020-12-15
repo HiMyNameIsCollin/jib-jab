@@ -10,7 +10,6 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 
 	useEffect(() => {
 		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/c/'){
-			console.log(location.pathname.substr(0, 3))
 			fetch('http://localhost:3000/api/search', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
@@ -48,10 +47,14 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 						setMessage('Message successfully sent')
 						setOverlay(undefined)
 					} else{
+						setFormSent(false)
 						setMessage('Something went wrong...')
 					}
 				})
-				.catch(err => setMessage('Something went wrong...'))
+				.catch(err => {
+					setMessage('Something went wrong...')
+					setFormSent(false)
+				})
 			} else {
 				setMessage('Who you sending this to?')
 				setFormSent(false)

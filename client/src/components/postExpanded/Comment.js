@@ -7,7 +7,6 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 
 		const CommentBody = ({commentType, comment}) => {
 			const [commentFormOpen, setCommentFormOpen] = useState(false)
-			const [commentHidden, setCommentToHidden] = useState(false)
 
 			const CommentInfo = () => {
 			return(
@@ -55,22 +54,22 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 					comment.karma.upvotes.includes(user.userName) ?
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-					class="fas fa-arrow-circle-up"
+					className="fas fa-arrow-circle-up"
 					style={{color: 'blue'}}></i> :
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-					class="fas fa-arrow-circle-up"></i>
+					className="fas fa-arrow-circle-up"></i>
 				}
 					<span>{comment.karma.upvotes.length - comment.karma.downvotes.length} </span>
 				{
 					comment.karma.downvotes.includes(user.userName) ?
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-					class="fas fa-arrow-circle-down"
+					className="fas fa-arrow-circle-down"
 					style={{color: 'red'}}></i> :
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-					class="fas fa-arrow-circle-down"></i> 
+					className="fas fa-arrow-circle-down"></i> 
 				}
 				</div>
 			)
@@ -116,7 +115,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 						} else {
 							setError('Must be logged in to comment')
 						}
-					}}>Reply <i class="far fa-comment"></i>  </span>
+					}}>Reply <i className="far fa-comment"></i>  </span>
 				</div>
 				</React.Fragment>
 			</React.Fragment>
@@ -137,7 +136,6 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 	}
 
 	function renderComments(comment, n) {
-		let current 
 		if(n === undefined){
 			n = 0
 		} else {
@@ -149,7 +147,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 				{
 					comment.comments.map((c, i) => {
 						if(c.comments.length === 0) {
-							return <CommentBody comment={c} />
+							return <CommentBody comment={c} key={i}/>
 						} else {
 							return(
 								<React.Fragment> 

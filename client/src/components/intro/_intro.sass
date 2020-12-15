@@ -13,6 +13,7 @@ $gloomyBlue: #D0D2D4
 	height: auto
 	background-size: cover
 	background-position: 50% 50%
+	position: relative
 	div:nth-of-type(2)
 		background: $gloomyBlue
 		border-top: solid white 2px
@@ -22,12 +23,16 @@ $gloomyBlue: #D0D2D4
 		justify-content: flex-start
 		padding: 1em 0
 		margin: 0 auto
+		min-height: 20vh
 		img
 			background: $grey
 			border: solid white 2px
 			border-radius: 50%
 			margin: 0 auto 1em auto
 			transform: translateY(3em)
+			min-height: 8em
+			min-width: 8em
+			text-align: center
 			width: 35%
 		p
 			font-weight: 700
@@ -70,6 +75,7 @@ $gloomyBlue: #D0D2D4
 
 .profileAvatar
 	flex-direction: column
+	position: relative
 	height: 100%
 	width: 100%
 	img
@@ -82,6 +88,17 @@ $gloomyBlue: #D0D2D4
 		letter-spacing: 1px
 		margin: 2em 0 1em 0
 		text-align: center
+
+.imgUpdateBtn
+	background: $purple
+	color: white
+	position: absolute
+	font-weight: 700
+	top: 0
+	text-align: center
+	padding: .5em 1em
+	left: 0
+	width: 100%
 
 
 .profileInteract
@@ -98,7 +115,7 @@ $gloomyBlue: #D0D2D4
 	background: $red
 
 .profileMessage
-	background: $black
+	background: $black !important
 	color: white
 
 .profileFollowing
@@ -108,6 +125,7 @@ $gloomyBlue: #D0D2D4
 .profileScore
 	background: white
 	flex-wrap: wrap
+	padding: 0
 	width: 100%
 	div
 		height: 100%
@@ -197,6 +215,7 @@ $gloomyBlue: #D0D2D4
 	.communityHeader
 		div
 			width: 35%
+
 
 			
 

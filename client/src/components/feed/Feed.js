@@ -9,14 +9,14 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setError}) => {
+const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setError, setMessage, setOverlay, setReportOverlayIsOpen, setLoading, history}) => {
 
 	const [feedSort, setFeedSort] = useState(initialSort)
 	const [posts, setPosts] = useState(undefined)
 	const [profileFeedChoice, setProfileFeedChoice] = useState('soapBox')
 
 	useEffect(() => {
-		if(pageContent.posts.length !== 0 || pageContent.soapBox && pageContent.soapBox.length !== 0){
+		if(pageContent.posts.length !== 0 || (pageContent.soapBox && pageContent.soapBox.length !== 0)){
 			handlePostFetch()
 		}
 	},[profileFeedChoice, feedSort])
@@ -76,7 +76,10 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 				.then(response => setPosts(response))
 				.catch(err => {
 					setPosts([])
+					setMessage('There seems to have been an error')
 				})
+			} else {
+				setPosts([])
 			}
 		}
 	}
@@ -90,14 +93,14 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 			    	e.stopPropagation()
 			    	setProfileFeedChoice('soapBox')
 				}} className={profileFeedChoice === 'soapBox' ? 'profileFeedChoice' : null}>
-					<i class="fas fa-fire"></i>
+					<i className="fas fa-fire"></i>
 					<span>Soap Box</span>
 				</div>
 				<div onClick={(e) => {
 			    	e.stopPropagation()
 			    	setProfileFeedChoice('communities')
 				}} className={profileFeedChoice === 'communities' ? 'profileFeedChoice' : null}>
-					<i class="fas fa-baby"></i>
+					<i className="fas fa-baby"></i>
 					<span>Communities</span>
 				</div>
 			</div>
@@ -167,7 +170,12 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 							key={i}
 							handleVote={handleVote}
 							setError={setError}
-							pageContent={pageContent}/> 
+							pageContent={pageContent}
+							setOverlay={setOverlay}
+							setMessage={setMessage}
+							setReportOverlayIsOpen={setReportOverlayIsOpen}
+							setLoading={setLoading}
+							history={history}/> 
 						
 				}): 
 				<p style={{textAlign: 'center', padding: '1em'}}> 

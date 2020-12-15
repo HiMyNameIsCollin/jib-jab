@@ -12,25 +12,169 @@ $gloomyBlue: #D0D2D4
 	.notEnoughKarmaMessage
 		margin: auto
 		text-align: center
-	div
+	.communitySetUp
 		width: 100%
 		h3
 			margin-bottom: 1em
-		p
+		.createCommunityBlurb
 			margin-bottom: 1em
 		form
+			.formError
+				color: red
+				font-weight: 700
 			label
 				padding: 1em 0
+				width: 100%
 			input
+				border: solid black 1px
+				margin: .5em 0
 				padding: 1em
 				width: 100%
+		.communityVisibilitySettings
+			align-items: start
+			background: $gloomyBlue
+			flex-wrap: wrap
+			justify-content: flex-start
+			text-align: start
+			margin: 1em
+			h5
+				background: white
+				padding-bottom: 1em
+				width: 100%
+			div
+				padding: 1em 
+				width: 100%
+				input
+					margin: .5em
+					width: 1em
 
 
+.widgetSelection, 
+	width: 100%
+	form
+		.formError
+			color: red
+			font-weight: 700
+		div
+			background: $gloomyBlue
+			border: solid 1px black
+			display: flex
+			flex-direction: column
+			margin: 1em 0
+			padding: 1em
+			position: relative
+			h5
+				margin-bottom: 1em
+			select
+				border: solid black 1px
+				padding: 1em 
+				margin: 1em 0
+				width: 50%
+			label
+				padding: 1em 0
+				width: 100%
+			input, textarea
+				border: solid black 1px
+				margin: 0
+				padding: 1em
+				width: 100%
+			textarea
+				font-size: 1em
+			.targetWidgetCommunity
+				align-items: center
+				border-radius: 5px
+				justify-content: flex-start
+				flex-direction: row
+				padding: .5em 0
+				img
+					background: black
+					border-radius: 50%
+					margin: 0 .5em
+					height: 2em
+					width: 2em
+			.searchBarDropDown
+				display: flex
+				margin: 1em 0
+				.searchBar
+					flex-direction: row !important
+					i
+						margin: auto
+			.searchResultContainer
+				padding: 0 !important
+				margin: 0 !important
+				.searchResult
+					display: flex
+					flex-direction: row
+					margin: 0
+
+.createCommunityNavBtnContainer
+	padding: 1em 0
+	flex-direction: row !important
+	button
+		background: $red
+		border: none
+		border-radius: 5px
+		color: white
+		padding: 1em
+		font-weight: 700
+	.lastPage
+		margin: auto auto auto 0
+	.nextPage
+		margin: auto 0 auto auto
+
+.addRule
+	background: $red
+	border: none
+	border-radius: 5px
+	color: white
+	padding: 1em
+	font-weight: 700
+	margin: 1em 0
+	width: auto
+
+.createCommunityPreview
+	margin-bottom: 1em
+
+.moderatorSelection
+	width: 100%
+	h3
+		margin-bottom: 1em
+	.addModeratorBlurb
+		margin-bottom: 1em
+	.targetUser
+		align-items: center
+		border-radius: 5px
+		justify-content: flex-start
+		flex-direction: row
+		padding: .5em 0
+		img
+			background: black
+			border-radius: 50%
+			margin: 0 .5em
+			height: 2em
+			width: 2em
 
 @media only screen and (min-width: 920px)
 	.createCommunity
 		grid-column: 2/12
 		grid-row: 2/5
+		.notEnoughKarmaMessage
+		div
+			h3
+			.createCommunityBlurb
+			form
+				label
+				input
+			.createCommunityNavBtnContainer
+				button
+				.nextPage
+			
+			.communityVisibilitySettings
+				h5
+				div
+					width: 33%
+					input
+			
 
 @media only screen and (min-width: 1200px)
 	.createCommunity

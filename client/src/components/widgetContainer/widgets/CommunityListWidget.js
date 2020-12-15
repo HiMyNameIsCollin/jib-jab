@@ -26,26 +26,26 @@ const CommunityListWidgetItem = ({ listItem, Link}) => {
 		)
 }
 
-const CommunityListWidget = ({user, pageContent, pageType, Link}) => {
+const CommunityListWidget = ({user, pageContent, widgetContent,  pageType, Link}) => {
 return(
 	<React.Fragment>
 		<div className='communityListWidget'>
-			<h4>Communities</h4>
+			<h4>{widgetContent.header}</h4>
 			<ul>
 				{
 					pageContent.communities.length !== 0 ?
 					pageContent.communities.map((l, i) => {
 						return (
-							<CommunityListWidgetItem listItem={l} Link={Link}/>
+							<CommunityListWidgetItem listItem={l} Link={Link} key={i}/>
 							)
 					}) :
-					<>
+					<React.Fragment>
 					<CommunityListWidgetItem listItem={'Global'} Link={Link}/>
-					</>
+					</React.Fragment>
 				}
 
 			</ul>
-			<a className='widgetButton' href=""> View more </a>
+			{/*<a className='widgetButton' href=""> View more </a>*/}
 		</div>
 	</React.Fragment>
 	)

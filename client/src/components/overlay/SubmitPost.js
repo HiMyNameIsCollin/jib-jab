@@ -11,7 +11,6 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 
 	useEffect(() => {
 		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/u/'){
-			console.log(location.pathname.substr(0, 3))
 			fetch('http://localhost:3000/api/search', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
@@ -47,7 +46,8 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 								setOverlay(undefined)
 								setMessage('Thanks for your submission!')
 							} else{
-								setMessage('There was an error making this post, please try again')
+								setFormSent(false)
+								setMessage(response)
 							}
 						})
 						.catch(err => console.log(err))
@@ -70,7 +70,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 								setMessage('Thanks for your submission!')
 							} else{
 								setFormSent(false)
-								setMessage('There was an error making this post, please try again')
+								setMessage(response)
 							}
 						})
 						.catch(err => {

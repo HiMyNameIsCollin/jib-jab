@@ -31,14 +31,13 @@ const TopPostListWidget = ({pageContent, Link}) => {
 			<h4> Most viewed posts in 24 hours </h4>
 			<ul>	
 				{
-					topPosts !== undefined ?
+					topPosts !== undefined && topPosts.length !== 0?
 					topPosts.map((p, i) => {
-						return <TopPostListWidgetItem post={p}/>
+						return <TopPostListWidgetItem post={p} key={i}/>
 					}) : 
-					null
+					<p> There has been no posts in {pageContent.communityName} today :( </p>
 				}
 			</ul>
-				<a className='widgetButton' href=""> View more </a>
 		</div>	
 	)
 }

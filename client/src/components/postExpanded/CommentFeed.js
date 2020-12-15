@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import Comment from './Comment'
 
 
@@ -118,7 +118,8 @@ const CommentFeed = ({pageContent, location, post, user, Link, handleCommentVote
 					setError={setError}
 					setPosts={setPosts}
 					Link={Link}
-					setMessage={setMessage}/>
+					setMessage={setMessage}
+					key={i}/>
 				)
 			}) 
 		}

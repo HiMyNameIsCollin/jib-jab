@@ -74,20 +74,20 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 			{
 				headerIsSticky ?
 				<span className='backToTopBtn' onClick={() => setHeaderIsSticky(false)}>
-					<i class="fas fa-angle-double-up"></i>
+					<i className="fas fa-angle-double-up"></i>
 					To top
 				</span> :
 				windowWidth <= 920 ?
 				<Link to='/' className='link'> Jib-Jab </Link>:
 				<span className='backToTopBtn backToTopBtnHidden'>
-					<i class="fas fa-angle-double-up"></i>
+					<i className="fas fa-angle-double-up"></i>
 					To top
 				</span>
 			}
 				<SearchBar Link={Link} searchBarType='header' user={user}/>
 
 				<Link to='/c/global' className='headerBtn link global'>
-					<i class="fas fa-globe-americas "></i>
+					<i className="fas fa-globe-americas "></i>
 				</Link>
 
 			{
@@ -99,12 +99,12 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 					to='/inbox' 
 					className={user.unseenMessages.user === true ||
 								user.unseenMessages.replies === true ||
-								user.unseenMessages.mentions == true ? 
+								user.unseenMessages.mentions === true ? 
 								'headerBtn inbox newMsgIndicator' :
 								 'headerBtn inbox'}>
-						<i class="fas fa-inbox"></i>
+						<i className="fas fa-inbox"></i>
 					</Link>
-					<span className='headerBtn' onClick={() => setOverlay('submitPost')}><i class="fas fa-pencil-alt"></i> </span>
+					<span className='headerBtn' onClick={() => setOverlay('submitPost')}><i className="fas fa-pencil-alt"></i> </span>
 				</React.Fragment>
 			}
 			{
@@ -113,7 +113,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 					onClick={() => setNav(!navIsOpen)} 
 					className={user.unseenMessages.user === true ||
 								user.unseenMessages.replies === true ||
-								user.unseenMessages.mentions == true ? 
+								user.unseenMessages.mentions === true ? 
 								'navBtn newMsgIndicator' :
 								 'navBtn'}> 
 					<i className="fas fa-ellipsis-h"></i> 
@@ -127,16 +127,20 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 							{user.userName}
 						</div>
 						<div className='container'>
-							<i class="fas fa-star-of-life"></i>
+							<i className="fas fa-star-of-life"></i>
 							{user.karma} karma
-							<i class="fas fa-level-down-alt"></i>                              
+							<i className="fas fa-level-down-alt"></i>                              
 						</div>
 					</div>
 					{
 						userDropDownOpen ?
 						<div className='userDropDownContent'>
-							<Link className='userDropDownItem' to={`/u/${user.userNameLower}`}><i class="fas fa-user-circle"></i> Your profile </Link>
-							<Link className='userDropDownItem' to='/settings'> <i class="fas fa-cog "></i>User Settings</Link>
+							<Link className='userDropDownItem' onClick={() => setUserDropDown(false)} to={`/u/${user.userNameLower}`}><i className="fas fa-user-circle"></i> Your profile </Link>
+							<div onClick={()=>{
+								setOverlay('editProfile')
+								setUserDropDown(false)
+							}} className='userDropDownItem' ><i className="fas fa-cog "></i> User Settings</div>
+							<Link onClick={() => setUserDropDown(false)} className='userDropDownItem' to ='/createCommunity'><i className="fas fa-globe-americas "></i>Create community</Link>
 							<div className='userDropDownItem'
 								onClick={() => {
 								const refreshToken = window.localStorage.getItem('refreshToken')
@@ -150,12 +154,13 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 								})
 								.then(response => {
 									setUser(initialUser)
+									setUserDropDown(false)
 						  			window.localStorage.removeItem("accessToken")
 									window.localStorage.removeItem("refreshToken")
 									history.push('/c/popular')
 								})
 								.catch(err => console.log(err))
-							}}><i class="fas fa-sign-out-alt"></i> Logout</div>
+							}}><i className="fas fa-sign-out-alt"></i> Logout</div>
 						</div> :
 						null
 					} 

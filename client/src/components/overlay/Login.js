@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 const Login = ({setOverlay, setLoading, user, setUser}) => {
 
 	const [formSent, setFormSent] = useState(false)
-	const [userNameTaken, setUserNameTaken] = useState(false)
 	const [error, setError] = useState(false)
 	const [incorrect, setIncorrect] = useState(false)
 	const { register, handleSubmit, errors } = useForm()
@@ -27,18 +26,22 @@ const Login = ({setOverlay, setLoading, user, setUser}) => {
 			.then(data => {
 				setLoading(false)
 				setFormSent(false)
-				console.log(data)
 				if(data.accessToken){
-					setUser(data.result2)
+					setUser(data.result)
 					window.localStorage.setItem("accessToken", data.accessToken)
 					window.localStorage.setItem("refreshToken", data.refreshToken)
 					setOverlay(undefined)
+					setLoading(false)
 				} else {
+					setLoading(false)
 					setIncorrect(true)
+					setFormSent(false)
 				}
 			})
 			.catch(err => {
+				setLoading(false)
 				setError(true)
+				setFormSent(false)
 				console.log(err)
 			})
 		}

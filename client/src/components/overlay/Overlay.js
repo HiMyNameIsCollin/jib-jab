@@ -3,10 +3,12 @@ import Login from './Login'
 import Register from './Register'
 import SubmitMessage from './SubmitMessage'
 import SubmitPost from './SubmitPost'
+import EditProfile from './EditProfile'
+import ManageCommunity from './ManageCommunity'
 import Loading from '../loading/Loading'
 import './_overlay.sass'
 
-const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location}) => {
+const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location, history}) => {
 
 	const [loading, setLoading] = useState(false)
 
@@ -42,6 +44,23 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location
 		setLoading={setLoading} 
 		user={user} 
 		setMessage={setMessage}/>:
+		overlayIsOpen === 'editProfile'?
+		<EditProfile 
+		setOverlay={setOverlay} 
+		setMessage={setMessage} 
+		user={user} 
+		loading={loading}
+		setLoading={setLoading}
+		history={history} />:
+		overlayIsOpen === 'manageCommunity'?
+		<ManageCommunity
+		setOverlay={setOverlay} 
+		setMessage={setMessage} 
+		user={user} 
+		loading={loading}
+		setLoading={setLoading}
+		history={history} 
+		location={location}/>:
 		null
 	}
 		</div>

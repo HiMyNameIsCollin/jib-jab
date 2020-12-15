@@ -5,29 +5,131 @@ import Loading from '../loading/Loading'
 import CommentForm from './CommentForm'
 import './_postExpanded.sass'
 
-const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setMessage, history}) => {
+const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setMessage, history, setReportOverlayIsOpen, setLoading}) => {
 
 	const PostMenuBar = () => {
+
+		const handleSavePost = () => {
+			const accessToken = window.localStorage.getItem('accessToken')
+			setLoading(true)
+			fetch('http://localhost:3000/api/savePost', {
+				method: 'post',
+				headers: {
+					'Content-Type' : 'application/json',
+					authorization: `Bearer ${accessToken}`			
+				},
+				body: JSON.stringify({
+					postId: posts[0].id
+				})
+			})
+			.then(response => response.text())
+			.then(response => {
+				setMessage(response)
+				setLoading(true)
+			})
+			.catch(err => {
+				setMessage('There seems to have been an error')
+				setLoading(true)
+			})
+		}
+
+		const handleDeletePost = () => {
+			setLoading(true)
+			const accessToken = window.localStorage.getItem('accessToken')
+			fetch('http://localhost:3000/api/deletePost', {
+				method: 'post',
+				headers: {
+					'Content-Type' : 'application/json',
+					authorization: `Bearer ${accessToken}`
+				},
+				body: JSON.stringify({
+					post: posts[0]
+				})
+			})
+			.then(response => response.json())
+			.then(response => {
+				if(posts[0].communityName === posts[0].userName){
+					history.push(`/u/${posts[0].userName}`)
+				} else {
+					history.push(`/c/${posts[0].communityName}`)
+				}
+				setLoading(false)
+			})
+			.catch(err => {
+				setMessage('There has been an error')
+				setLoading(false)
+			})
+		}
+
+		const handleModRemovePost = () => {
+			const accessToken = window.localStorage.getItem('accessToken')
+			fetch('http://localhost:3000/api/mod/deletePost', {
+				method: 'post',
+				headers: {
+					'Content-Type' : 'application/json',
+					authorization: `Bearer ${accessToken}`
+				},
+				body: JSON.stringify({
+					post: posts[0]
+				})
+			})
+			.then(response => response.json())
+			.then(response => {
+				setLoading(false)
+				if(posts[0].communityName === posts[0].userName){
+					history.push(`/u/${posts[0].userName}`)
+				} else {
+					history.push(`/c/${posts[0].communityName}`)
+				}
+			})
+			.catch(err => {
+				setLoading(false)
+				setMessage('There seems to have been an error')
+			})
+		}
+
 		return(
 			<div className='postMenuBar container'>
 				{
 					user.userName !== '' ? 
 					<React.Fragment>
-						<div>
-							<i className="fas fa-bars"></i>
+						<div onClick={handleSavePost}>
+							<i className="fa fa-bookmark-o"></i>
 							<span> Save</span>
 						</div>
-						<div>
-							<i className="fas fa-bars"></i>
-							<span> Report</span>
-						</div>	
+						{
+							posts[0].postStatus === 'active' ?
+							<React.Fragment>
+							<div onClick={() => setReportOverlayIsOpen({type: 'post', post: posts[0]})}>
+								<i className="fas fa-flag"></i>
+								<span> Report</span>
+							</div>	
+						{
+							user.userName === posts[0].userName ?
+							<div onClick={handleDeletePost}>
+								<i className="fas fa-trash"></i>
+								<span> Delete </span>
+							</div> :
+							pageContent.moderators ?
+							pageContent.moderators.includes(user.userName) ?
+							<div onClick={handleModRemovePost}>
+								<i className="fas fa-trash"></i>
+								<span> Remove </span>
+							</div> :
+							null : null
+						}
+							</React.Fragment>:
+							null					
+						}
+
+	
 					<div>
-						<i className="fas fa-bars"></i>
+						<i className="fa fa-share-square"></i>
 						<span> Share </span>
 					</div>				
 					</React.Fragment> :
 					<div style={{margin: '0 1em 0 auto'}}>
-						<i className="fas fa-bars"></i>
+						<i className="fa fa-share-square"></i>
 						<span> Share </span>
 					</div>
 				}
@@ -100,6 +202,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 	const [posts, setPosts] = useState(undefined)
 
 	useEffect(() => {
+			setPosts(undefined)
 			fetch('http://localhost:3000/api/p/', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'}, 
@@ -116,7 +219,6 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 					let comment 
 					function findComment(comments, id){
 						comments.map((m, i) => {
-							console.log(m.commentInfo.id , id)
 							if(m.commentInfo.id === id){
 								comment = [m]
 								return
@@ -138,7 +240,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 				setMessage('There doesnt seem to be anything here')
 				history.push('/')
 			})
-	}, [location, setPosts])
+	}, [location, Link])
 	
 	if(posts !== undefined){
 		return(
@@ -152,8 +254,14 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 				Link={Link} 
 				windowWidth={windowWidth} 
 				post={posts[0]} 
-				handleVote={handleVote}/>
-				<PostMenuBar /> 
+				handleVote={handleVote}
+				history={history}
+				setMessage={setMessage}/>
+				{
+					posts[0].postStatus === 'active' ?
+					<PostMenuBar /> :
+					null
+				}
 				{
 					user.userName === '' ?
 					<div className='commentLoginBox container'>
@@ -164,7 +272,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 					!mainCommentInFocus ?
 					<div className='leaveACommentBox container'>
 						<img src="https://robohash.org/1" alt=""/>
-						<input type='text' value='Submit a comment' onClick={() =>setMainCommentInFocus(true) }/>
+						<input type='text' placeholder='Submit a comment' onClick={() =>setMainCommentInFocus(true) }/>
 					</div> :
 					<CommentForm 
 					func={setMainCommentInFocus} 

@@ -4,7 +4,7 @@ import Footer from '../components/footer/Footer'
 import PostExpanded from '../components/postExpanded/PostExpanded'
 import Loading from '../components/loading/Loading'
 
-const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay, location, pageType, setMessage, history}) => {
+const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay, location, pageType, setMessage, history, setReportOverlayIsOpen, setLoading}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 
@@ -36,7 +36,9 @@ const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay,
 					setOverlay={setOverlay}
 					pageType={pageType}
 					setMessage={setMessage}
-					history={history}/>
+					history={history}
+					setReportOverlayIsOpen={setReportOverlayIsOpen}
+					setLoading={setLoading} />
 					{
 						windowWidth > 920 ?
 						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> :

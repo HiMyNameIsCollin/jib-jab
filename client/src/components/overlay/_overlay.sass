@@ -32,7 +32,7 @@ $gloomyBlue: #D0D2D4
 		z-index: -1
 
 
-.register, .login, .submitMessage, .submitPost
+.register, .login, .submitMessage, .submitPost, .editProfile, .manageCommunity, .reportPost
 	background: white
 	border-radius: 5px
 	grid-column: 1/13
@@ -40,7 +40,11 @@ $gloomyBlue: #D0D2D4
 	position: relative
 	margin: auto
 	min-height: 50vh
+	max-height: 80vh
+	overflow: auto
 	width: calc(100% - 1em)
+	label
+		padding: 1em 0
 	input, textarea
 		border: solid 1px black
 		border-radius: 5px
@@ -65,9 +69,27 @@ $gloomyBlue: #D0D2D4
 		justify-content: space-around
 		padding: 1em 0
 		position: relative
-		p
-			color: red
+		select
+			padding: .5em 
 
+.communityRadioOptions
+	align-items: center
+	display: block
+	margin: 1em 0
+	h5
+		margin-bottom: 1em 
+	p
+		margin-bottom: 1em
+
+
+.report
+	border: solid black 1px
+	border-left: 0
+	border-right: 0
+	padding: 1em 0
+	button
+		margin: .5em 0
+		
 .closeOverlay
 	font-size: 1.5em
 	cursor: pointer
@@ -102,13 +124,13 @@ $gloomyBlue: #D0D2D4
 		width: auto
 
 
-@media only screen and (min-width: 420px)
-	.login, .register .submitMessage, .submitPost
-		grid-column: 2/12
+/*@media only screen and (min-width: 420px)
+	.login, .register .submitMessage, .submitPost ,.editProfile, .manageCommunity
+		grid-column: 2/12*/
 
 @media only screen and (min-width: 572px)
-	.login, .register, .submitMessage, .submitPost
-		grid-column: 3/11
+	.login, .register, .submitMessage, .submitPost , .editProfile, .manageCommunity, .reportPost
+		grid-column: 2/12
 
 @media only screen and (min-width: 720px)
 	.postSelectionMenu
@@ -117,5 +139,5 @@ $gloomyBlue: #D0D2D4
 
 
 @media only screen and (min-width: 920px)
-	.login, .register, .submitMessage, .submitPost
-		grid-column: 4/10
+	.login, .register, .submitMessage, .submitPost , .editProfile, .manageCommunity, .reportPost
+		grid-column: 3/11

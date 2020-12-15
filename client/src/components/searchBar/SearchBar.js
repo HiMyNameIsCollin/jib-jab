@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef}from 'react'
+import React, {useState, useRef}from 'react'
 import './_searchBar.sass'
 
 const initialResults = {communityArray: [], userArray: []}
@@ -75,7 +75,11 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 				placeholder='Search JibJab' />
 				<i className="fas fa-search"></i>
 			</div>
-			<div className='searchResultContainer'>
+			<div className='searchResultContainer' style={{ visibility: 			
+			searchResults.communityArray &&
+			searchResults.userArray &&
+			(searchResults.communityArray.length > 0 || 
+			searchResults.userArray.length > 0 )  ? 'visible' : 'hidden'}}>
 		{
 			searchResults.communityArray &&
 			searchResults.userArray &&
@@ -88,11 +92,11 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 				<h3> Communities ({searchResults.communityArray.length}) </h3>
 				{
 					searchResults.communityArray.map((r, i) => {
-						return <SearchResult result={r} />
+						return <SearchResult result={r} key={i}/>
 					})
 				}
 				{
-					user.userName !== '' ?
+					user.userName !== '' && searchBarType !== 'submitPost' ?
 					<React.Fragment>
 						<h3> You: </h3>
 						<SearchResult result={{name: user.userName, image: user.configuration.image, type: 'soapBox'}} />
@@ -108,7 +112,7 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 				<h3>Users ({searchResults.userArray.length}) </h3>
 				{
 					searchResults.userArray.map((r, i) => {
-						return <SearchResult result={r} />
+						return <SearchResult result={r} key={i}/>
 					})
 				} 
 				</React.Fragment> :

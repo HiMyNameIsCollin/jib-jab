@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-const initialState = {
-	userName: '',
-	communities: ['announcements'],
-	karma: 1,
-	followers: [],
-	settings: {
-		feedType: 'list'
-	}
-}
-
 const initialUser = {
 	userName: '',
 	communities: ['Announcements'],
@@ -88,6 +78,9 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 			}
 
 			</div>
+			<Link to ='/createCommunity'>
+				Create community
+			</Link>
 			{
 				user.communities.length >= 10 ?
 				<Link to='/community/list' className='link'>
@@ -100,7 +93,14 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 	} else if (navType === 'comm') {
 	return(
 		<div className='mobileNavMenu'>
-			
+		{
+			initialUser.communities.map((c, i) => {
+				return <MobileNavCommunity listItem={c} Link={Link} />
+			})
+		}
+			<Link to ='/createCommunity'>
+				Create community
+			</Link>
 			<Link to='/community/list' className='link'>
 				View more
 			</Link>
