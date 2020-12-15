@@ -5,13 +5,12 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
-const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setError}) => {
+const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setError, setReportOverlayIsOpen, setMessage, setLoading, history}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 
 	useEffect(() => {
-		console.log(user)
 			fetch(`http://localhost:3000/api/`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
@@ -22,7 +21,6 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 			})
 			.then(response => response.json())
 			.then(response => {
-					console.log(response)
 					setPageContent(response)
 			})
 			.catch(err => console.log(err))
@@ -50,7 +48,11 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 					setUser={setUser}
 					windowWidth={windowWidth}
 					pageContent={pageContent}
-					setError={setError}/>
+					setError={setError}
+					setReportOverlayIsOpen={setReportOverlayIsOpen}
+					setMessage={setMessage}
+					setLoading={setLoading}
+					history={history} />
 					<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
 				</React.Fragment> :
 				mobileViewIsFeed ?
@@ -61,7 +63,11 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 				setUser={setUser} 
 				windowWidth={windowWidth}
 				pageContent={pageContent}
-				setError={setError}/>:
+				setError={setError}
+				setReportOverlayIsOpen={setReportOverlayIsOpen}
+				setMessage={setMessage}
+				setLoading={setLoading} 
+				history={history}/>:
 				<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
 			}
 

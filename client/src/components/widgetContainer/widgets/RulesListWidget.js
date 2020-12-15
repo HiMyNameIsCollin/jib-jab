@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
 
-const RulesListWidget = () => {
+const RulesListWidget = ({widgetContent}) => {
 
-	const RulesListWidgetItem = () => {
+	const RulesListWidgetItem = ({rule}) => {
 
 		const [ruleIsOpen, setRuleOpen] = useState(false)
 
 		return(
 			<React.Fragment>
 				<li onClick ={() => setRuleOpen(!ruleIsOpen)}>
-					<span>1.</span> <span> Rules synopsis blah blah blah blah blah blah</span>  <i class="fas fa-caret-down"></i>
+					<span>1.</span> <span> {rule.rule} </span>  <i className="fas fa-caret-down"></i>
 				</li>
 				{
 					ruleIsOpen === true ?
 					<div>
-						<p> Rules to be enforced blah blah blah </p>
+						<p> {rule.definition} </p>
 					</div> :
 					null
 				}
@@ -24,10 +24,13 @@ const RulesListWidget = () => {
 
 	return(
 		<div className='rulesListWidget'>
-			<h4>Community Rules </h4>
+			<h4>{widgetContent.header} </h4>
 			<ul> 
-				<RulesListWidgetItem />
-				<RulesListWidgetItem />
+				{
+					widgetContent.rules.map((r, i) => {
+						return <RulesListWidgetItem rule={r} key={i}/>
+					})
+				}
 			</ul>
 		</div> 
 	)

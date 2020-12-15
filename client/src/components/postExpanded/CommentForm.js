@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
-const CommentForm = ({func, value, post, setPosts, comment}) => {
-	const [error, setError] = useState(false)
+const CommentForm = ({func, value, post, setPosts, comment, setMessage}) => {
 	const [formSent, setFormSent] = useState(false)
-	const { register, handleSubmit, errors, watch} = useForm()
+	const { register, handleSubmit, errors} = useForm()
 	const [commentId, setCommentId] = useState(comment !== undefined ? comment.commentInfo.id : 'parent')
 
 	const onSubmit = (data) => {
@@ -26,10 +25,15 @@ const CommentForm = ({func, value, post, setPosts, comment}) => {
 			.then(response => response.json())
 			.then(response => {
 				setPosts(response)
+				setMessage('Thank you for your submission')
 				setFormSent(false)
 				func(!value)
 			})
-			.catch(err => console.log(err))
+			.catch(err => {
+				console.log(err)
+				setFormSent(false)
+				setMessage('There seems to have been an error')
+			})
 		}
 	}
 

@@ -1,16 +1,32 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchBar from '../searchBar/SearchBar'
 import { useForm } from 'react-hook-form'
 
-const SubmitPost = ({submitPost, setOverlay, user, setMessage}) => {
+const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 
 	const [postType, setPostType] = useState('text')
 	const [formSent, setFormSent] = useState(false)
 	const { register, handleSubmit, errors} = useForm()
 	const [targetCommunity, setTargetCommunity] = useState(undefined)
 
+	useEffect(() => {
+		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/u/'){
+			fetch('http://localhost:3000/api/search', {
+				method: 'post',
+				headers: {'Content-Type' : 'application/json'},
+				body: JSON.stringify({
+					query: location.pathname.substr(3, location.pathname.length - 3)
+				})
+			})
+			.then(response => response.json())
+			.then(response => setTargetCommunity(response.communityArray[0]))
+			.catch(err => console.log(err))
+		} 
+	},[])
+
 	const onSubmit = (data) => {
 		if(!formSent){
+			setFormSent(true)
 			if(targetCommunity !== undefined){
 				const accessToken = window.localStorage.getItem('accessToken')
 				if(targetCommunity.type === 'community'){
@@ -30,7 +46,8 @@ const SubmitPost = ({submitPost, setOverlay, user, setMessage}) => {
 								setOverlay(undefined)
 								setMessage('Thanks for your submission!')
 							} else{
-								setMessage('There was an error making this post, please try again')
+								setFormSent(false)
+								setMessage(response)
 							}
 						})
 						.catch(err => console.log(err))
@@ -52,7 +69,8 @@ const SubmitPost = ({submitPost, setOverlay, user, setMessage}) => {
 								setOverlay(undefined)
 								setMessage('Thanks for your submission!')
 							} else{
-								setMessage('There was an error making this post, please try again')
+								setFormSent(false)
+								setMessage(response)
 							}
 						})
 						.catch(err => {
@@ -104,17 +122,20 @@ const SubmitPost = ({submitPost, setOverlay, user, setMessage}) => {
 								setOverlay(undefined)
 								setMessage('Thanks for your submission!')
 							} else{
+								setFormSent(false)
 								setMessage('There was an error making this post, please try again')
 							}
 						})
 						.catch(err => {
 							console.log(err)
+							setFormSent(false)
 							setMessage('There was an error making this post, please try again')
 						})
 					}
 				}
 			} else {
 				setMessage('Where would you like to post this?')
+				setFormSent(false)
 			}
 		}
 	}
@@ -155,21 +176,18 @@ const SubmitPost = ({submitPost, setOverlay, user, setMessage}) => {
 				postType === 'text' ? 
 				<form 
 					onSubmit={handleSubmit(onSubmit)} 
-					className={formSent ? 'formDeactivated' : null} 
-					post='post' 
-					encType="multipart/form-data">
+					className={formSent ? 'formDeactivated' : null} >
 					{errors.postTitle && errors.postTitle.type === 'required' && <p> Posts need titles! </p>}
 					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p> Whoa whoa, why not make that title a bit more concise? </p>}
 					<input type="text" placeholder="Title your post" name="postTitle" ref={register({required: true, maxLength: 160})} />
+					{errors.postText && errors.postText.type === 'maxLength' && <p> Cool story bro, lets summarize just a bit. </p>}
 					<textarea rows='4' placeholder="What's going on?" name="postText" ref={register({required: false, maxLength: 2000})} />
 					<button> Submit </button>
 				</form> :
 				postType === 'link' ?
 				<form 
 					onSubmit={handleSubmit(onSubmit)} 
-					className={formSent ? 'formDeactivated' : null} 
-					post='post' 
-					encType="multipart/form-data">
+					className={formSent ? 'formDeactivated' : null} >
 					{errors.postTitle && errors.postTitle.type === 'required' && <p> Posts need titles! </p>}
 					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p> Whoa whoa, why not make that title a bit more concise? </p>}
 					<input type="text" placeholder="Title your post" name="postTitle" ref={register({required: true, maxLength: 160})} />

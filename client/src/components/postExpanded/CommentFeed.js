@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
+import React, { useState } from 'react'
 import Comment from './Comment'
 
 
@@ -7,7 +7,7 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const CommentFeed = ({pageContent, post, user, Link, handleCommentVote, setError, setPosts}) => {
+const CommentFeed = ({pageContent, location, post, user, Link, handleCommentVote, setError, setPosts, setMessage}) => {
 
 	const SortComments = () => {
 		return(
@@ -93,43 +93,19 @@ const CommentFeed = ({pageContent, post, user, Link, handleCommentVote, setError
 
 	const [commentSort, setCommentSort] = useState(initialSort)
 	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
-	let prevRender = useRef()
-
-
-	const handleSeeMoreComments = (comment, currentPost) => {
-		if(prevRender.current){
-			prevRender.current.push(currentPost)
-		}else {
-			prevRender.current = [currentPost]
-		}
-		let updatedPost = {...post}
-		updatedPost.comments = [comment]
-		setPosts([updatedPost])
-	}
-
 
 	return(
 		<div className='commentFeed'>
-		{
-			prevRender.current ?
-			<div className='commentNavigation container'>
-				<span onClick={() => {
-					setPosts([prevRender.current[0]])
-					prevRender.current = false
-				}}>
-					Back to feed </span>
-				{
-					prevRender.current.length > 1 ?
-					<span onClick={() => {
-					setPosts([prevRender.current[prevRender.current.length -1]])
-					prevRender.current.pop()
-					}}>	 Prev comments </span> :
-					null
-				}
-
-			</div> :
-			<SortComments/>
-		}
+			{
+				location.pathname.split('/').length > 4 ?
+				<div className='commentNavigation container'>
+					<Link to={`/c/${post.communityName}/${post.id}`}>
+						Back to feed 
+					</Link>
+				</div>  :
+				<SortComments/>
+			}
+		
 		{
 			post.comments.map((c, i)=> {
 				return (
@@ -138,11 +114,12 @@ const CommentFeed = ({pageContent, post, user, Link, handleCommentVote, setError
 					comment={c} 
 					commentType='parentComment' 
 					handleCommentVote={handleCommentVote}
-					handleSeeMoreComments={handleSeeMoreComments}
 					user={user}
 					setError={setError}
 					setPosts={setPosts}
-					Link={Link}/>
+					Link={Link}
+					setMessage={setMessage}
+					key={i}/>
 				)
 			}) 
 		}

@@ -2,6 +2,17 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+const postReportSchema = new Schema({
+	user: String,
+	reportOption: String,
+	reportReason: String,
+	community: String, 
+	post: Object,
+	id: String,
+	postStatus: String,
+	moderatedBy: String,
+})
+
 const communitySchema = new Schema({
 	communityName: String,
 	communityNameLower: String,
@@ -11,8 +22,9 @@ const communitySchema = new Schema({
 	posts: Array,
 	settings: Object,
 	configuration: Object,
-	configuration: Object,
-	createdOn: String
+	createdOn: String,
+	modMail: Array,
+	modLogs: Array
 })
 
 const loginSchema = new Schema({
@@ -22,6 +34,18 @@ const loginSchema = new Schema({
 	email: String,
 	cookie: String
 })
+
+const messageSchema = new Schema({
+	type: String,
+	subject: String,
+	body: String, 
+	sender: String,
+	recipient: Array,
+	time: String,
+	id: String, 
+	seen: Boolean
+}) 
+
 
 const userSchema = new Schema({
 	createdOn: String,
@@ -35,10 +59,12 @@ const userSchema = new Schema({
 	followers: Array,
 	following: Array,
 	settings: Object,
-	savedPosts: Array
+	savedPosts: Array,
+	unseenMessages: Object
 })
 
 const postSchema = new Schema({
+	postStatus: String,
 	postType: String,
 	communityName: String,
 	communityNameLower: String,
@@ -53,6 +79,7 @@ const postSchema = new Schema({
 	karma: Object,
 	id: String,
 	postTag: String,
+	reports: Array
 })
 
 const tokenSchema = new Schema({
@@ -65,5 +92,7 @@ module.exports = {
 	userSchema,
 	postSchema,
 	tokenSchema,
-	communitySchema
+	communitySchema,
+	messageSchema,
+	postReportSchema
 }

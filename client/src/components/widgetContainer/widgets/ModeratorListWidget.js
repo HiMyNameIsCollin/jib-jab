@@ -1,21 +1,22 @@
 import React from 'react'
 
-const ModeratorListWidget = () => {
+const ModeratorListWidget = ({pageContent, Link}) => {
 	return(
 		<div className='moderatorListWidget'>
 			<h4> Community Moderators </h4>
-			<a className='widgetButton' href=""> <i class="fas fa-inbox"></i><span>Message the mods</span> </a>
+			{/*<button className='widgetButton' href=""> <i class="fas fa-inbox"></i><span>Message the mods</span> </button>*/}
 			<ul>
-				<li>
-					<a href="">/u/Collin</a> <span>Flair </span>
-				</li>
-				<li>
-					<a href="">/u/Collin</a> <span>Flair </span>
-				</li>
+			{
+				pageContent.moderators.map((m, i) => {
+					return(
+					<li key={i}>
+						<Link to={`/u/${m}`}>/u/Collin</Link>
+					</li>
+					)
+				})
+			}
+
 			</ul>
-			<div className='container'>
-				<a href=""> View all moderators </a>
-			</div>
 		</div>
 	)
 }

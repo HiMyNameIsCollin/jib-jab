@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-const initialState = {
-	userName: '',
-	communities: ['announcements'],
-	karma: 1,
-	followers: [],
-	settings: {
-		feedType: 'list'
-	}
-}
-
 const initialUser = {
 	userName: '',
 	communities: ['Announcements'],
@@ -18,6 +8,15 @@ const initialUser = {
 	following: [],
 	settings: {
 		feedType: 'list'
+	},
+	configuration: {
+		image: 'http://robohash.org/100',
+		headerImg: ''
+	},
+	unseenMessages: {
+		user: false,
+		replies: false,
+		mentions: false
 	}
 }
 
@@ -30,7 +29,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 
 		useEffect(() => {
 			let isMounted = true
-				fetch(`http://localhost:3000/img/${listItem.toLowerCase()}`)
+				fetch(`http://localhost:3000/api/c/img/${listItem.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
 					if(isMounted) {
@@ -79,6 +78,9 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 			}
 
 			</div>
+			<Link to ='/createCommunity'>
+				Create community
+			</Link>
 			{
 				user.communities.length >= 10 ?
 				<Link to='/community/list' className='link'>
@@ -91,7 +93,14 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 	} else if (navType === 'comm') {
 	return(
 		<div className='mobileNavMenu'>
-			
+		{
+			initialUser.communities.map((c, i) => {
+				return <MobileNavCommunity listItem={c} Link={Link} />
+			})
+		}
+			<Link to ='/createCommunity'>
+				Create community
+			</Link>
 			<Link to='/community/list' className='link'>
 				View more
 			</Link>
@@ -145,6 +154,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 					setUser(initialUser)
 		  			window.localStorage.removeItem("accessToken")
 					window.localStorage.removeItem("refreshToken")
+					history.push('/c/popular')
 				})
 				.catch(err => console.log(err))
 			}}> 

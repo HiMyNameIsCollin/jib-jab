@@ -1,9 +1,8 @@
 import React, {useState, useEffect } from 'react'
-import Loading from '../loading/Loading'
 import './_intro.sass'
 
 
-const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
+const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, location, setOverlay, setMessage}) => {
 
 	const TrendingIntro = () => {
 		const [trendingPosts, setTrendingPosts] = useState(undefined)
@@ -28,16 +27,16 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 		const TrendingBtn = ({post}) => {
 			return(
 				<Link className='trendingBtn' to={post.postType === 'community' ? `/c/${post.communityName}/${post.id}` : `/u/${post.userName}/${post.id}`} >
-					<span class='trendingText'>
+					<span className='trendingText'>
 						<h2>{post.title}</h2>
 						<p> {post.text && post.text !== '' ? post.text.length > 50 ? post.text.slice(0, 50) + '...' : post.text : null } </p>
 					</span>
 					{
 						post.imageLink !== '' ?
-						<img src={post.imageLink} alt="" /> :
+						<img src={post.imageLink} alt="Post content" /> :
 						post.imageRefs.length > 0 ?
-						<img src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`}/> :
-						<img src='http://source.unsplash.com/random/200x200' alt='' />
+						<img src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`} alt='Post content'/> :
+						<img src='http://source.unsplash.com/random/200x200' alt='Post content' />
 					}
 				</Link>
 			
@@ -46,12 +45,12 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 		if(trendingPosts !== undefined) {
 			return(
 				<div className='container trendingIntro'>
-					<span> Trending today</span>
+					<span> Currently trending </span>
 					<div className='container'>
 						{
 							trendingPosts.map((p , i) => {
 								if(i < 4){
-									return <TrendingBtn post={p} />
+									return <TrendingBtn post={p} key={i} />
 								}
 							})
 						}
@@ -68,7 +67,12 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 		return(
 			<div className='communityHeader' style={{backgroundImage: `url(${pageContent.configuration.headerImg})` }}> 
 				<div className='container'>
-					<img src={pageContent.configuration.communityImg }alt=""/>
+					<img src={pageContent.configuration.image }alt=""/>
+					{
+						pageContent.moderators.includes(user.userName)?
+						<span onClick={() => setOverlay('manageCommunity')}className='imgUpdateBtn'> Manage community  </span>:
+						null
+					}
 				</div>
 				<div className=' container'>
 					<p> {pageContent.communityName}</p>
@@ -79,10 +83,42 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 	}
 
 	const ProfileHeader = ({windowWidth}) => {
+
+		const handleFollow = (target, request) => {
+			if(user.userName !== '' && user.userName !== pageContent.userName){
+	  			const accessToken = window.localStorage.getItem('accessToken')
+				fetch('http://localhost:3000/api/u/subscribe', {
+					method: 'post',
+					headers: {
+						authorization: `Bearer ${accessToken}`,
+						'Content-Type' : 'application/json'
+					},
+					body: JSON.stringify({
+						userName: target,
+						request,
+					})
+				})
+				.then(response => response.json())
+				.then(response => {
+					setUser(response)
+				})
+				.catch(err => {
+					setMessage('There has been an error trying to follow that user')
+				})			
+			} else {
+				if(user.userName === ''){
+					setMessage('You must be logged in to follow a user') 
+				} else {
+				setMessage('Dont believe your own hype')	
+				}
+			}
+
+		}
+
 		return(
 			<div className='container profileHeader' style={{backgroundImage: `url(${pageContent.configuration.headerImg})`}} >
 				<div className='profileAvatar container' >
-					<img src={pageContent.configuration.communityImg} alt=""/>
+					<img src={pageContent.configuration.image} alt=""/>
 				</div>
 				<div className=' container'>
 					<p> {pageContent.userName}</p>
@@ -92,25 +128,41 @@ const Intro = ({pageType, windowWidth, pageContent, user, Link}) => {
 					null :
 					<React.Fragment>
 					<div className='profileInteract'>
-						<div className='profileFollow'>
+					{
+						user.following.includes(pageContent.userName)?
+						<div
+							className='profileFollow' 
+							onClick={() => handleFollow(pageContent.userNameLower, 'unsubscribe')}>
+							Unfollow
+						</div> :
+						<div className='profileFollow'  
+							onClick={() => handleFollow(pageContent.userNameLower, 'subscribe')}>
 							Follow
-						</div>
-						<div className='profileMessage'>
+						</div> 
+					}
+						<div className='profileMessage' 
+							onClick={() => {
+							if(user.userName !== ''){
+								setOverlay('submitMessage')
+							} else {
+								setMessage('You must be logged in to send a message')
+							}
+						}}>
 							Message
 						</div>
 					</div>
 					<div className='profileScore container'>
 						<div >
-							<p> 0 </p>
+							<p> {pageContent.karma} </p>
 							<p> Karma </p>
 						</div>
 						<div >
-							<p> 0 </p>
+							<p> {pageContent.followers.length} </p>
 							<p> Followers </p>
 						</div>
 						<div>
 							<p> User since: </p>
-							<p> November 5th 2020 </p>
+							<p> {pageContent.createdOn}</p>
 						</div>
 					</div>
 					</React.Fragment>

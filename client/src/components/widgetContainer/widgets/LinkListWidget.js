@@ -1,17 +1,20 @@
 import React from 'react'
 
-const LinkListWidget = () => {
+const LinkListWidget = ({widgetContent}) => {
 	/*NTS: LIMIT THE CHARACTERS ALLOWED IN LINKS*/
 	return(
 		<div className='linkListWidget'>
-			<h4>Links</h4> 
+			<h4>{widgetContent.header}</h4> 
 			<ul>
-				<li>
-					<a className='widgetButton' href="" target='_blank'> Link to somewhere</a>
-				</li>
-				<li>
-					<a className='widgetButton' href="" target='_blank'> Link to somewhere</a>
-				</li>
+			{
+				widgetContent.links.map((l, i) => {
+					return (
+					<li key={i}>
+						<a className='widgetButton' href={l.link} target='_blank'> {l.name}</a>
+					</li>
+					)
+				})
+			}
 			</ul>
 
 		</div>

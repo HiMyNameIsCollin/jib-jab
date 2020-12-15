@@ -3,7 +3,7 @@ import './_mobileNav.sass'
 import MobileNavMenu from './MobileNavMenu'
 import SearchBar from '../searchBar/SearchBar'
 
-const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessage}) => {
+const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay, setMessage }) => {
 	const [commIsOpen, setComm]  = useState(false)
 	const [myCommIsOpen, setMyComm] = useState(false)
 	const [settingIsOpen, setSettings] = useState(false)
@@ -25,7 +25,7 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 
 	return(
 		<nav className='container mobileNav'>
-			<SearchBar Link={Link} searchBarType='header'/>
+			<SearchBar Link={Link} user={user} searchBarType='header'/>
 			{
 				user.userName === '' ?
 				<div className='navItem container'>
@@ -46,23 +46,27 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 				</div> :
 				<React.Fragment>
 					<div className='navItem navUserName'>
-						<Link className='link' to='/profile/'> 
-							<img src={user.image} alt='User avatar'/>
+						<Link className='link' to={`/u/${user.userNameLower}`}> 
+							<img src={user.configuration.image} alt='User avatar'/>
 							<span> {user.userName}</span>
 						</Link>
 					</div>
 					<div className='navItem'>
-						<Link className='link' to='/inbox/'>
-							<i class="fas fa-inbox "></i>
-							<span>Inbox</span>
+						<Link className='link' to='/inbox'>
+							<i className="fas fa-inbox "></i>
+							<span className={user.unseenMessages.user === true ||
+								user.unseenMessages.replies === true ||
+								user.unseenMessages.mentions === true ? 
+								'inboxNewMessage' : 
+								null }>Inbox</span>
 						</Link>
 					</div>
 				</React.Fragment>
 			}
 			<div className='navItem' onClick={() => setComm(!commIsOpen)}>
-				<i class="fas fa-angle-double-right "></i>
+				<i className="fas fa-angle-double-right "></i>
 				<span>Communities</span>
-				<i class="fas fa-caret-down"></i>
+				<i className="fas fa-caret-down"></i>
 			</div>
 			{
 				commIsOpen ?
@@ -70,9 +74,9 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 				null
 			}
 			<div className='navItem' onClick={() => setMyComm(!myCommIsOpen)}>
-				<i class="fas fa-angle-right "></i>
+				<i className="fas fa-angle-right "></i>
 				<span>My Communities</span>
-				<i class="fas fa-caret-down"></i>
+				<i className="fas fa-caret-down"></i>
 			</div>
 			{
 				myCommIsOpen ?
@@ -80,29 +84,29 @@ const MobileNav = ({Link, navIsOpen, setNav, user, setUser, setOverlay, setMessa
 				null
 			}
 			<div className='navItem' onClick={() => setSettings(!settingIsOpen)}>
-				<i class="fas fa-cog "></i>
+				<i className="fas fa-cog "></i>
 				<span>Settings</span>
-				<i class="fas fa-caret-down"></i>
+				<i className="fas fa-caret-down"></i>
 			</div>
 			{
 				settingIsOpen ?
-				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} setMessage={setMessage}/> :
+				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} setMessage={setMessage} history={history}/> :
 				null
 			}
 			<Link to='/c/global' className='navItem link'>
-				<i class="fas fa-globe-americas "></i>
+				<i className="fas fa-globe-americas "></i>
 				<span>Global </span>
 			</Link>
 			<Link to='/' className='navItem link'>
-				<i class="fas fa-caravan "></i>
+				<i className="fas fa-caravan "></i>
 				<span>Home </span>
 			</Link>
 			<Link to='./about' className='navItem link'>
-				<i class="far fa-address-card "></i>
+				<i className="far fa-address-card "></i>
 				<span>About</span>
 			</Link>
-			<a href='#' target='_blank' className='navItem'>
-				<i class="fab fa-twitter-square "></i>
+			<a href='https://twitter.com/to_coding' target='_blank' className='navItem'>
+				<i className="fab fa-twitter-square "></i>
 				<span>Follow me on Twitter </span>
 			</a>
 		</nav>

@@ -3,11 +3,10 @@ import CommentForm from './CommentForm'
 import timeDifference from '../../utils/timeDifference'
 
 
-const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComments, user, setError, Link}) => {
+const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Link, setMessage}) => {
 
 		const CommentBody = ({commentType, comment}) => {
 			const [commentFormOpen, setCommentFormOpen] = useState(false)
-			const [commentHidden, setCommentToHidden] = useState(false)
 
 			const CommentInfo = () => {
 			return(
@@ -55,22 +54,22 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 					comment.karma.upvotes.includes(user.userName) ?
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-					class="fas fa-arrow-circle-up"
+					className="fas fa-arrow-circle-up"
 					style={{color: 'blue'}}></i> :
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-					class="fas fa-arrow-circle-up"></i>
+					className="fas fa-arrow-circle-up"></i>
 				}
 					<span>{comment.karma.upvotes.length - comment.karma.downvotes.length} </span>
 				{
 					comment.karma.downvotes.includes(user.userName) ?
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-					class="fas fa-arrow-circle-down"
+					className="fas fa-arrow-circle-down"
 					style={{color: 'red'}}></i> :
 					<i 
 					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-					class="fas fa-arrow-circle-down"></i> 
+					className="fas fa-arrow-circle-down"></i> 
 				}
 				</div>
 			)
@@ -116,7 +115,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 						} else {
 							setError('Must be logged in to comment')
 						}
-					}}>Reply <i class="far fa-comment"></i>  </span>
+					}}>Reply <i className="far fa-comment"></i>  </span>
 				</div>
 				</React.Fragment>
 			</React.Fragment>
@@ -128,7 +127,8 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 				setPosts={setPosts}
 				comment={comment} 
 				func={setCommentFormOpen} 
-				value={commentFormOpen} /> :
+				value={commentFormOpen}
+				setMessage={setMessage} /> :
 				null
 			}
 		</div>
@@ -136,7 +136,6 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 	}
 
 	function renderComments(comment, n) {
-		let current 
 		if(n === undefined){
 			n = 0
 		} else {
@@ -148,7 +147,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 				{
 					comment.comments.map((c, i) => {
 						if(c.comments.length === 0) {
-							return <CommentBody comment={c} />
+							return <CommentBody comment={c} key={i}/>
 						} else {
 							return(
 								<React.Fragment> 
@@ -162,8 +161,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, handleSeeMoreComme
 				</div>
 			)			
 		} else {
-			return <p onClick={() => handleSeeMoreComments(comment, post)}
-					className='seeMoreComments'> See more comments </p>
+			return <Link className='seeMoreComments' to={`/c/${post.communityName}/${post.id}/${comment.commentInfo.id}`} > <p>See more comments </p> </Link>
 		}
 	}
 

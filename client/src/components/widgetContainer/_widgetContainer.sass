@@ -83,6 +83,8 @@ a
 				font-weight: 700
 
 .topPostListWidget
+	p
+		padding: 1em
 	ul
 		.topPostListWidgetItem
 			.link
@@ -180,26 +182,11 @@ a
 .aboutCommunityWidget
 	p
 		padding: 1em 1em 0 1em
-	div
-		margin: .5em 0 
-		padding: 0
-		div
-			align-items: start
-			flex-direction: column
-			justify-content: center
-			margin: 0
-			padding: 0 1em
-			width: 50%
-			p
-				padding: 0
-				font-size: 0.9em
-			p:nth-of-type(1)
-				font-weight: 700
-	i
-		margin: 0 .5em 0 0 
-	p
-		padding-bottom: 1em
-
+		span
+			font-weight: 700
+			margin: 0 .5em 0 0 
+		i
+			margin: 0 .5em 0 0 
 .appendixWidget
 	display: flex
 	flex-wrap: wrap
@@ -217,6 +204,8 @@ a
 		text-align: center
 		letter-spacing: 2px
 	.interactionWidgetButtons
+		div
+			cursor: pointer
 		div:nth-of-type(1)
 			background: $red
 		div:nth-of-type(2)
@@ -238,7 +227,7 @@ a
 		div:nth-of-type(3)
 			width: 100%
 
-.announcementWithLinkWidget
+.announcementWidget
 	p
 		padding: 1em
 

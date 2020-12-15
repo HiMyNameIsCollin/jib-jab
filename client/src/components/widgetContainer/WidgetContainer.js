@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import CommunityListWidget from './widgets/CommunityListWidget'
 import TopPostListWidget from './widgets/TopPostListWidget'
 import RulesListWidget from './widgets/RulesListWidget'
@@ -7,9 +7,9 @@ import ModeratorListWidget from './widgets/ModeratorListWidget'
 import AboutCommunityWidget from './widgets/AboutCommunityWidget'
 import AppendixWidget from './widgets/AppendixWidget'
 import InteractionWidget from './widgets/InteractionWidget'
-import AnnouncementWithLinkWidget from './widgets/AnnouncementWithLinkWidget'
+import AnnouncementWidget from './widgets/AnnouncementWidget'
 import './_widgetContainer.sass'
-const WidgetContainer = ({pageType, Link, pageContent, user}) => {
+const WidgetContainer = ({pageType, Link, pageContent, user, setUser, setMessage, setOverlay}) => {
 
 
 /*###########################TYPE OF MENU#######################################*/
@@ -17,54 +17,59 @@ const WidgetContainer = ({pageType, Link, pageContent, user}) => {
 const FrontPageWidgets = () => {
 	return(
 		<React.Fragment>
-			<AboutCommunityWidget pageContent={pageContent}/> 
-			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user}/>
+			<AboutCommunityWidget pageContent={pageContent} widgetContent={pageContent.configuration.widgets.aboutWidget}/> 
+			<CommunityListWidget Link={Link} pageContent={pageContent} widgetContent={pageContent.configuration.widgets.communityListWidget} pageType={pageType} user={user}/>
 			<AppendixWidget Link={Link}/>				
 		</React.Fragment>
 	)
-}
+} 
 
-const GlobalPageWidgets = () => {
-	return(
-		<React.Fragment>
-			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user}/>
-			<TopPostListWidget pageContent={pageContent} Link={Link}/>
-			<AppendixWidget />	
-		</React.Fragment> 
-	)
-}
-
-const CommunityWidgets = () => {
+const CommunityWidgets = ({pageContent}) => {
 	return(
 		<React.Fragment>
 		{
-			pageContent.configuration.widgets.aboutWidget.active ? 
-			<AboutCommunityWidget pageContent={pageContent}/> :
+			pageContent.configuration.widgets.aboutWidget.active === 'true' ? 
+			<AboutCommunityWidget widgetContent={pageContent.configuration.widgets.aboutWidget} pageContent={pageContent}/>  :
 			null
 		}
 		{
-			pageContent.configuration.widgets.communityListWidget.active ? 
-			<CommunityListWidget Link={Link} pageContent={pageContent} pageType={pageType} user={user} /> :
+			pageContent.configuration.widgets.announcementWidget.active === 'true' ?
+			<AnnouncementWidget widgetContent={pageContent.configuration.widgets.announcementWidget}/> :
 			null
 		}
 		{
-			pageContent.configuration.widgets.announcementWidget.active ?
-			<AnnouncementWithLinkWidget Link={Link} /> :
-			null			
-		}
-		{
-			pageContent.configuration.widgets.rulesWidget.active ?
-			<RulesListWidget /> :
+			pageContent.configuration.widgets.communityListWidget.active === 'true' ? 
+			<CommunityListWidget 
+			Link={Link} 
+			pageType={pageType} 
+			user={user} 
+			widgetContent={pageContent.configuration.widgets.communityListWidget}
+			pageContent={pageContent}/>  :
 			null
 		}
 		{
-			pageContent.configuration.widgets.linkListWidget.active ?
-			<LinkListWidget /> :
+			pageContent.configuration.widgets.rulesWidget.active === 'true' ?
+			<RulesListWidget widgetContent={pageContent.configuration.widgets.rulesWidget}/> :
 			null
 		}
-			<TopPostListWidget pageContent={pageContent} Link={Link}/>
-			<ModeratorListWidget /> 
-			<AppendixWidget Link={Link}/>	
+		{
+			pageContent.configuration.widgets.linkListWidget.active === 'true' ?
+			<LinkListWidget widgetContent={pageContent.configuration.widgets.linkListWidget}/> :
+			null
+		}
+		{
+			pageContent.communityName === 'Global' ?
+			<React.Fragment>
+				<TopPostListWidget pageContent={pageContent} Link={Link}/>
+				<AppendixWidget Link={Link}/>
+			</React.Fragment> :
+			<React.Fragment>
+				<TopPostListWidget pageContent={pageContent} Link={Link}/>
+				<ModeratorListWidget pageContent={pageContent} Link={Link} /> 
+				<AppendixWidget Link={Link}/>	
+			</React.Fragment>
+		}
+
 		</React.Fragment>
 	)
 }
@@ -72,7 +77,12 @@ const CommunityWidgets = () => {
 const ProfileWidgets = () => {
 	return(
 		<React.Fragment>
-			<InteractionWidget pageContent={pageContent}/>
+			<InteractionWidget 
+				user={user} 
+				pageContent={pageContent} 
+				setMessage={setMessage} 
+				setOverlay={setOverlay}
+				setUser={setUser}/>
 			<AppendixWidget Link={Link}/>	
 		</React.Fragment>
 	)
@@ -90,9 +100,7 @@ const ProfileWidgets = () => {
 				pageType === 'profilePage' || pageType === 'userPostPage'  ?
 				<ProfileWidgets /> :
 				pageType === 'communityPage' ||  pageType === 'postPage'?
-				<CommunityWidgets /> : 
-				pageType === 'globalPage' ?
-				<GlobalPageWidgets /> :
+				<CommunityWidgets pageContent={pageContent} /> : 
 				null
 			}
 			</div>

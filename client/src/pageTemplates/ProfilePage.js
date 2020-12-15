@@ -5,28 +5,34 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
-const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setMessage, history}) => {
-	const [profileInfo, setProfileInfo] = useState(undefined)
+const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setMessage, setOverlay, history, setReportOverlayIsOpen, setLoading}) => {
 	const [pageContent, setPageContent] = useState(undefined)
 
 	useEffect(() => {
 		fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
 		.then(response => response.json())
 		.then(response => {
-				console.log(response)
 				setPageContent(response)
 		})
 		.catch(err => {
 			setMessage('There doesnt seem to be anything there...')
 			history.push('/')
 		})
-	}, [])
+	}, [location.pathname])
 
 
 	if(pageContent) {
 	return(
 		<React.Fragment>
-			<Intro pageType='profilePage' windowWidth={windowWidth} pageContent={pageContent}/>
+			<Intro 
+			pageType='profilePage' 
+			windowWidth={windowWidth} 
+			pageContent={pageContent} 
+			location={location} 
+			user={user}
+			setUser={setUser}
+			setOverlay={setOverlay}
+			setMessage={setMessage}/>
 			<Feed 
 				Link={Link} 
 				pageType={pageType} 
@@ -35,10 +41,21 @@ const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setM
 				windowWidth={windowWidth} 
 				pageContent={pageContent} 
 				setMessage={setMessage}
-				history={history}/>
+				history={history}
+				setOverlay={setOverlay}
+				setReportOverlayIsOpen={setReportOverlayIsOpen}
+				setLoading={setLoading} />
 			{
 				windowWidth > 920 ?
-				<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> :
+				<WidgetContainer 
+					user={user} 
+					setUser={setUser}
+					setMessage={setMessage} 
+					Link={Link} 
+					pageType={pageType} 
+					pageContent={pageContent}
+					setOverlay={setOverlay}
+					/> :
 				null
 			}
 

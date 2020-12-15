@@ -1,21 +1,12 @@
 import React from 'react'
 
-const AboutCommunityWidget = ({pageContent}) => {
+const AboutCommunityWidget = ({widgetContent, pageContent}) => {
 	return(
 		<div className='aboutCommunityWidget'>
-			<h4>{pageContent.configuration.widgets.aboutWidget.header}</h4>
-			<p> {pageContent.configuration.widgets.aboutWidget.body}</p>
-			<div className='container'>
-				<div className='container'>
-					<p> 0 </p>
-					<p> Subscribers </p>
-				</div>
-				<div className='container'>
-					<p> 0 </p>
-					<p> Online </p>
-				</div>
-			</div>
-			<p><i class="fas fa-pepper-hot"></i>Created: November 5 2020 </p>
+			<h4>{widgetContent.header}</h4>
+			<p> {widgetContent.body}</p>
+			<p> <span>{pageContent.followers.length}</span> Subscribers </p>
+			<p><i className="fas fa-pepper-hot"></i>Created: {pageContent.createdOn} </p>
 		</div>
 	)
 }

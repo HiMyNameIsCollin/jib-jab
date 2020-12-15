@@ -2,6 +2,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 require('dotenv').config()
 
 const {mongoose, loginSchema, userSchema, tokenSchema, communitySchema} = require('./mongoose')
@@ -43,58 +45,73 @@ app.post('/api/register', (req, res) => {
 		if(result) {
 			res.status(400).json('Username already taken') 
 		} else {
-			const user = new LoginModel({
-				userName,
-				userNameLower: userName.toLowerCase(),
-				hash: password,
-				email, 
-			})
-			user.save().then(() => {
-				const user = new UserModel({
+			bcrypt.hash(password, saltRounds, function(err, hash) {
+				const user = new LoginModel({
 					userName,
 					userNameLower: userName.toLowerCase(),
-					communities: ['Announcements'],
-					karma: 1,
-					followers: [],
-					following: ['Collin'],
-					settings: {
-						feedType: 'list'
-					},
-					createdOn: 'November 20th 2020',
-					posts: [],
-					soapBox: [],
-					savedPosts: [],
-					image: 'http://robohash.org/12'
+					hash: hash,
+					email, 
 				})
 				user.save().then(() => {
-					CommunityModel.findOneAndUpdate({'communityName': 'Announcements'}, {$push:{'followers': userName}})
-					.then(() => res.json({success: true}))
-				})
-			})
+					const user = new UserModel({
+						userName,
+						userNameLower: userName.toLowerCase(),
+						communities: ['Announcements'],
+						karma: 1,
+						followers: [],
+						following: ['Collin'],
+						settings: {
+							feedType: 'list'
+						},
+						createdOn: 'November 20th 2020',
+						posts: [],
+						soapBox: [],
+						savedPosts: [],
+						configuration: {
+							image: 'http://robohash.org/12',
+							headerImg: 'https://source.unsplash.com/random/800x1200'
+						},
+						unseenMessages: {
+							user: [],
+							replies: [],
+							mentions: []
+						}
+					})
+					user.save().then(() => {
+						CommunityModel.findOneAndUpdate({'communityName': 'Announcements'}, {$push:{'followers': userName}})
+						.then(() => res.json({success: true}))
+					})
+				})				
+			});
 
 		}
 	})
 })
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
 	const {userName , password } = req.body
-	LoginModel.findOne({userNameLower: userName.toLowerCase()})
-	.then(result => {
-		if(result && result.hash === password){
-			UserModel.findOne({userName: result.userName})
-			.then(result2 => {
-				let user = {userName: result2.userName}
-				const accessToken = generateAccessToken(user, 10)
-				const refreshToken =  jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-				const newToken = new TokenModel({
-					token: refreshToken
-				})
-				newToken.save().then(result3 => res.json({result2, accessToken, refreshToken}))
+	const loginUser = await LoginModel.findOne({userNameLower: userName.toLowerCase()})
+	if(loginUser){
+		try{
+			bcrypt.compare(password, loginUser.hash, function(err, result) { 
+				if(err) res.sendStatus(400)
+				UserModel.findOne({userName: loginUser.userName})
+				.then(result => {
+					let user = {userName: result.userName}
+					const accessToken = generateAccessToken(user, 10)
+					const refreshToken =  jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+					const newToken = new TokenModel({
+						token: refreshToken
+					})
+					newToken.save().then(() => res.json({result, accessToken, refreshToken}))
+					})
 			})
-		} else {
-			res.status(400).json('Incorrect credidentals')
+		}catch(err){
+			res.sendStatus(400)
 		}
-	})
+	} else{
+		res.sendStatus(400)
+	}
 })
 
 app.delete('/api/logout', (req, res) => {
@@ -113,7 +130,6 @@ app.post('/api/token', (req, res) => {
 	if(refreshToken === null) return res.sendStatus(401)
 	TokenModel.findOne({token: refreshToken})
 	.then(result => {
-		console.log(result)
 		if(result === null) return res.sendStatus(403)
 		jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
 			if(err) return res.sendStatus(403)

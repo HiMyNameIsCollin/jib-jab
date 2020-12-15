@@ -60,7 +60,7 @@ $gloomyBlue: #D0D2D4
 
 	img
 		align-self: start
-		margin-left: auto
+		margin: auto 0 auto auto
 		width: 5em
 		max-width: 5em
 
@@ -69,6 +69,7 @@ $gloomyBlue: #D0D2D4
 	grid-row: 2/5
 	flex-direction: column
 	div
+		cursor: pointer
 		margin: .5em 0
 		width: 100%
 		i
@@ -77,12 +78,15 @@ $gloomyBlue: #D0D2D4
 .enlargedPostImg
 	grid-row: 3/4
 	padding-bottom: 1em
-	img
-		background: black
-		height: auto
-		max-height: 50vh
-		object-fit: cover
-		width: 100%
+	.link, a
+		img
+			background: black
+			height: auto
+			max-height: 60vh
+			object-fit: cover
+			width: 100%
+		.enlargedPostImgOpen
+			max-height: 100%
 
 .enlargedPostText
 	align-items: start
@@ -126,6 +130,7 @@ $gloomyBlue: #D0D2D4
 		align-items: center
 		margin: 0 .5em 0 .25em
 		i
+			cursor: pointer
 			font-size: 24px
 		span
 			font-weight: 600
