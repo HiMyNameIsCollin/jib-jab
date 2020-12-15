@@ -39,7 +39,7 @@ let CommunityModel
 let MessageModel
 let LoginModel
 let TokenModel
-
+/*Lies*/
 conn = mongoose.createConnection(process.env.MONGODB_URI || url, { useNewUrlParser: true , useFindAndModify: false })
 
 conn.once('open', () => {
