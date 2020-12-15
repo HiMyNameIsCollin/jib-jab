@@ -20,10 +20,12 @@ const myPort = process.env.PORT || 3000
 app.use(cors())
 app.use(bodyParser.json())
 
+app.use('/api/', routes)
+
 if(process.env.NODE_ENV === 'production'){
 	app.use(express.static('client/build'))
 
-	app.get('*', (req, res) => {
+	app.get('/', (req, res) => {
 		res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
 	})
 }
@@ -260,7 +262,6 @@ function authenticateToken(req, res, next) {
 }
 
 app.get('/api/refresh', authenticateToken, (req, res) => {
-	console.log(123)
 	UserModel.findOne({userName: req.user.userName}, (err, response) => {
 		if(err) res.sendStatus(401)
 		if(res === null) res.sendStatus(403)
