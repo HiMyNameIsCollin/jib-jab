@@ -1,5 +1,5 @@
 import React from 'react'
-import timeDifference from '../../utils/timeDifference'
+import timeDifference from '../../../utils/timeDifference'
 
 const AboutCommunityWidget = ({widgetContent, pageContent}) => {
 	return(
