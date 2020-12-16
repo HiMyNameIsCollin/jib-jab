@@ -25,6 +25,25 @@ if(process.env.NODE_ENV === 'production'){
 	app.get('/', (req, res) => {
 		res.sendFile(path.resolve('client', 'build', 'index.html'))
 	})
+	app.get('/c/:communityName', (req, res) => {
+		res.sendFile(path.resolve('client', 'build', 'index.html'))
+	})
+	app.get('/c/:communityName/:postId', (req, res) => {
+		res.sendFile(path.resolve('client', 'build', 'index.html'))
+	})
+	app.get('/u/:userName', (req, res) => {
+		res.sendFile(path.resolve('client', 'build', 'index.html'))
+	})
+	app.get('/u/:userName/:postId', (req, res) => {
+		res.sendFile(path.resolve('client', 'build', 'index.html'))
+	})
+	app.get('/createCommunity', (req, res) => {
+		res.sendFile(path.resolve('client', 'build', 'index.html'))
+	})
+	app.get('/inbox', (req, res) => {
+		res.sendFile(path.resolve('client', 'build', 'index.html'))
+	})
+
 }
 /*Declare DB and Stream*/
 let conn
@@ -41,14 +60,14 @@ let TokenModel
 conn = mongoose.createConnection(process.env.MONGODB_URI || url, { useNewUrlParser: true , useFindAndModify: false })
 
 conn.once('open', () => {
-	console.log(process.env.MONGODB_URI)
-	console.log('Database connected on port', myPort )
+	console.log('Database connected via port:', myPort )
 	PostModel = conn.model('posts', postSchema)
 	UserModel = conn.model('users', userSchema)
 	CommunityModel = conn.model('communities', communitySchema)
 	MessageModel = conn.model('messages', messageSchema)
 	LoginModel = conn.model('logins', loginSchema)
 	TokenModel = conn.model('tokens', tokenSchema)
+	CommunityModel.find().then(result => console.log(result))
 	gfs = Grid(conn.db, mongoose.mongo)
 	gfs.collection('uploads')
 })
