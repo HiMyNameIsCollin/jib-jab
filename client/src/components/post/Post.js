@@ -76,7 +76,7 @@ const PostContent = () => {
 				post.imageRefs.length > 0 ?
 				<img onClick={() => {
 					openEnlargedWindow(!enlargedImgOpen)
-				}} src={`http://jibjab.herokuapp.com/api/p/img/${post.imageRefs[0]}`} alt='Post Content'/> : 
+				}} src={`https://jibjab.herokuapp.com/api/p/img/${post.imageRefs[0]}`} alt='Post Content'/> : 
 				null : null
 			}
 		</div> 
@@ -97,7 +97,7 @@ const EnlargedPostImg = () => {
 			</a> :
 			post.imageRefs.length > 0 ?
 			<Link to={`/i/${post.imageRefs[0]}`} className='link'>
-				<img className='enlargedPostImgOpen' src={`http://jibjab.herokuapp.com/api/p/img/${post.imageRefs[0]}`} alt='Enlarged post content'/>
+				<img className='enlargedPostImgOpen' src={`https://jibjab.herokuapp.com/api/p/img/${post.imageRefs[0]}`} alt='Enlarged post content'/>
 			</Link> :
 			null :
 			post.imageLink !== '' ?
@@ -106,7 +106,7 @@ const EnlargedPostImg = () => {
 			</Link> :
 			post.imageRefs.length > 0 ?
 			<Link to={ post.postType ==='community' ? `/c/${post.communityName}/${post.id}` : `/u/${post.communityName}/${post.id}`}className='link'>
-				<img src={`http://jibjab.herokuapp.com/api/p/img/${post.imageRefs[0]}`} alt='Enlarged post content'/>
+				<img src={`https://jibjab.herokuapp.com/api/p/img/${post.imageRefs[0]}`} alt='Enlarged post content'/>
 			</Link> :
 			null
 		}
@@ -180,7 +180,7 @@ const InteractionWindow =() => {
 	const handleSubscription = (target, request, type) => {
 	const accessToken = window.localStorage.getItem('accessToken')
 	if(type === 'community'){
-		fetch('http://jibjab.herokuapp.com/api/c/subscribe', {
+		fetch('https://jibjab.herokuapp.com/api/c/subscribe', {
 			method: 'post',
 			headers: {
 				authorization: `Bearer ${accessToken}`,
@@ -197,7 +197,7 @@ const InteractionWindow =() => {
 		})
 		.catch(err => console.log(err))
 	} else if(type === 'user'){
-		fetch('http://jibjab.herokuapp.com/api/u/subscribe', {
+		fetch('https://jibjab.herokuapp.com/api/u/subscribe', {
 			method: 'post',
 			headers: {
 				authorization: `Bearer ${accessToken}`,

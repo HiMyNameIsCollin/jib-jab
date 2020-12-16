@@ -12,7 +12,7 @@ const initialUser = {
 		feedType: 'list'
 	},
 	configuration: {
-		image: 'http://robohash.org/100',
+		image: 'https://robohash.org/100',
 		headerImg: ''
 	},
 	unseenMessages: {
@@ -145,7 +145,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 								onClick={() => {
 								const refreshToken = window.localStorage.getItem('refreshToken')
 								setNav(false)
-								fetch('http://jibjab.herokuapp.com/api/logout', {
+								fetch('https://jibjab.herokuapp.com/api/logout', {
 									method: 'delete',
 									headers: {'Content-Type' : 'application/json'},
 									body: JSON.stringify({

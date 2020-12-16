@@ -16,7 +16,7 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 		if(location.pathname.toLowerCase() === '/c/popular'){
 			history.push('/')
 		} else {
-			fetch(`http://jibjab.herokuapp.com/api${location.pathname.toLowerCase()}`)
+			fetch(`https://jibjab.herokuapp.com/api${location.pathname.toLowerCase()}`)
 			.then(response => response.json())
 			.then(response => {
 					setPageContent(response)

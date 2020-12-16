@@ -14,7 +14,7 @@ const Login = ({setOverlay, setLoading, user, setUser}) => {
 			setLoading(true)
 			setError(false)
 			setIncorrect(false)
-			fetch('http://jibjab.herokuapp.com/api/login', {
+			fetch('https://jibjab.herokuapp.com/api/login', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({

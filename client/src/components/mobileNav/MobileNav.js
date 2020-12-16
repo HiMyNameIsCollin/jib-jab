@@ -105,7 +105,7 @@ const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay,
 				<i className="far fa-address-card "></i>
 				<span>About</span>
 			</Link>
-			<a href='https://twitter.com/to_coding' target='_blank' className='navItem'>
+			<a href='httpss://twitter.com/to_coding' target='_blank' className='navItem'>
 				<i className="fab fa-twitter-square "></i>
 				<span>Follow me on Twitter </span>
 			</a>

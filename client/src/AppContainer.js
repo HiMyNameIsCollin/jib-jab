@@ -23,7 +23,7 @@ const initialUser = {
 		feedType: 'list'
 	},
 	configuration: {
-		image: 'http://robohash.org/100',
+		image: 'https://robohash.org/100',
 		headerImg: ''
 	},
 	unseenMessages: []

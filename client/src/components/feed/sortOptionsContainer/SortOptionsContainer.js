@@ -33,7 +33,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) 
 	const handleFeedType = () => {
 		if(user.userName !== ''){
   			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://jibjab.herokuapp.com/api/u/settings', {
+			fetch('https://jibjab.herokuapp.com/api/u/settings', {
 				headers: {
 					authorization: `Bearer ${accessToken}`,
 					'Content-Type' : 'application/json'

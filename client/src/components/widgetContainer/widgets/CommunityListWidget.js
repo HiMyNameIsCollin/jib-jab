@@ -7,7 +7,7 @@ const CommunityListWidgetItem = ({ listItem, Link}) => {
 
 	useEffect(() => {
 		let isMounted = true
-			fetch(`http://jibjab.herokuapp.com/api/c/img/${listItem.toLowerCase()}`)
+			fetch(`https://jibjab.herokuapp.com/api/c/img/${listItem.toLowerCase()}`)
 			.then(response => response.json())
 			.then(response => {
 				if(isMounted) {

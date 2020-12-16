@@ -18,7 +18,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 
 
 	useEffect(() => {
-		fetch(`http://jibjab.herokuapp.com/api/manageCommunity/${location.pathname.substr(3, location.pathname.length - 3)}`)
+		fetch(`https://jibjab.herokuapp.com/api/manageCommunity/${location.pathname.substr(3, location.pathname.length - 3)}`)
 		.then(response => response.json())
 		.then(response => {
 				setHeaderImg(response.community.configuration.headerImg)
@@ -83,7 +83,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 					p.postStatus === 'active' ?
 					<button onClick={() =>{
 						const accessToken = window.localStorage.getItem('accessToken')
-						fetch('http://jibjab.herokuapp.com/api/mod/deletePost', {
+						fetch('https://jibjab.herokuapp.com/api/mod/deletePost', {
 							method: 'post',
 							headers: {
 								'Content-Type' : 'application/json',
@@ -162,7 +162,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 			}
 			setLoading(true)
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch(`http://jibjab.herokuapp.com/api/manageCommunity/${community.communityNameLower}`, {
+			fetch(`https://jibjab.herokuapp.com/api/manageCommunity/${community.communityNameLower}`, {
 				method: 'post',
 				headers: {
 				'Content-Type' : 'application/json',
@@ -246,7 +246,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 					type="text" 
 					name='image'
 					onBlur={(e) => setImage(e.target.value)} 
-					placeholder='eg. http://robohash.org/picture' 
+					placeholder='eg. https://robohash.org/picture' 
 					ref={register({required: false})}/>
 					<label htmlFor="headerImg" >Community banner:</label>
 					<input 

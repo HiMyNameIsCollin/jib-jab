@@ -54,7 +54,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 		return(
 			<div className='communityHeader createCommunityPreview' style={{backgroundImage: `url(${headerImg}})` }}> 
 				<div className='container'>
-					<img src={image !== '' ? image : 'http://robohash.org/250'} alt="Your community image goes here"/>
+					<img src={image !== '' ? image : 'https://robohash.org/250'} alt="Your community image goes here"/>
 				</div>
 				<div className=' container'>
 					<p> {communityName !== '' ? communityName : 'eg. Movies, Anime, Television'} </p>
@@ -85,12 +85,12 @@ const CreateCommunity = ({user, setMessage, history}) => {
 				complete: true,
 				communityName: data.communityName ,
 				communityHeaderBlurb: data.communityHeader,
-				image: data.image ? data.image : `http://robohash.org/${data.communityName}` ,
+				image: data.image ? data.image : `https://robohash.org/${data.communityName}` ,
 				headerImg: data.headerImg ? data.headerImg : 'https://source.unsplash.com/random/800x1200',
 				communityVisibility: data.communityVisibility,
 				postPermission: data.postPermission                                                                         
 			}
-			fetch('http://jibjab.herokuapp.com/api/search',{
+			fetch('https://jibjab.herokuapp.com/api/search',{
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
@@ -196,7 +196,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 			setFormSent(true)
 			const accessToken = window.localStorage.getItem('accessToken')
 			setLoading(true)
-			fetch('http://jibjab.herokuapp.com/api/createCommunity', {
+			fetch('https://jibjab.herokuapp.com/api/createCommunity', {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -267,7 +267,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 						type="text" 
 						name='image'
 						onBlur={(e) => setImage(e.target.value)} 
-						placeholder='eg. http://robohash.org/picture' 
+						placeholder='eg. https://robohash.org/picture' 
 						ref={register({required: false})}/>
 						<label htmlFor="headerImg" >Community banner:</label>
 						<input 
@@ -425,7 +425,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 								numberOfLinks().map(i => (
 									<div>
 										<label htmlFor={`communityLinkUrl[${i}]`}>Link Url {i + 1}</label>
-										<input type="text" name={`communityLinkUrl[${i}]`} placeholder='eg. http://google.ca' ref={register({required: true})}/>
+										<input type="text" name={`communityLinkUrl[${i}]`} placeholder='eg. https://google.ca' ref={register({required: true})}/>
 										<label htmlFor={`communityLink[${i}]`}> Link Descriptor : </label>
 										<input type="text" name={`communityLink[${i}]`} placeholder='A search engine' ref={register({required: true})}/>
 									 </div>

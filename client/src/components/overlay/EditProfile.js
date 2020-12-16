@@ -19,7 +19,7 @@ const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, histor
 	)
 }
 
-
+	
 	const [image, setImage] = useState('')
 	const [headerImg, setHeaderImg] = useState(user.configuration.headerImg)
 	const [formSent, setFormSent] = useState(false)
@@ -31,7 +31,7 @@ const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, histor
 		if(!formSent){
 			setFormSent(true)
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://jibjab.herokuapp.com/api/editProfile' ,{
+			fetch('https://jibjab.herokuapp.com/api/editProfile' ,{
 				method: 'post',
 				headers: {
 					'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, histor
 				type="text" 
 				name='image'
 				onBlur={(e) => setImage(e.target.value)} 
-				placeholder='eg. http://robohash.org/picture' 
+				placeholder='eg. https://robohash.org/picture' 
 				ref={register({required: false})}/>
 				<label htmlFor="headerImg" >Community banner:</label>
 				<input 

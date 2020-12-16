@@ -14,7 +14,7 @@ const ReportOverlay = ({setReportOverlayIsOpen, reportOverlayIsOpen, user, setMe
 			setLoading(true)
 			setFormSent(true)
 			if(reportOverlayIsOpen.type === 'post'){
-				fetch('http://jibjab.herokuapp.com/api/reportPost', {
+				fetch('https://jibjab.herokuapp.com/api/reportPost', {
 					method: 'post',
 					headers: {
 						authorization: `Bearer ${accessToken}`,

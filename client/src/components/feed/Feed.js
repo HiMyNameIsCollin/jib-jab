@@ -25,12 +25,12 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 			handlePostFetch()
 		
 	},[])
-
+	
 	const handlePostFetch = () => {
 		if(pageType === 'profilePage') {
 			if(profileFeedChoice === 'soapBox'){
 				if(pageContent.soapBox.length > 0){
-				fetch(`http://jibjab.herokuapp.com/api/p/`,{
+				fetch(`https://jibjab.herokuapp.com/api/p/`,{
 						method: 'post',
 						headers: {'Content-Type' : 'application/json'},
 						body: JSON.stringify({
@@ -46,7 +46,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 				}
 			}else {
 				if(pageContent.posts.length > 0){
-					fetch(`http://jibjab.herokuapp.com/api/p/`,{
+					fetch(`https://jibjab.herokuapp.com/api/p/`,{
 					method: 'post',
 					headers: {'Content-Type' : 'application/json'},
 					body: JSON.stringify({
@@ -63,7 +63,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 			}
 		} else {
 			if(pageContent.posts.length > 0){
-				fetch(`http://jibjab.herokuapp.com/api/p/`, {
+				fetch(`https://jibjab.herokuapp.com/api/p/`, {
 					method: 'post',
 					headers: {'Content-Type' : 'application/json'}, 
 					body: JSON.stringify({
@@ -110,7 +110,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 	const handleVote = (postID, postUserName,  request) => {
 		if(user.userName !== '') {
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://jibjab.herokuapp.com/api/vote', {
+			fetch('https://jibjab.herokuapp.com/api/vote', {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,

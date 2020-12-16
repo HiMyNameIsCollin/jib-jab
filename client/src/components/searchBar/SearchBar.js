@@ -48,7 +48,7 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 	const [searchResults, setSearchResults] = useState(() => initialResults)
 	const searchRef = useRef()
 	const handleSearch = (e) => {
-		fetch('http://jibjab.herokuapp.com/api/search', {
+		fetch('https://jibjab.herokuapp.com/api/search', {
 			method: 'post',
 			headers: {'Content-Type' : 'application/json'},
 			body: JSON.stringify({

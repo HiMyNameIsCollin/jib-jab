@@ -21,7 +21,7 @@ const TopPostListWidget = ({pageContent, Link}) => {
 	const [topPosts, setTopPosts] = useState(undefined)
 
 		useEffect(() => {
-			fetch(`http://jibjab.herokuapp.com/api/topPosts/${pageContent.communityNameLower}`)
+			fetch(`https://jibjab.herokuapp.com/api/topPosts/${pageContent.communityNameLower}`)
 			.then(response => response.json())
 			.then(response => setTopPosts(response))
 			.catch(err => console.log(err))

@@ -10,7 +10,7 @@ const CommentForm = ({func, value, post, setPosts, comment, setMessage}) => {
 		if(!formSent){
 			setFormSent(true)
 		  	const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://jibjab.herokuapp.com/api/comment/submit', {
+			fetch('https://jibjab.herokuapp.com/api/comment/submit', {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,

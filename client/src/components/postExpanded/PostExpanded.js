@@ -12,7 +12,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 		const handleSavePost = () => {
 			const accessToken = window.localStorage.getItem('accessToken')
 			setLoading(true)
-			fetch('http://jibjab.herokuapp.com/api/savePost', {
+			fetch('https://jibjab.herokuapp.com/api/savePost', {
 				method: 'post',
 				headers: {
 					'Content-Type' : 'application/json',
@@ -36,7 +36,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 		const handleDeletePost = () => {
 			setLoading(true)
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://jibjab.herokuapp.com/api/deletePost', {
+			fetch('https://jibjab.herokuapp.com/api/deletePost', {
 				method: 'post',
 				headers: {
 					'Content-Type' : 'application/json',
@@ -63,7 +63,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 
 		const handleModRemovePost = () => {
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://jibjab.herokuapp.com/api/mod/deletePost', {
+			fetch('https://jibjab.herokuapp.com/api/mod/deletePost', {
 				method: 'post',
 				headers: {
 					'Content-Type' : 'application/json',
@@ -141,7 +141,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 
 	const handleVote = (postID, request) => {
   		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('http://jibjab.herokuapp.com/api/vote', {
+		fetch('https://jibjab.herokuapp.com/api/vote', {
 			method: 'post',
 			headers: {
 				authorization: `Bearer ${accessToken}`,
@@ -169,7 +169,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 	const handleCommentVote = (postId, commentId, request) => {
 		if(user.userName !== '') {
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://jibjab.herokuapp.com/api/comment/vote', {
+			fetch('https://jibjab.herokuapp.com/api/comment/vote', {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -203,7 +203,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 
 	useEffect(() => {
 			setPosts(undefined)
-			fetch('http://jibjab.herokuapp.com/api/p/', {
+			fetch('https://jibjab.herokuapp.com/api/p/', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'}, 
 				body: JSON.stringify({
