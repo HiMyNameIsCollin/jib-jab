@@ -11,7 +11,7 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 
 	useEffect(() => {
-			fetch(`http://jibjab.herokuapp.com/api/`, {
+			fetch(`https://jibjab.herokuapp.com/api/`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
