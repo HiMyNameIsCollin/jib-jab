@@ -145,7 +145,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 								onClick={() => {
 								const refreshToken = window.localStorage.getItem('refreshToken')
 								setNav(false)
-								fetch('http://localhost:3000/api/logout', {
+								fetch('http://jibjab.herokuapp.com/api/logout', {
 									method: 'delete',
 									headers: {'Content-Type' : 'application/json'},
 									body: JSON.stringify({

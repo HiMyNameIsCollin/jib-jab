@@ -29,7 +29,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 
 		useEffect(() => {
 			let isMounted = true
-				fetch(`http://localhost:3000/api/c/img/${listItem.toLowerCase()}`)
+				fetch(`http://jibjab.herokuapp.com/api/c/img/${listItem.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
 					if(isMounted) {
@@ -51,7 +51,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 	const handleFeedType = () => {
 		if(user.userName !== ''){
   			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://localhost:3000/api/u/settings', {
+			fetch('http://jibjab.herokuapp.com/api/u/settings', {
 				headers: {
 					authorization: `Bearer ${accessToken}`,
 					'Content-Type' : 'application/json'
@@ -143,7 +143,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 			<div onClick={() => {
 				const refreshToken = window.localStorage.getItem('refreshToken')
 				setNav(false)
-				fetch('http://localhost:3000/api/logout', {
+				fetch('http://jibjab.herokuapp.com/api/logout', {
 					method: 'delete',
 					headers: {'Content-Type' : 'application/json'},
 					body: JSON.stringify({

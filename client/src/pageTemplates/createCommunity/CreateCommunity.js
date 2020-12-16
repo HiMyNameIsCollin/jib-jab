@@ -90,7 +90,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 				communityVisibility: data.communityVisibility,
 				postPermission: data.postPermission                                                                         
 			}
-			fetch('http://localhost:3000/api/search',{
+			fetch('http://jibjab.herokuapp.com/api/search',{
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
@@ -196,7 +196,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 			setFormSent(true)
 			const accessToken = window.localStorage.getItem('accessToken')
 			setLoading(true)
-			fetch('http://localhost:3000/api/createCommunity', {
+			fetch('http://jibjab.herokuapp.com/api/createCommunity', {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,

@@ -87,7 +87,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 
   	function tokenRefresh() {
   		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('http://localhost:3000/api/refresh', {
+		fetch('http://jibjab.herokuapp.com/api/refresh', {
 			headers: {
 				authorization: `Bearer ${accessToken}`,
 				'Content-Type' : 'application/json'
@@ -103,7 +103,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		})
 		.catch(err => {
 			const refreshToken = window.localStorage.getItem('refreshToken')
-			fetch('http://localhost:3000/api/token', {
+			fetch('http://jibjab.herokuapp.com/api/token', {
 				method: 'post',
 				headers: { 'Content-Type' : 'application/json' },
 				body: JSON.stringify({

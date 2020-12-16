@@ -18,7 +18,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 
 
 	useEffect(() => {
-		fetch(`http://localhost:3000/api/manageCommunity/${location.pathname.substr(3, location.pathname.length - 3)}`)
+		fetch(`http://jibjab.herokuapp.com/api/manageCommunity/${location.pathname.substr(3, location.pathname.length - 3)}`)
 		.then(response => response.json())
 		.then(response => {
 				setHeaderImg(response.community.configuration.headerImg)
@@ -83,7 +83,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 					p.postStatus === 'active' ?
 					<button onClick={() =>{
 						const accessToken = window.localStorage.getItem('accessToken')
-						fetch('http://localhost:3000/api/mod/deletePost', {
+						fetch('http://jibjab.herokuapp.com/api/mod/deletePost', {
 							method: 'post',
 							headers: {
 								'Content-Type' : 'application/json',
@@ -162,7 +162,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 			}
 			setLoading(true)
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch(`http://localhost:3000/api/manageCommunity/${community.communityNameLower}`, {
+			fetch(`http://jibjab.herokuapp.com/api/manageCommunity/${community.communityNameLower}`, {
 				method: 'post',
 				headers: {
 				'Content-Type' : 'application/json',

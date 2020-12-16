@@ -31,7 +31,7 @@ const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, histor
 		if(!formSent){
 			setFormSent(true)
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('http://localhost:3000/api/editProfile' ,{
+			fetch('http://jibjab.herokuapp.com/api/editProfile' ,{
 				method: 'post',
 				headers: {
 					'Content-Type': 'application/json',

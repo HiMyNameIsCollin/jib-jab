@@ -11,7 +11,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 
 	useEffect(() => {
 		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/u/'){
-			fetch('http://localhost:3000/api/search', {
+			fetch('http://jibjab.herokuapp.com/api/search', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
@@ -32,7 +32,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 				if(targetCommunity.type === 'community'){
 					if(postType=== 'image'){
 						const imageForm = document.getElementById('imageSubmissionForm')
-						fetch(`http://localhost:3000/api/c/${targetCommunity.name}/submit`, {
+						fetch(`http://jibjab.herokuapp.com/api/c/${targetCommunity.name}/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,
@@ -52,7 +52,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 						})
 						.catch(err => console.log(err))
 					} else if (postType === 'text' || postType === 'link'){
-						fetch(`http://localhost:3000/api/c/${targetCommunity.name}/submit`, {
+						fetch(`http://jibjab.herokuapp.com/api/c/${targetCommunity.name}/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,
@@ -82,7 +82,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 				} else if (targetCommunity.type === 'soapBox') {
 					if(postType=== 'image'){
 						const imageForm = document.getElementById('imageSubmissionForm')
-						fetch(`http://localhost:3000/api/u/submit`, {
+						fetch(`http://jibjab.herokuapp.com/api/u/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,
@@ -105,7 +105,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 							setFormSent(false)
 						})
 					} else if (postType === 'text' || postType === 'link'){
-						fetch(`http://localhost:3000/api/u/submit`, {
+						fetch(`http://jibjab.herokuapp.com/api/u/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,

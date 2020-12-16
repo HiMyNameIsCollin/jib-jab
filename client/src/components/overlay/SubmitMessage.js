@@ -10,7 +10,7 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 
 	useEffect(() => {
 		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/c/'){
-			fetch('http://localhost:3000/api/search', {
+			fetch('http://jibjab.herokuapp.com/api/search', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
@@ -28,7 +28,7 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 			setFormSent(true)
 			if(targetCommunity !== undefined) {
 				const accessToken = window.localStorage.getItem('accessToken')
-				fetch('http://localhost:3000/api/message', {
+				fetch('http://jibjab.herokuapp.com/api/message', {
 					method: 'post',
 					headers: {
 						authorization: `Bearer ${accessToken}`,

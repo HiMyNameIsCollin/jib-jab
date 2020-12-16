@@ -9,7 +9,7 @@ const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setM
 	const [pageContent, setPageContent] = useState(undefined)
 
 	useEffect(() => {
-		fetch(`http://localhost:3000/api${location.pathname.toLowerCase()}`)
+		fetch(`http://jibjab.herokuapp.com/api${location.pathname.toLowerCase()}`)
 		.then(response => response.json())
 		.then(response => {
 				setPageContent(response)

@@ -8,7 +8,7 @@ const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, locatio
 		const [trendingPosts, setTrendingPosts] = useState(undefined)
 
 		useEffect(() => {
-			fetch('http://localhost:3000/api/p', {
+			fetch('http://jibjab.herokuapp.com/api/p', {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'}, 
 				body: JSON.stringify({
@@ -35,7 +35,7 @@ const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, locatio
 						post.imageLink !== '' ?
 						<img src={post.imageLink} alt="Post content" /> :
 						post.imageRefs.length > 0 ?
-						<img src={`http://localhost:3000/api/p/img/${post.imageRefs[0]}`} alt='Post content'/> :
+						<img src={`http://jibjab.herokuapp.com/api/p/img/${post.imageRefs[0]}`} alt='Post content'/> :
 						<img src='http://source.unsplash.com/random/200x200' alt='Post content' />
 					}
 				</Link>
@@ -87,7 +87,7 @@ const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, locatio
 		const handleFollow = (target, request) => {
 			if(user.userName !== '' && user.userName !== pageContent.userName){
 	  			const accessToken = window.localStorage.getItem('accessToken')
-				fetch('http://localhost:3000/api/u/subscribe', {
+				fetch('http://jibjab.herokuapp.com/api/u/subscribe', {
 					method: 'post',
 					headers: {
 						authorization: `Bearer ${accessToken}`,
