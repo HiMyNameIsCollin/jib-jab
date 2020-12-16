@@ -550,7 +550,7 @@ routes.post('/c/:communityName/submit', authenticateToken, (req, res) => {
 		}
 		if(user && community){
 			if(community.configuration.postPermission === 'open' || 
-			(community.configuration.postPermission === 'locked' && community.moderators.includes(req.user.userName))){
+			(community.configuration.postPermission === 'locked' && community.moderators.includes(user.userName))){
 				try{
 					const newPost = new PostModel({
 						postStatus: 'active',

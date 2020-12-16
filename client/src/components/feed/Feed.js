@@ -134,7 +134,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 			})
 			.catch(err => console.log(err))
 			} else {
-				setError('Must be logged in to vote')
+				setMessage('Must be logged in to vote')
 			}
 	}
 

@@ -17,7 +17,6 @@ const WidgetContainer = ({pageType, Link, pageContent, user, setUser, setMessage
 const FrontPageWidgets = () => {
 	return(
 		<React.Fragment>
-			<AboutCommunityWidget pageContent={pageContent} widgetContent={pageContent.configuration.widgets.aboutWidget}/> 
 			<CommunityListWidget Link={Link} pageContent={pageContent} widgetContent={pageContent.configuration.widgets.communityListWidget} pageType={pageType} user={user}/>
 			<AppendixWidget Link={Link}/>				
 		</React.Fragment>
