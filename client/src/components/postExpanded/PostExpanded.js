@@ -48,7 +48,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 			})
 			.then(response => response.json())
 			.then(response => {
-				if(posts[0].communityName === posts[0].userName){
+				if(posts[0].communityName === `/u/${posts[0].userName}`){
 					history.push(`/u/${posts[0].userName}`)
 				} else {
 					history.push(`/c/${posts[0].communityName}`)
@@ -76,7 +76,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 			.then(response => response.json())
 			.then(response => {
 				setLoading(false)
-				if(posts[0].communityName === posts[0].userName){
+				if(posts[0].communityName === `/u/${posts[0].userName}`){
 					history.push(`/u/${posts[0].userName}`)
 				} else {
 					history.push(`/c/${posts[0].communityName}`)
@@ -139,30 +139,40 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 	
 
 
-	const handleVote = (postID, request) => {
-  		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('https://jibjab.herokuapp.com/api/vote', {
-			method: 'post',
-			headers: {
-				authorization: `Bearer ${accessToken}`,
-				'Content-Type' : 'application/json'
-			},
-			body: JSON.stringify({
-				postID,
-				request,
+	const handleVote = (postID, postUserName, request) => {
+		console.log(postID)
+		if(user.userName !== ''){
+	  		const accessToken = window.localStorage.getItem('accessToken')
+			fetch('https://jibjab.herokuapp.com/api/vote', {
+				method: 'post',
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					'Content-Type' : 'application/json'
+				},
+				body: JSON.stringify({
+					postID,
+					postUserName, 
+					request,
+				})
 			})
-		})
-		.then(response => response.json())
-		.then(response => {
-			let updatedPosts = [...posts]
-			updatedPosts.forEach((p, i) => {
-				if(p.id === response.id){
-					updatedPosts[i] = response
-				}
+			.then(response => response.json())
+			.then(response => {
+				let updatedPosts = [...posts]
+				updatedPosts.forEach((p, i) => {
+					if(p.id === response.id){
+						updatedPosts[i] = response
+					}
+				})
+				setPosts(updatedPosts)
 			})
-			setPosts(updatedPosts)
-		})
-		.catch(err => console.log(err))
+			.catch(err => {
+				console.log(err)
+				setMessage('There seems to have been an error')
+			})			
+		} else {
+			setMessage('You must be logged in to vote')
+		}
+
 	}
 
 
@@ -212,27 +222,32 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 			})
 			.then(response => response.json())
 			.then(response => {
-				let path = location.pathname.split('/')
-				if(path.length < 5){
-					setPosts(response)
-				} else {
-					let comment 
-					function findComment(comments, id){
-						comments.map((m, i) => {
-							if(m.commentInfo.id === id){
-								comment = [m]
-								return
-							} else {
-								if(m.comments.length > 0){
-									findComment(m.comments, id)
+				if(response[0].communityName === pageContent.communityName){
+					let path = location.pathname.split('/')
+					if(path.length < 5){
+						setPosts(response)
+					} else {
+						let comment 
+						function findComment(comments, id){
+							comments.map((m, i) => {
+								if(m.commentInfo.id === id){
+									comment = [m]
+									return
+								} else {
+									if(m.comments.length > 0){
+										findComment(m.comments, id)
+									}
 								}
-							}
-						})
-						return
-					}
-					findComment(response[0].comments, path[4])
-					response[0].comments = comment
-					setPosts(response)
+							})
+							return
+						}
+						findComment(response[0].comments, path[4])
+						response[0].comments = comment
+						setPosts(response)
+					}					
+				} else{
+					history.push('/')
+					setMessage('There is nothing to see there...')
 				}
 
 			})

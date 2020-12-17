@@ -122,10 +122,12 @@ function sortPosts(posts, sortType, sortTypeCont){
 	let newSortOrder = []
 	if(sortType === 'spicy' || sortType === 'communities'){
 		posts.forEach((p, i) => {
-			newSortOrder.push({
-				id: p.id,
-				score: p.karma.upvotes.length - p.karma.downvotes.length - timeDifference(p.time, 'minutes')/60 ,
-			})
+			if(p.postStatus === 'active'){
+				newSortOrder.push({
+					id: p.id,
+					score: p.karma.upvotes.length - p.karma.downvotes.length - timeDifference(p.time, 'minutes')/60 ,
+				})				
+			}
 		
 		})
 		return sortBy(newSortOrder, 'score')
@@ -614,6 +616,7 @@ routes.post('/u/submit', authenticateToken, (req, res) => {
 			try{
 				const newPost = new PostModel({
 					postType: 'soapBox',
+					postStatus: 'active',
 					communityName: `/u/${req.user.userName}`,
 					communityNameLower: `/u/${req.user.userName}`.toLowerCase(),
 					comments: [],
@@ -977,6 +980,7 @@ routes.post('/manageCommunity/:communityName', async (req, res) => {
 			community.configuration.headerImg = req.body.data.headerImg !== '' ? req.body.data.headerImg : community.configuration.headerImg
 			community.configuration.postPermission = req.body.data.postPermission
 			community.configuration.visibility = req.body.data.visibility
+			community.configuration.communityHeader = req.body.data.communityHeaderBlurb
 			community.markModified('configuration')
 			community.save()
 			.then(savedUser => res.json({success: true}))		
@@ -1412,17 +1416,22 @@ routes.post('/login', async (req, res) => {
 		try{
 			bcrypt.compare(password, loginUser.hash, function(err, result) { 
 				if(err) res.sendStatus(400)
-				UserModel.findOne({userName: loginUser.userName})
-				.then(result => {
-					let user = {userName: result.userName}
-					const accessToken = generateAccessToken(user, 10)
-					const refreshToken =  jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
-					const newToken = new TokenModel({
-						token: refreshToken
-					})
-					console.log(3)
-					newToken.save().then(() => res.json({result, accessToken, refreshToken}))
-					})
+				if(result === true){
+					UserModel.findOne({userName: loginUser.userName})
+					.then(result => {
+						let user = {userName: result.userName}
+						const accessToken = generateAccessToken(user, 10)
+						const refreshToken =  jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+						const newToken = new TokenModel({
+							token: refreshToken
+						})
+						console.log(3)
+						newToken.save().then(() => res.json({result, accessToken, refreshToken}))
+						})					
+				} else {
+					res.sendStatus(400)
+				}
+
 			})
 		}catch(err){
 			res.sendStatus(400)
