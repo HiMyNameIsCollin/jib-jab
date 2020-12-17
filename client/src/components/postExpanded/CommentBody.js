@@ -1,10 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CommentForm from './CommentForm'
 import timeDifference from '../../utils/timeDifference'
 
 const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, Link, user, setUser, handleCommentVote, post, setMessage, setPosts}) => {
 	const [commentFormOpen, setCommentFormOpen] = useState(false)
+	const [commentersImage, setCommentersImage] = useState(undefined)
 
+	useEffect(() => {
+		fetch(`https://jibjab.herokuapp.com/api/u/img/${comment.commentInfo.userName}`)
+		.then(response => response.json())
+		.then(response => setCommentersImage(response))
+		.catch(err => console.log(err))
+	}, [])
 
 	const CommentInfo = () => {
 		return(
@@ -83,7 +90,7 @@ return(
 			<CommentInfo /> 
 		</React.Fragment> :
 		<React.Fragment>
-			<img src="https://robohash.org/3" alt=""/>
+			<img src={commentersImage} alt=""/>
 			<CommentInfo/>
 			<CommentContent />
 			<CommentMeta />

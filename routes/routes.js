@@ -306,6 +306,13 @@ routes.get('/c/img/:communityName' , (req, res) => {
 	.catch(err => console.log(err))
 })
 
+/*GET USER PROFILE IMAGE*/
+routes.get('/u/img/:userName', (req, res) => {
+	UserModel.findOne({userName: req.params.userName})
+	.then((result) => res.json(result.configuration.image))
+	.catch((err) => res.sendStatus(400))
+})
+
 
 routes.post('/', async (req, res) => {
 	const communityQuery = req.body.communities.map((c, i) => c.toLowerCase())
@@ -1425,11 +1432,10 @@ routes.post('/login', async (req, res) => {
 						const newToken = new TokenModel({
 							token: refreshToken
 						})
-						console.log(3)
 						newToken.save().then(() => res.json({result, accessToken, refreshToken}))
 						})					
 				} else {
-					res.sendStatus(400)
+					res.json({error: 'Incorrect credidentals'})
 				}
 
 			})

@@ -37,7 +37,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const [navIsOpen, setNav] = useState(false)
 	const [currentLocation, setCurrentLocation] = useState(undefined)
 	const [overlayIsOpen, setOverlay] = useState(undefined)
-	const [user, setUser] = useState(initialUser)
+	const [user, setUser] = useState(undefined)
 	const [message, setMessage] = useState(undefined)
 	const [reportOverlayIsOpen, setReportOverlayIsOpen] = useState(undefined)
 	const [loading, setLoading] = useState(false)
