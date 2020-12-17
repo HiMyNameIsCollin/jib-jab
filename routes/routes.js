@@ -306,7 +306,6 @@ routes.get('/c/img/:communityName' , (req, res) => {
 
 
 routes.post('/', async (req, res) => {
-	console.log(12345678)
 	const communityQuery = req.body.communities.map((c, i) => c.toLowerCase())
 	const followingQuery = req.body.following.map((f, i) => f.toLowerCase())
 	const communities = await CommunityModel.find({
@@ -1429,6 +1428,7 @@ routes.post('/login', async (req, res) => {
 			res.sendStatus(400)
 		}
 	} else{
+		console.log(req.body)
 		res.sendStatus(400)
 	}
 })
