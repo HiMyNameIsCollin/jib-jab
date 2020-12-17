@@ -13,7 +13,7 @@ const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, L
 				{comment.commentInfo.userName} 
 				</Link> 
 				{
-					!commentHidden ?
+					commentHidden ?
 					null :
 					<span> {timeDifference(comment.commentInfo.time)} </span>
 				}
@@ -21,7 +21,7 @@ const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, L
 					1 karma
 				</span>
 				{
-					!commentHidden ?
+					commentHidden ?
 					<span className='commentsCounter'>
 					{
 						comment.comments.length > 0 ?

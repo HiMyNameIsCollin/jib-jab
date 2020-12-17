@@ -43,13 +43,40 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMes
 		<React.Fragment>
 			{
 				comment.comments.length === 0 ?
-				<CommentBody commentType={'parentComment'} comment={comment} handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} setMessage={setMessage}  user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/> :
+				<CommentBody 
+					commentType={'parentComment'} 
+					comment={comment} 
+					handleCommentVote={handleCommentVote} 
+					post={post} setPosts={setPosts} 
+					setMessage={setMessage}  
+					user={user} 
+					Link={Link} 
+					commentHidden={commentHidden} 
+					setCommentToHidden={setCommentToHidden}/> :
 				<React.Fragment>
 				{
 					commentHidden ? 
-					<CommentBody commentType={'parentComment'} comment={comment} handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} setMessage={setMessage}  user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/> :
+					<CommentBody 
+						commentType={'parentComment'} 
+						comment={comment} 
+						handleCommentVote={handleCommentVote} 
+						post={post} setPosts={setPosts} 
+						setMessage={setMessage}  
+						user={user} 
+						Link={Link} 
+						commentHidden={commentHidden} 
+						setCommentToHidden={setCommentToHidden}/> :
 					<React.Fragment>
-						<CommentBody commentType={'parentComment'} comment={comment} handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} setMessage={setMessage}  user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/>
+					<CommentBody 
+						commentType={'parentComment'} 
+						comment={comment} 
+						handleCommentVote={handleCommentVote} 
+						post={post} setPosts={setPosts} 
+						setMessage={setMessage}  
+						user={user} 
+						Link={Link} 
+						commentHidden={commentHidden} 
+						setCommentToHidden={setCommentToHidden}/>
 						{renderComments(comment)}
 					</React.Fragment>
 				}
