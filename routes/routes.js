@@ -1274,9 +1274,6 @@ routes.post('/reportComment' , authenticateToken, async (req, res) => {
 
 routes.post('/deletePost', authenticateToken, async (req, res) => {
 	const post = await PostModel.findOne({id: req.body.post.id})
-	if(post.postType !== 'soapBox'){
-		const community = await CommunityModel.findOne({communityNameLower: req.body.post.communityNameLower})
-	}
 	if(post){
 		try{
 			if(post.imageRefs.length > 0){
@@ -1292,16 +1289,25 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 			post.markModified('imageLink')
 			post.markModified('link')
 			post.markModified('postStatus')
-			community.posts.map((p, i) => {
-				if(p.id === post.id){
-					community.posts.splice(i, 1)
-					console.log('yay##################')
+			if(post.postType !== 'soapBox'){
+				const community = await CommunityModel.findOne({communityNameLower: post.communityNameLower})
+				if(community){
+					community.posts.map((p, i) => {
+						if(p.id === post.id){
+							community.posts.splice(i, 1)
+							console.log('yay##################')
+						}
+					})
+					community.markModified('posts')
+					community.save()
+					post.save()
+					.then(() => res.json({success: true}))
 				}
-			})
-			community.markModified('posts')
-			community.save()
-			post.save()
-			.then(() => res.json({success: true}))
+			} else {
+				post.save()
+				.then(() => res.json({success: true}))
+			}
+
 		}catch(err){
 			res.sendStatus(400)
 		}
