@@ -25,9 +25,6 @@ let MessageModel
 let LoginModel
 let TokenModel
 
-app.use(cors())
-app.use(bodyParser.json())
-
 
 conn = mongoose.createConnection(process.env.MONGODB_URI || url, { useNewUrlParser: true , useFindAndModify: false })
 
