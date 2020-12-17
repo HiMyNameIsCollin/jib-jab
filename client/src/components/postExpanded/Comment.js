@@ -7,8 +7,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 
 		const CommentBody = ({commentType, comment}) => {
 			const [commentFormOpen, setCommentFormOpen] = useState(false)
-			const [commentHidden, setCommentToHidden] = useState(false)
-			/*NTS ANOTHER ONE OF THESE IN MAIN COMMENT*/
+
 
 			const CommentInfo = () => {
 			return(
@@ -88,9 +87,6 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 			</React.Fragment> :
 			<React.Fragment>
 				<img src="https://robohash.org/3" alt=""/>
-				<CommentInfo /> 
-				<React.Fragment>
-				<img src="https://robohash.org/3" alt=""/>
 				<CommentInfo/>
 				<CommentContent />
 				<CommentMeta />
@@ -119,7 +115,6 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 						}
 					}}>Reply <i className="far fa-comment"></i>  </span>
 				</div>
-				</React.Fragment>
 			</React.Fragment>
 		}
 			{

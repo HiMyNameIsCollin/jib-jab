@@ -615,8 +615,8 @@ routes.post('/u/submit', authenticateToken, (req, res) => {
 			try{
 				const newPost = new PostModel({
 					postType: 'soapBox',
-					communityName: req.user.userName,
-					communityNameLower: req.user.userName.toLowerCase(),
+					communityName: `/u/${req.user.userName}`,
+					communityNameLower: `/u/${req.user.userName}`.toLowerCase(),
 					comments: [],
 					imageLink: req.body.imageLink ? req.body.imageLink : '',
 					imageRefs: imageRefs,
@@ -1381,7 +1381,7 @@ routes.post('/register', (req, res) => {
 						settings: {
 							feedType: 'list'
 						},
-						createdOn: 'November 20th 2020',
+						createdOn: new Date(),
 						posts: [],
 						soapBox: [],
 						savedPosts: [],

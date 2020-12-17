@@ -41,7 +41,7 @@ const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay,
 					setLoading={setLoading} />
 					{
 						windowWidth > 920 ?
-						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> :
+						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent} user={user} setUser={setUser}/> :
 						null				
 					}
 

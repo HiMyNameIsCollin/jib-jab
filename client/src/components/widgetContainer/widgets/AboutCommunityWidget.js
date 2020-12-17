@@ -7,7 +7,7 @@ const AboutCommunityWidget = ({widgetContent, pageContent}) => {
 			<h4>{widgetContent.header}</h4>
 			<p> {widgetContent.body}</p>
 			<p> <span>{pageContent.followers.length}</span> Subscribers </p>
-			<p><i className="fas fa-pepper-hot"></i>est: {timeDifference(pageContent.createdOn)} </p>
+			<p><i className="fas fa-pepper-hot"></i>Community EST: {timeDifference(pageContent.createdOn)} </p>
 		</div>
 	)
 }

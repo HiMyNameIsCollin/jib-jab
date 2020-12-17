@@ -96,7 +96,7 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 					})
 				}
 				{
-					user.userName !== '' && searchBarType !== 'submitPost' ?
+					user.userName !== '' ?
 					<React.Fragment>
 						<h3> You: </h3>
 						<SearchResult result={{name: user.userName, image: user.configuration.image, type: 'soapBox'}} />

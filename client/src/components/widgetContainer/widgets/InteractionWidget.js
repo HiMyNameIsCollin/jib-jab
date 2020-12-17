@@ -1,4 +1,5 @@
 import React from 'react'
+import timeDifference from '../../../utils/timeDifference'
 
 const InteractionWidget = ({pageContent, setMessage, setOverlay, user, setUser}) => {
 
@@ -67,8 +68,8 @@ const InteractionWidget = ({pageContent, setMessage, setOverlay, user, setUser})
 					<p> Followers </p>
 				</div>
 				<div>
-					<p> User since: </p>
-					<p> {pageContent.createdOn}</p>
+					<p> User EST: </p>
+					<p> {timeDifference(pageContent.createdOn)}</p>
 				</div>
 			</div>
 		</div>
