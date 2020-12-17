@@ -297,6 +297,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	<AboutPage />
 		        </Route>
 	        </Switch>
+
 		</div>
 	)		
   	} else {

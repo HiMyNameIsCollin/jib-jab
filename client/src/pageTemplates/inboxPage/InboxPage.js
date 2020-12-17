@@ -78,7 +78,7 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 			if(formSent === false){
 			setFormSent(true)
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://localhost:3000/api/message', {
+			fetch('https://jibjab.herokuapp.com/api/message', {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -140,7 +140,7 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 
 	useEffect(() => {
   		const accessToken = window.localStorage.getItem('accessToken')
-		fetch(`https://localhost:3000/api/inbox/${inboxType}`, {
+		fetch(`https://jibjab.herokuapp.com/api/inbox/${inboxType}`, {
 			headers: {
 				'authorization' : `Bearer ${accessToken}`,
 				'Content-Type' : 'application/json'
