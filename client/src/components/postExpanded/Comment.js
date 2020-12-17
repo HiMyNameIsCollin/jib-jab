@@ -10,22 +10,22 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 
 
 			const CommentInfo = () => {
-			return(
-				<div className='commentInfo container' onClick={() => setCommentToHidden(!commentHidden)}>
-					<Link className='commentUserName' to={`/u/${comment.commentInfo.userName}`}> 
-					{comment.commentInfo.userName} 
-					</Link> 
-					{
-						commentHidden ?
-						null :
-						<span> {timeDifference(comment.commentInfo.time)} </span>
-					}
-					<span className='commentKarma'>
-						1 karma
-					</span>
-					{
-						commentHidden ?
-						<span className='commentsCounter'>
+				return(
+					<div className='commentInfo container' onClick={() => setCommentToHidden(!commentHidden)}>
+						<Link className='commentUserName' to={`/u/${comment.commentInfo.userName}`}> 
+						{comment.commentInfo.userName} 
+						</Link> 
+						{
+							!commentHidden ?
+							null :
+							<span> {timeDifference(comment.commentInfo.time)} </span>
+						}
+						<span className='commentKarma'>
+							1 karma
+						</span>
+						{
+							!commentHidden ?
+							<span className='commentsCounter'>
 							{
 								comment.comments.length > 0 ?
 								comment.comments.length === 1 ?
@@ -33,48 +33,48 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 								`${comment.comments.length} comments` :
 								'0 comments'
 							}
-						</span> :
+							</span> :
 						null
+						}
+					</div>
+				)
+			}
+
+			const CommentContent = () => {
+				return(
+					<div className='commentContent container'>
+						<p> {comment.commentContent} </p>
+					</div>
+				)
+			}
+
+			const CommentMeta = () => {
+				return(
+					<div className='commentMeta container'>
+					{
+						comment.karma.upvotes.includes(user.userName) ?
+						<i 
+						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
+						className="fas fa-arrow-circle-up"
+						style={{color: 'blue'}}></i> :
+						<i 
+						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
+						className="fas fa-arrow-circle-up"></i>
 					}
-				</div>
-			)
-		}
-
-		const CommentContent = () => {
-			return(
-				<div className='commentContent container'>
-					<p> {comment.commentContent} </p>
-				</div>
-			)
-		}
-
-		const CommentMeta = () => {
-			return(
-				<div className='commentMeta container'>
-				{
-					comment.karma.upvotes.includes(user.userName) ?
-					<i 
-					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-					className="fas fa-arrow-circle-up"
-					style={{color: 'blue'}}></i> :
-					<i 
-					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-					className="fas fa-arrow-circle-up"></i>
-				}
-					<span>{comment.karma.upvotes.length - comment.karma.downvotes.length} </span>
-				{
-					comment.karma.downvotes.includes(user.userName) ?
-					<i 
-					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-					className="fas fa-arrow-circle-down"
-					style={{color: 'red'}}></i> :
-					<i 
-					onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-					className="fas fa-arrow-circle-down"></i> 
-				}
-				</div>
-			)
-		}
+						<span>{comment.karma.upvotes.length - comment.karma.downvotes.length} </span>
+					{
+						comment.karma.downvotes.includes(user.userName) ?
+						<i 
+						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
+						className="fas fa-arrow-circle-down"
+						style={{color: 'red'}}></i> :
+						<i 
+						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
+						className="fas fa-arrow-circle-down"></i> 
+					}
+					</div>
+				)
+			}
 
 
 	return(
@@ -84,6 +84,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 			<React.Fragment>
 				<img src="https://robohash.org/3" alt=""/>
 				<CommentInfo /> 
+				<CommentMeta />
 			</React.Fragment> :
 			<React.Fragment>
 				<img src="https://robohash.org/3" alt=""/>
