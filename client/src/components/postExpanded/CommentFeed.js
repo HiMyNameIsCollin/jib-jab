@@ -112,6 +112,7 @@ const CommentFeed = ({pageContent, location, post, user, Link, handleCommentVote
 					<Comment 
 					post={post} 
 					comment={c} 
+					location={location}
 					commentType='parentComment' 
 					handleCommentVote={handleCommentVote}
 					user={user}

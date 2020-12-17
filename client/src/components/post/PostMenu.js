@@ -91,7 +91,7 @@ const PostMenu = ({post, Link, user, setReportOverlayIsOpen, pageContent, setMes
 				<span> Share </span>
 			</div>
 			<div>
-				<Link to={`/u/${post.user}`} className='link'>
+				<Link to={`/u/${post.userName}`} className='link'>
 					<i class="fa fa-users"></i>
 					<span> {post.userName}'s profile </span>
 				</Link>

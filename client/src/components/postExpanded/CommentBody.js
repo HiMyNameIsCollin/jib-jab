@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import CommentForm from './CommentForm'
 import timeDifference from '../../utils/timeDifference'
 
-const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, Link, user, setUser, handleCommentVote, post, setMessage, setPosts}) => {
+const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, Link, user, setUser, handleCommentVote, post, setMessage, setPosts, location}) => {
 	const [commentFormOpen, setCommentFormOpen] = useState(false)
 	const [commentersImage, setCommentersImage] = useState(undefined)
 
@@ -86,7 +86,7 @@ return(
 	{
 		commentHidden ?
 		<React.Fragment>
-			<img src="https://robohash.org/3" alt=""/>
+			<img src={commentersImage} alt=""/>
 			<CommentInfo /> 
 		</React.Fragment> :
 		<React.Fragment>
@@ -124,6 +124,7 @@ return(
 		{
 			commentFormOpen ? 
 			<CommentForm 
+			location={location}
 			post={post} 
 			setPosts={setPosts}
 			comment={comment} 

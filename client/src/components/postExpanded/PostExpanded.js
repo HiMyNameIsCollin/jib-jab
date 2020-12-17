@@ -256,7 +256,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 				history.push('/')
 			})
 	}, [location, Link])
-	
+
 	if(posts !== undefined){
 		return(
 			<div className='postExpanded'>
@@ -289,7 +289,8 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 						<img src="https://robohash.org/1" alt=""/>
 						<input type='text' placeholder='Submit a comment' onClick={() =>setMainCommentInFocus(true) }/>
 					</div> :
-					<CommentForm 
+					<CommentForm
+					location={location} 
 					func={setMainCommentInFocus} 
 					value={mainCommentInFocus} 
 					post={posts[0]}

@@ -55,16 +55,18 @@ const Login = ({setOverlay, setLoading, user, setUser}) => {
 			onClick={() => setOverlay(undefined)}
 			style={{position: 'absolute', top: '1em', right: '1em', fontSize: '1.5em'}}> X </span>
 			<form onSubmit={handleSubmit(onSubmit)} className={formSent ? 'formDeactivated' : null}>
-			  {errors.userName && errors.userName.type === 'required' && <p> Username field required </p> }
-			  {errors.userName && errors.userName.type === 'pattern' && <p> Username must contain between 3-20 alpha-numeric characters, dashes(-) and underscores(_) permitted </p> }
-			  {errors.userName && errors.userName.type === 'minLength' && <p> Username must contain between 3-20 alpha-numeric characters, dashes(-) and underscores(_) permitted </p> }
-		      <input type="text" placeholder="Username" name="userName" ref={register({required: true, minLength: 3, maxLength: 20, pattern: /^[a-z0-9_-]{3,20}$/i})} />
-			  {errors.password && errors.password.type === 'required' && <p> Password field required  </p>}
-			  {errors.password && errors.password.type === 'minLength' && <p> Password must be at least 8 characters  </p>}
-		      <input type="password" placeholder="Password" name="password" ref={register({required: true, minLength: 8})} />
-		      {error ? <p> Connection error </p> : null}
-		      {incorrect ? <p> Incorrect credidentals </p> : null}
-		      <button> Submit </button> 
+				<label htmlFor="userName">Your username: </label>
+				{errors.userName && errors.userName.type === 'required' && <p> Username field required </p> }
+				{errors.userName && errors.userName.type === 'pattern' && <p> Username must contain between 3-20 alpha-numeric characters, dashes(-) and underscores(_) permitted </p> }
+				{errors.userName && errors.userName.type === 'minLength' && <p> Username must contain between 3-20 alpha-numeric characters, dashes(-) and underscores(_) permitted </p> }
+				<input type="text" placeholder="Username" name="userName" ref={register({required: true, minLength: 3, maxLength: 20, pattern: /^[a-z0-9_-]{3,20}$/i})} />
+				<label htmlFor="password">Password:</label>
+				{errors.password && errors.password.type === 'required' && <p> Password field required  </p>}
+				{errors.password && errors.password.type === 'minLength' && <p> Password must be at least 8 characters  </p>}
+				<input type="password" placeholder="Password" name="password" ref={register({required: true, minLength: 8})} />
+				{error ? <p> Connection error </p> : null}
+				{incorrect ? <p> Incorrect credidentals </p> : null}
+				<button> Submit </button> 
 		    </form>
 		</div>
 	)

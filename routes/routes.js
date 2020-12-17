@@ -122,12 +122,12 @@ function sortPosts(posts, sortType, sortTypeCont){
 	let newSortOrder = []
 	if(sortType === 'spicy' || sortType === 'communities'){
 		posts.forEach((p, i) => {
-			if(p.postStatus === 'active'){
+
 				newSortOrder.push({
 					id: p.id,
 					score: p.karma.upvotes.length - p.karma.downvotes.length - timeDifference(p.time, 'minutes')/60 ,
 				})				
-			}
+
 		
 		})
 		return sortBy(newSortOrder, 'score')
@@ -397,7 +397,6 @@ routes.get('/c/:communityName/:postID/:commentID', (req, res) => {
 
 /*Catch all fetching posts*/
 routes.post('/p/', (req, res) => {
-	console.log(123)
 	if(req.body.posts.length > 1){
 		PostModel.find({
 			id: { $in: 
@@ -1275,6 +1274,9 @@ routes.post('/reportComment' , authenticateToken, async (req, res) => {
 
 routes.post('/deletePost', authenticateToken, async (req, res) => {
 	const post = await PostModel.findOne({id: req.body.post.id})
+	if(post.postType !== 'soapBox'){
+		const community = await CommunityModel.findOne({communityNameLower: req.body.post.communityNameLower})
+	}
 	if(post){
 		try{
 			if(post.imageRefs.length > 0){
@@ -1290,6 +1292,14 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 			post.markModified('imageLink')
 			post.markModified('link')
 			post.markModified('postStatus')
+			community.posts.map((p, i) => {
+				if(p.id === post.id){
+					community.posts.splice(i, 1)
+					console.log('yay##################')
+				}
+			})
+			community.markModified('posts')
+			community.save()
 			post.save()
 			.then(() => res.json({success: true}))
 		}catch(err){

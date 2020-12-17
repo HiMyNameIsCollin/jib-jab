@@ -44,16 +44,18 @@ $gloomyBlue: #D0D2D4
 	overflow: auto
 	width: calc(100% - 1em)
 	label
-		padding: 1em 0
+		padding: .5em 0
 	input, textarea
 		border: solid 1px black
 		border-radius: 5px
-		margin-bottom: 2em
+		margin-bottom: 1em
 		padding: .5em
 	h3
 		margin-bottom: .5em
+		text-align: center
 	h4
 		margin-bottom: 1em
+		text-align: center
 		span
 			@include button
 			margin: 0 .5em
@@ -68,7 +70,9 @@ $gloomyBlue: #D0D2D4
 		flex-direction: column
 		justify-content: space-around
 		padding: 1em 0
+		margin: auto
 		position: relative
+		width: 100%
 		select
 			padding: .5em 
 
@@ -133,6 +137,10 @@ $gloomyBlue: #D0D2D4
 		grid-column: 2/12
 
 @media only screen and (min-width: 720px)
+	.login, .register, .submitMessage, .submitPost , .editProfile, .manageCommunity, .reportPost
+		form
+			width: 50%
+
 	.postSelectionMenu
 		span:nth-of-type(3)
 			width: 33%
@@ -141,3 +149,7 @@ $gloomyBlue: #D0D2D4
 @media only screen and (min-width: 920px)
 	.login, .register, .submitMessage, .submitPost , .editProfile, .manageCommunity, .reportPost
 		grid-column: 3/11
+
+@media only screen and (min-width: 1200px)
+	.login, .register, .submitMessage, .submitPost , .editProfile, .manageCommunity, .reportPost
+		grid-column: 4/10

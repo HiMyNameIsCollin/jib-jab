@@ -1,4 +1,5 @@
 import React, {useState, useEffect } from 'react'
+import timeDifference from '../../utils/timeDifference'
 import './_intro.sass'
 
 
@@ -161,8 +162,8 @@ const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, locatio
 							<p> Followers </p>
 						</div>
 						<div>
-							<p> User since: </p>
-							<p> {pageContent.createdOn}</p>
+							<p> User EST: </p>
+							<p> {timeDifference(pageContent.createdOn)}</p>
 						</div>
 					</div>
 					</React.Fragment>

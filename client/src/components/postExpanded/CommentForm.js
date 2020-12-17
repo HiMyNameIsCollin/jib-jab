@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
-const CommentForm = ({func, value, post, setPosts, comment, setMessage}) => {
+const CommentForm = ({func, value, post, setPosts, comment, setMessage, location}) => {
 	const [formSent, setFormSent] = useState(false)
 	const { register, handleSubmit, errors} = useForm()
 	const [commentId, setCommentId] = useState(comment !== undefined ? comment.commentInfo.id : 'parent')
@@ -24,7 +24,28 @@ const CommentForm = ({func, value, post, setPosts, comment, setMessage}) => {
 			})
 			.then(response => response.json())
 			.then(response => {
-				setPosts(response)
+				let path = location.pathname.split('/')
+				if(path.length < 5){
+					setPosts(response)
+				} else {
+					let comment 
+					function findComment(comments, id){
+						comments.map((m, i) => {
+							if(m.commentInfo.id === id){
+								comment = [m]
+								return
+							} else {
+								if(m.comments.length > 0){
+									findComment(m.comments, id)
+								}
+							}
+						})
+						return
+					}
+					findComment(response[0].comments, path[4])
+					response[0].comments = comment
+					setPosts(response)
+				}
 				setMessage('Thank you for your submission')
 				setFormSent(false)
 				func(!value)
