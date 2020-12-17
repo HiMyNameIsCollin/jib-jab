@@ -1,137 +1,11 @@
 import React, { useState } from 'react'
-import CommentForm from './CommentForm'
-import timeDifference from '../../utils/timeDifference'
+import CommentBody from './CommentBody'
 
 
-const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Link, setMessage}) => {
 
-		const CommentBody = ({commentType, comment}) => {
-			const [commentFormOpen, setCommentFormOpen] = useState(false)
+const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMessage}) => {
 
-
-			const CommentInfo = () => {
-				return(
-					<div className='commentInfo container' onClick={() => setCommentToHidden(!commentHidden)}>
-						<Link className='commentUserName' to={`/u/${comment.commentInfo.userName}`}> 
-						{comment.commentInfo.userName} 
-						</Link> 
-						{
-							!commentHidden ?
-							null :
-							<span> {timeDifference(comment.commentInfo.time)} </span>
-						}
-						<span className='commentKarma'>
-							1 karma
-						</span>
-						{
-							!commentHidden ?
-							<span className='commentsCounter'>
-							{
-								comment.comments.length > 0 ?
-								comment.comments.length === 1 ?
-								'1 comment' :
-								`${comment.comments.length} comments` :
-								'0 comments'
-							}
-							</span> :
-						null
-						}
-					</div>
-				)
-			}
-
-			const CommentContent = () => {
-				return(
-					<div className='commentContent container'>
-						<p> {comment.commentContent} </p>
-					</div>
-				)
-			}
-
-			const CommentMeta = () => {
-				return(
-					<div className='commentMeta container'>
-					{
-						comment.karma.upvotes.includes(user.userName) ?
-						<i 
-						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-						className="fas fa-arrow-circle-up"
-						style={{color: 'blue'}}></i> :
-						<i 
-						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
-						className="fas fa-arrow-circle-up"></i>
-					}
-						<span>{comment.karma.upvotes.length - comment.karma.downvotes.length} </span>
-					{
-						comment.karma.downvotes.includes(user.userName) ?
-						<i 
-						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-						className="fas fa-arrow-circle-down"
-						style={{color: 'red'}}></i> :
-						<i 
-						onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
-						className="fas fa-arrow-circle-down"></i> 
-					}
-					</div>
-				)
-			}
-
-
-	return(
-		<div className={ commentType === 'parentComment' ? 'parentComment comment' : 'comment'}>
-		{
-			commentHidden ?
-			<React.Fragment>
-				<img src="https://robohash.org/3" alt=""/>
-				<CommentInfo /> 
-				<CommentMeta />
-			</React.Fragment> :
-			<React.Fragment>
-				<img src="https://robohash.org/3" alt=""/>
-				<CommentInfo/>
-				<CommentContent />
-				<CommentMeta />
-				<div className='container commentReply'>
-					<span 
-						className='hideCommentButton'
-						onClick={() => setCommentToHidden(!commentHidden)}>
-						Hide
-					</span>
-					<span className='commentsCounter'>
-						{
-							comment.comments.length > 0 ?
-							comment.comments.length === 1 ?
-							'1 comment' :
-							`${comment.comments.length} comments` :
-							'0 comments'
-						}
-					</span>
-					<span 
-						className='container replyButton'
-						onClick={()=> {
-						if(user.userName !== ''){
-							setCommentFormOpen(!commentFormOpen)	
-						} else {
-							setError('Must be logged in to comment')
-						}
-					}}>Reply <i className="far fa-comment"></i>  </span>
-				</div>
-			</React.Fragment>
-		}
-			{
-				commentFormOpen ? 
-				<CommentForm 
-				post={post} 
-				setPosts={setPosts}
-				comment={comment} 
-				func={setCommentFormOpen} 
-				value={commentFormOpen}
-				setMessage={setMessage} /> :
-				null
-			}
-		</div>
-		)
-	}
+	const [commentHidden, setCommentToHidden] = useState(false)
 
 	function renderComments(comment, n) {
 		if(n === undefined){
@@ -145,11 +19,11 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 				{
 					comment.comments.map((c, i) => {
 						if(c.comments.length === 0) {
-							return <CommentBody comment={c} key={i}/>
+							return <CommentBody handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} comment={c} key={i} setMessage={setMessage} user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/>
 						} else {
 							return(
 								<React.Fragment> 
-									<CommentBody comment={c} key={i}/>
+									<CommentBody handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} comment={c} key={i} setMessage={setMessage} user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/>
 									{renderComments(c, n)}
 								</React.Fragment>
 							)
@@ -163,19 +37,19 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 		}
 	}
 
-	const [commentHidden, setCommentToHidden] = useState(false)
+
 
 	return(
 		<React.Fragment>
 			{
 				comment.comments.length === 0 ?
-				<CommentBody commentType={'parentComment'} comment={comment} /> :
+				<CommentBody commentType={'parentComment'} comment={comment} handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} setMessage={setMessage}  user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/> :
 				<React.Fragment>
 				{
 					commentHidden ? 
-					<CommentBody commentType={'parentComment'} comment={comment} /> :
+					<CommentBody commentType={'parentComment'} comment={comment} handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} setMessage={setMessage}  user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/> :
 					<React.Fragment>
-						<CommentBody commentType={'parentComment'} comment={comment} />
+						<CommentBody commentType={'parentComment'} comment={comment} handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} setMessage={setMessage}  user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/>
 						{renderComments(comment)}
 					</React.Fragment>
 				}
