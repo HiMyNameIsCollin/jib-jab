@@ -148,7 +148,7 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, setError, Li
 						} else {
 							return(
 								<React.Fragment> 
-									<CommentBody comment={c} />
+									<CommentBody comment={c} key={i}/>
 									{renderComments(c, n)}
 								</React.Fragment>
 							)
