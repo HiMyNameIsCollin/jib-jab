@@ -623,8 +623,8 @@ routes.post('/u/submit', authenticateToken, (req, res) => {
 				const newPost = new PostModel({
 					postType: 'soapBox',
 					postStatus: 'active',
-					communityName: `/u/${req.user.userName}`,
-					communityNameLower: `/u/${req.user.userName}`.toLowerCase(),
+					communityName: req.user.userName,
+					communityNameLower: req.user.userName.toLowerCase(),
 					comments: [],
 					imageLink: req.body.imageLink ? req.body.imageLink : '',
 					imageRefs: imageRefs,
@@ -1274,7 +1274,8 @@ routes.post('/reportComment' , authenticateToken, async (req, res) => {
 
 routes.post('/deletePost', authenticateToken, async (req, res) => {
 	const post = await PostModel.findOne({id: req.body.post.id})
-	if(post){
+	const user = await UserModel.findOne({userNameLower: req.body.post.communityNameLower})
+	if(post, user){
 		try{
 			if(post.imageRefs.length > 0){
 				console.log('need to remove images')
@@ -1293,17 +1294,32 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 				const community = await CommunityModel.findOne({communityNameLower: post.communityNameLower})
 				if(community){
 					community.posts.map((p, i) => {
-						if(p.id === post.id){
+						if(p === post.id){
 							community.posts.splice(i, 1)
 							console.log('yay##################')
 						}
 					})
+					user.posts.map((p, i) => {
+						community.posts.splice(i, 1)
+					})
+					user.markModified('posts')
 					community.markModified('posts')
+					user.save()
 					community.save()
 					post.save()
 					.then(() => res.json({success: true}))
+				} else {
+					res.sendStatus(400)
 				}
 			} else {
+				user.soapBox.map((p, i) => {
+					if(p.id === post.id){
+						user.soapBox.splice(i, 1)
+						console.log('#######YAY########')
+					}
+				})
+				user.markModified('soapBox')
+				user.save()
 				post.save()
 				.then(() => res.json({success: true}))
 			}
@@ -1319,6 +1335,7 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 routes.post('/mod/deletePost', authenticateToken, async (req, res) => {
 	const post = await PostModel.findOne({id: req.body.post.id})
 	const community = await CommunityModel.findOne({communityNameLower: req.body.post.communityNameLower})
+	const user = await UserModel.findOne({userNameLower: req.body.post.communityNameLower})
 	if(post, community){
 		try{
 			community.modLogs.push({
@@ -1329,6 +1346,13 @@ routes.post('/mod/deletePost', authenticateToken, async (req, res) => {
 				numberOfReports: post.reports.length,
 				timeOfRemoval: new Date()
 			})
+			community.posts.map((p, i) => {
+				if(p === post.id){
+					community.posts.splice(i, 1)
+					console.log('##################yay')
+				}
+			})
+			community.markModified('posts')
 			community.markModified('modLogs')
 			if(post.imageRefs.length > 0){
 				console.log('need to remove images')
