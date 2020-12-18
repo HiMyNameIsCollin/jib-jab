@@ -1274,7 +1274,7 @@ routes.post('/reportComment' , authenticateToken, async (req, res) => {
 
 routes.post('/deletePost', authenticateToken, async (req, res) => {
 	const post = await PostModel.findOne({id: req.body.post.id})
-	const user = await UserModel.findOne({userNameLower: req.user.userName})
+	const user = await UserModel.findOne({userName: req.user.userName})
 	if(post, user){
 		try{
 			if(post.imageRefs.length > 0){
