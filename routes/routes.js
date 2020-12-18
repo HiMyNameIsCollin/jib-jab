@@ -1300,7 +1300,9 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 						}
 					})
 					user.posts.map((p, i) => {
-						community.posts.splice(i, 1)
+						if(p === post.id){
+							user.posts.splice(i, 1)	
+						}
 					})
 					user.markModified('posts')
 					community.markModified('posts')
