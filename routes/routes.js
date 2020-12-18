@@ -1292,6 +1292,7 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 			post.markModified('postStatus')
 			if(post.postType !== 'soapBox'){
 				const community = await CommunityModel.findOne({communityNameLower: post.communityNameLower})
+				console.log(post.communityNameLower)
 				if(community){
 					console.log(community)
 					community.posts.map((p, i) => {
@@ -1338,7 +1339,6 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 routes.post('/mod/deletePost', authenticateToken, async (req, res) => {
 	const post = await PostModel.findOne({id: req.body.post.id})
 	const community = await CommunityModel.findOne({communityNameLower: req.body.post.communityNameLower})
-	const user = await UserModel.findOne({userNameLower: req.body.post.communityNameLower})
 	if(post, community){
 		try{
 			community.modLogs.push({
