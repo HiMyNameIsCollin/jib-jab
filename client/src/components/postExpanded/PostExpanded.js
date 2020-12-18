@@ -48,7 +48,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 			})
 			.then(response => response.json())
 			.then(response => {
-				if(posts[0].communityName === `/u/${posts[0].userName}`){
+				if(posts[0].communityName === posts[0].userName){
 					history.push(`/u/${posts[0].userName}`)
 				} else {
 					history.push(`/c/${posts[0].communityName}`)
@@ -76,7 +76,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 			.then(response => response.json())
 			.then(response => {
 				setLoading(false)
-				if(posts[0].communityName === `/u/${posts[0].userName}`){
+				if(posts[0].communityName === posts[0].userName){
 					history.push(`/u/${posts[0].userName}`)
 				} else {
 					history.push(`/c/${posts[0].communityName}`)
@@ -222,7 +222,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 			})
 			.then(response => response.json())
 			.then(response => {
-				if(response[0].communityName === pageContent.communityName){
+				if(response[0].communityName === pageContent.communityName || response[0].communityName === pageContent.userName ){
 					let path = location.pathname.split('/')
 					if(path.length < 5){
 						setPosts(response)

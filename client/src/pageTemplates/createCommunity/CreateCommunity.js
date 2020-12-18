@@ -99,10 +99,10 @@ const CreateCommunity = ({user, setMessage, history}) => {
 			})
 			.then(response => response.json())
 			.then(response => {
-				if(response.communityArray.length === 0){
+				if(response.communityArray.length === 0 && response.userArray.length === 0){
 					setCommunityCreationPageOne(pageOne)
 				} else{
-					setMessage('There is already a community with that name')
+					setMessage('That name is already in use')
 				}
 			})
 			.catch(err => {
