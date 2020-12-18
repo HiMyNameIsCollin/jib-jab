@@ -1313,7 +1313,7 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 				}
 			} else {
 				user.soapBox.map((p, i) => {
-					if(p.id === post.id){
+					if(p === post.id){
 						user.soapBox.splice(i, 1)
 						console.log('#######YAY########')
 					}
