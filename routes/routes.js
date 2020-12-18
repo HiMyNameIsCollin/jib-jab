@@ -1293,6 +1293,7 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 			if(post.postType !== 'soapBox'){
 				const community = await CommunityModel.findOne({communityNameLower: post.communityNameLower})
 				if(community){
+					console.log(community)
 					community.posts.map((p, i) => {
 						if(p === post.id){
 							community.posts.splice(i, 1)
