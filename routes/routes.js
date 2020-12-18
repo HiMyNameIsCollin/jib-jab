@@ -1274,7 +1274,7 @@ routes.post('/reportComment' , authenticateToken, async (req, res) => {
 
 routes.post('/deletePost', authenticateToken, async (req, res) => {
 	const post = await PostModel.findOne({id: req.body.post.id})
-	const user = await UserModel.findOne({userNameLower: req.body.post.communityNameLower})
+	const user = await UserModel.findOne({userNameLower: req.user.userName})
 	if(post, user){
 		try{
 			if(post.imageRefs.length > 0){
@@ -1292,9 +1292,7 @@ routes.post('/deletePost', authenticateToken, async (req, res) => {
 			post.markModified('postStatus')
 			if(post.postType !== 'soapBox'){
 				const community = await CommunityModel.findOne({communityNameLower: post.communityNameLower})
-				console.log(post.communityNameLower)
 				if(community){
-					console.log(community)
 					community.posts.map((p, i) => {
 						if(p === post.id){
 							community.posts.splice(i, 1)
