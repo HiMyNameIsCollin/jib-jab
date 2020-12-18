@@ -326,7 +326,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 							<h5> About community widget</h5>
 							<label htmlFor="aboutCommunityActive">About community widget active: </label>
-							<select name='aboutCommunityActive' ref={register({required: false})}>
+							<select name='aboutCommunityActive' ref={register({required: true})}>
 							{
 								community.configuration.widgets.aboutWidget.active === 'true' ?
 								<option selected value={true}>Active</option> :
@@ -347,7 +347,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 							<h5> Community list widget</h5>
 							<label htmlFor="communityListWidgetActive"> Community list widget active: </label>
-							<select name='communityListWidgetActive' ref={register({required: false})}>
+							<select name='communityListWidgetActive' ref={register({required: true})}>
 							{
 								community.configuration.widgets.communityListWidget.active === 'true' ?
 								<option selected value={true} >Active</option> :
@@ -383,7 +383,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 							<h5> Announcment widget</h5>
 							<label htmlFor="announcementWidgetActive"> Announcement widget active: </label>
-							<select name='announcementWidgetActive' ref={register({required: false})}>
+							<select name='announcementWidgetActive' ref={register({required: true})}>
 							{
 								community.configuration.widgets.announcementWidget.active === 'true' ?
 								<option selected value={true}>Active</option> :
@@ -404,7 +404,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 							<h5> Community rules widget</h5>
 							<label htmlFor="communityRulesActive"> Community rules widget active: </label>
-							<select name='communityRulesActive' ref={register({required: false})}>
+							<select name='communityRulesActive' ref={register({required: true})}>
 							{
 								community.configuration.widgets.rulesWidget.active === 'true' ?
 								<option selected value={true}>Active</option> :
@@ -420,7 +420,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 							<label htmlFor="communityRulesWidgetHeader">Community rules header: </label>
 							<input type='text' name='communityRulesWidgetHeader' placeholder={community.configuration.widgets.rulesWidget.header} ref={register({required: false})} />
 							<label htmlFor="numOfRules">How many rules? </label>
-							<select name='numOfRules' ref={register} defaultValue={ruleHandler} onChange={(e) => setRuleHandler(e.target.value)}>
+							<select name='numOfRules' ref={register({required: true})} defaultValue={ruleHandler} onChange={(e) => setRuleHandler(e.target.value)}>
 							{
 								[0,1,2,3,4,5,6,7,8,9,10].map(i => {
 								return <option key={i} value={i}> {i} </option>
@@ -435,13 +435,13 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 										type="text" 
 										name={`communityRule[${i}]`} 
 										placeholder={community.configuration.widgets.rulesWidget.rules[i] ? community.configuration.widgets.rulesWidget.rules[i].header : null} 
-										ref={register({required: false})}/>
+										ref={register({required: true})}/>
 										<label htmlFor={`communityRuleDefinition[${i}]`}>Rule definition</label>
 										<input 
 										type="text" 
 										name={`communityRuleDefinition[${i}]`} 
 										placeholder={community.configuration.widgets.rulesWidget.rules[i] ? community.configuration.widgets.rulesWidget.rules[i].body : null} 
-										ref={register({required: false})}/>
+										ref={register({required: true})}/>
 									 </div>
 								))
 							}
@@ -450,7 +450,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 							<h5> Community links widget</h5>
 							<label htmlFor="communityLinksActive"> Community links widget active: </label>
-							<select name='linkListWidgetActive' ref={register({required: false})}>
+							<select name='linkListWidgetActive' ref={register({required: true})}>
 							{
 								community.configuration.widgets.linkListWidget.active === 'true' ?
 								<option selected value={true}>Active</option> :
@@ -465,7 +465,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 							<label htmlFor="linkListWidgetHeader">Community Links header: </label>
 							<input type='text' name='linkListWidgetHeader' placeholder={`eg. Links pertaining to ${community.communityName}`} ref={register} />
 							<label htmlFor="numOfLinks">How many links? </label>
-							<select name='numOfLinks' ref={register} defaultValue={linkHandler}>
+							<select name='numOfLinks' ref={register({required: true})} defaultValue={linkHandler}>
 							{
 								[0,1,2,3,4,5,6,7,8,9,10].map(i => {
 								return <option key={i} value={i}> {i} </option>
@@ -480,13 +480,13 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 										type="text" 
 										name={`communityLinkUrl[${i}]`} 
 										placeholder={community.configuration.widgets.linkListWidget.links[i] ? community.configuration.widgets.linkListWidget.links[i].link : null} 
-										ref={register({required: false})}/>
+										ref={register({required: true})}/>
 										<label htmlFor={`communityLink[${i}]`}> Link Descriptor: </label>
 										<input 
 										type="text" 
 										name={`communityLink[${i}]`} 
 										placeholder={community.configuration.widgets.linkListWidget.links[i] ? community.configuration.widgets.linkListWidget.links[i].name : null} 
-										ref={register({required: false})}/>
+										ref={register({required: true})}/>
 									 </div>
 								))
 							}

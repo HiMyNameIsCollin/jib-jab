@@ -135,7 +135,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 			user={user} 
 			setUser={setUser} 
 			windowWidth={windowWidth}
-			setOverlay={setOverlay}/>
+			setOverlay={setOverlay}
+			history={history}/>
 			{
 				loading ?
 				<Loading /> :

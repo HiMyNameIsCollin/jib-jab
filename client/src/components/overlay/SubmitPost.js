@@ -6,7 +6,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 
 	const [postType, setPostType] = useState('text')
 	const [formSent, setFormSent] = useState(false)
-	const { register, handleSubmit, errors} = useForm()
+	const { register, handleSubmit, errors, watch} = useForm()
 	const [targetCommunity, setTargetCommunity] = useState(undefined)
 
 	useEffect(() => {
@@ -177,10 +177,12 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 				<form 
 					onSubmit={handleSubmit(onSubmit)} 
 					className={formSent ? 'formDeactivated' : null} >
-					{errors.postTitle && errors.postTitle.type === 'required' && <p> Posts need titles! </p>}
-					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p> Whoa whoa, why not make that title a bit more concise? </p>}
+					<label htmlFor="postTitle"> Post title:</label>
+					{errors.postTitle && errors.postTitle.type === 'required' && <p className='formError' > Posts need titles! </p>}
+					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p className='formError' > Whoa whoa, why not make that title a bit more concise? </p>}
 					<input type="text" placeholder="Title your post" name="postTitle" ref={register({required: true, maxLength: 160})} />
-					{errors.postText && errors.postText.type === 'maxLength' && <p> Cool story bro, lets summarize just a bit. </p>}
+					<label htmlFor="postText">Post text:</label>
+					{errors.postText && errors.postText.type === 'maxLength' && <p className='formError' > Cool story bro, lets summarize just a bit. </p>}
 					<textarea rows='4' placeholder="What's going on?" name="postText" ref={register({required: false, maxLength: 2000})} />
 					<button> Submit </button>
 				</form> :
@@ -188,10 +190,12 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 				<form 
 					onSubmit={handleSubmit(onSubmit)} 
 					className={formSent ? 'formDeactivated' : null} >
-					{errors.postTitle && errors.postTitle.type === 'required' && <p> Posts need titles! </p>}
-					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p> Whoa whoa, why not make that title a bit more concise? </p>}
+					<label htmlFor="postTitle"> Post title:</label>
+					{errors.postTitle && errors.postTitle.type === 'required' && <p className='formError' > Posts need titles! </p>}
+					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p className='formError' > Whoa whoa, why not make that title a bit more concise? </p>}
 					<input type="text" placeholder="Title your post" name="postTitle" ref={register({required: true, maxLength: 160})} />
-					{errors.mediaLink && errors.mediaLink.type === 'required' && <p> Link required </p>}
+					{errors.mediaLink && errors.mediaLink.type === 'required' && <p className='formError' > Link required </p>}
+					<label htmlFor="link">Link to:</label>
 					<input type="text" placeholder="Link required" name='link' ref={register({required: true})} />
 					<button> Submit </button>
 				</form> : 
@@ -202,11 +206,17 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 					className={formSent ? 'formDeactivated' : null} 
 					post='post' 
 					encType="multipart/form-data">
-					{errors.postTitle && errors.postTitle.type === 'required' && <p> Posts need titles! </p>}
-					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p> Whoa whoa, why not make that title a bit more concise? </p>}
+					{errors.postTitle && errors.postTitle.type === 'required' && <p className='formError' > Posts need titles! </p>}
+					{errors.postTitle && errors.postTitle.type === 'maxLength' && <p className='formError' > Whoa whoa, why not make that title a bit more concise? </p>}
+					<label htmlFor="postTitle"> Post title:</label>
 					<input type="text" placeholder="Title your post" name="postTitle" ref={register({required: true, maxLength: 160})} />
-					<input name='myImage' type='file' accept="image/*" multiple />
-					<input type="text" placeholder="Upload image or share url here" name='imageLink' />
+					<label htmlFor="myImage">Upload a .JPEG or .PNG image:</label>
+					{errors.myImage && errors.myImage.type === 'required' && <p className='formError' > Uploaded image, or link to an image required </p>}
+					<input name='myImage' type='file' accept="image/png, image/jpeg" ref={register({required: watch('imageLink') === '' ? true : false})} />
+					<label htmlFor="imageLink"> Link to image: </label>
+					<input type="text" placeholder="Upload image or share url here" name='imageLink' ref={register}/>
+					{errors.postText && errors.postText.type === 'maxLength' && <p> Cool story bro, lets summarize just a bit. </p>}
+					<label htmlFor="postText">Post text:</label>
 					<textarea rows='4' placeholder="What's going on?" name="postText" ref={register({required: false, maxLength: 2000})} />
 					<button> Submit </button>
 				</form> : 
