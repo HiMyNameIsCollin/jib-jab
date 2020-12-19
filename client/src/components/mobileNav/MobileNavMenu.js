@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 const initialUser = {
 	userName: '',
-	communities: ['Announcements'],
+	communities: ['Announcements', 'General'],
 	karma: 1,
 	followers: [],
 	following: [],

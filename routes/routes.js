@@ -348,10 +348,6 @@ routes.post('/', async (req, res) => {
 
 
 
-
-
-
-
 routes.get('/p/img/:filename', async (req, res) => {
 	gfs.files.findOne({filename: req.params.filename})
 	.then(file => {
@@ -699,10 +695,16 @@ routes.post('/comment/submit' , authenticateToken, async (req, res) => {
 				post.markModified('comments')
 				post.save()
 				.then(result => {
+					let link 
+					if(result.postType==='community'){
+						link = `/c/${post.communityNameLower}/${post.id}/${commentId}`
+					} else{
+						link = `/u/${post.communityNameLower}/${post.id}/${commentId}`
+					}
 					const newMessage = new MessageModel({
 						type: 'reply',
 						subject: `${userName} replied to you!`,
-						body: `Ill figure out how to link to that soon enough. `, 
+						body: `View the conversation at: jibjab.herokuapp.com/${link} `, 
 						sender: 'Jibbers the jabber',
 						recipient: targetUser.userName,
 						time: new Date() ,
@@ -1425,7 +1427,7 @@ routes.post('/register', (req, res) => {
 					const user = new UserModel({
 						userName,
 						userNameLower: userName.toLowerCase(),
-						communities: ['Announcements'],
+						communities: ['Announcements', 'General'],
 						karma: 1,
 						followers: [],
 						following: ['Collin'],

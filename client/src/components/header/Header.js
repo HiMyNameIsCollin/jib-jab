@@ -4,7 +4,7 @@ import './_header.sass'
 
 const initialUser = {
 	userName: '',
-	communities: ['Announcements'],
+	communities: ['Announcements', 'General'],
 	karma: 1,
 	followers: [],
 	following: [],

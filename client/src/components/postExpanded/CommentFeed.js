@@ -94,6 +94,10 @@ const CommentFeed = ({pageContent, location, post, user, Link, handleCommentVote
 	const [commentSort, setCommentSort] = useState(initialSort)
 	const [commentDropDownOpen, setCommentDropDownOpen] = useState(false)
 
+	const sortComments = () => {
+		
+	}
+
 	return(
 		<div className='commentFeed'>
 			{

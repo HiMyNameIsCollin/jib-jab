@@ -15,7 +15,7 @@ import Loading from './components/loading/Loading'
 
 const initialUser = {
 	userName: '',
-	communities: ['Announcements'],
+	communities: ['Announcements', 'General'],
 	karma: 1,
 	followers: [],
 	following: [],

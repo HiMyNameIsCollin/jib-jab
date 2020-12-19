@@ -81,9 +81,11 @@ const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, histor
 			</div>
 		{
 			manageAccount === 'header' ? 
+			<React.Fragment>
+			<HeaderExample /> 
 			<form className={formSent ? 'formDeactivated' : null}
 				onSubmit={handleSubmit(onSubmit)}>
-				<HeaderExample /> 
+				
 				<label htmlFor="image" >Community avatar</label>
 				<input 
 				type="text" 
@@ -99,7 +101,8 @@ const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, histor
 				placeholder='eg. https://source.unsplash.com/random/800x1200'
 				ref={register({required: false})}/>
 				<button> Submit </button> 
-			</form> :
+			</form> 
+			</React.Fragment>:
 			<div>
 				Settings
 			</div>	

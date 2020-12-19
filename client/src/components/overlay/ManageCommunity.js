@@ -237,10 +237,12 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 			{
 				community !== undefined ?
 				managePage === 'banner' ?
+				<React.Fragment>
+				<HeaderExample /> 
 				<form 
 				className={formSent ? 'formDeactivated' : null}
 				onSubmit={handleSubmit(onSubmit)}>
-					<HeaderExample /> 
+					
 					<label htmlFor="image" >Community avatar</label>
 					<input 
 					type="text" 
@@ -272,7 +274,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 						{
 							community.configuration.visibility === 'private' ?
-							<input type='radio' name='communityVisibility' value='private' selected ref={register({required: true})}/> :
+							<input type='radio' name='communityVisibility' value='private' checked ref={register({required: true})}/> :
 							<input type='radio' name='communityVisibility' value='private' ref={register({required: true})}/> 
 						}
 							
@@ -282,7 +284,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 						{
 							community.configuration.visibility === 'locked' ?
-							<input type='radio' name='communityVisibility' value='locked' selected ref={register({required: true})}/> :
+							<input type='radio' name='communityVisibility' value='locked' checked ref={register({required: true})}/> :
 							<input type='radio' name='communityVisibility' value='locked' ref={register({required: true})}/> 
 						}
 							<label htmlFor="communityVisibility"> Locked </label>
@@ -297,7 +299,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 						{
 							community.configuration.postPermission === 'open' ?
-							<input type='radio' name='postPermission' value='open' selected ref={register({required: true})}/> :
+							<input type='radio' name='postPermission' value='open' checked ref={register({required: true})}/> :
 							<input type='radio' name='postPermission' value='open' ref={register({required: true})}/>
 						} 
 							<label htmlFor="postPermission"> Open </label>
@@ -306,7 +308,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						<div>
 						{
 							community.configuration.postPermission === 'locked' ?
-							<input type='radio' name='postPermission' value='locked' selected ref={register({required: true})}/> :
+							<input type='radio' name='postPermission' value='locked' checked ref={register({required: true})}/> :
 							<input type='radio' name='postPermission' value='locked' ref={register({required: true})}/> 
 						}
 							<label htmlFor="postPermission"> Locked </label>
@@ -314,7 +316,8 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 						</div>
 					</div>
 					<button> Submit </button> 
-				</form>	:
+				</form>	
+				</React.Fragment>:
 				managePage === 'widgets' ?
 				<div className='widgetSelection'>
 					<form
