@@ -286,7 +286,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 					</div> :
 					!mainCommentInFocus ?
 					<div className='leaveACommentBox container'>
-						<img src="https://robohash.org/1" alt=""/>
+						<img src={user.configuration.image} alt=""/>
 						<input type='text' placeholder='Submit a comment' onClick={() =>setMainCommentInFocus(true) }/>
 					</div> :
 					<CommentForm

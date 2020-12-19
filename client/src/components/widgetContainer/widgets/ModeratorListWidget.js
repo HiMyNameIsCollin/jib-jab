@@ -10,7 +10,7 @@ const ModeratorListWidget = ({pageContent, Link}) => {
 				pageContent.moderators.map((m, i) => {
 					return(
 					<li key={i}>
-						<Link to={`/u/${m}`}>/u/Collin</Link>
+						<Link to={`/u/${m}`}>{`/u/${m}`}</Link>
 					</li>
 					)
 				})
