@@ -31,7 +31,7 @@ const PostInfo = () => {
 
 			{
 				
-				windowWidth > 576 && post.communityName !== post.userName ?
+				post.communityName !== post.userName ?
 				<span className='postInfoUserName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName} </Link></span> :
 				null
 			}
