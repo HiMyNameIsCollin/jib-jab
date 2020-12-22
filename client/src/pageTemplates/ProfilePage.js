@@ -5,11 +5,11 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
-const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setMessage, setOverlay, history, setReportOverlayIsOpen, setLoading}) => {
+const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setMessage, setOverlay, history, setReportOverlayIsOpen, setLoading, url}) => {
 	const [pageContent, setPageContent] = useState(undefined)
 
 	useEffect(() => {
-		fetch(`https://jibjab.herokuapp.com/api${location.pathname.toLowerCase()}`)
+		fetch(`${url}/api${location.pathname.toLowerCase()}`)
 		.then(response => response.json())
 		.then(response => {
 				setPageContent(response)
@@ -32,7 +32,8 @@ const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setM
 			user={user}
 			setUser={setUser}
 			setOverlay={setOverlay}
-			setMessage={setMessage}/>
+			setMessage={setMessage}
+			url={url}/>
 			<Feed 
 				Link={Link} 
 				pageType={pageType} 
@@ -44,7 +45,8 @@ const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setM
 				history={history}
 				setOverlay={setOverlay}
 				setReportOverlayIsOpen={setReportOverlayIsOpen}
-				setLoading={setLoading} />
+				setLoading={setLoading} 
+				url={url}/>
 			{
 				windowWidth > 920 ?
 				<WidgetContainer 
@@ -55,6 +57,7 @@ const ProfilePage = ({user, setUser, windowWidth, Link, location, pageType, setM
 					pageType={pageType} 
 					pageContent={pageContent}
 					setOverlay={setOverlay}
+					url={url}
 					/> :
 				null
 			}

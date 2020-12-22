@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './_sortOptionsContainer.sass'
 
-const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) => {
+const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError, url}) => {
 
 	const [sortOptionsOpen, openSortOptions] = useState(false)
 	const [sortOptionsContOpen, openSortOptionsCont] = useState(false)
@@ -33,7 +33,7 @@ const SortOptionsContainer = ({setUser, user, feedSort, setFeedSort, setError}) 
 	const handleFeedType = () => {
 		if(user.userName !== ''){
   			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/u/settings', {
+			fetch(`${url}/api/u/settings`, {
 				headers: {
 					authorization: `Bearer ${accessToken}`,
 					'Content-Type' : 'application/json'

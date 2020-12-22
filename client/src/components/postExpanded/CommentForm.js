@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
-const CommentForm = ({func, value, post, setPosts, comment, setMessage, location}) => {
+const CommentForm = ({func, value, post, setPosts, comment, setMessage, location, url}) => {
 	const [formSent, setFormSent] = useState(false)
 	const { register, handleSubmit, errors} = useForm()
 	const [commentId, setCommentId] = useState(comment !== undefined ? comment.commentInfo.id : 'parent')
@@ -10,7 +10,7 @@ const CommentForm = ({func, value, post, setPosts, comment, setMessage, location
 		if(!formSent){
 			setFormSent(true)
 		  	const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/comment/submit', {
+			fetch(`${url}/api/comment/submit`, {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,

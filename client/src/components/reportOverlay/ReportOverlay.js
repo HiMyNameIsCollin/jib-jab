@@ -3,7 +3,7 @@ import Loading from '../loading/Loading'
 import '../overlay/_overlay.sass'
 import { useForm } from 'react-hook-form'
 
-const ReportOverlay = ({setReportOverlayIsOpen, reportOverlayIsOpen, user, setMessage}) => {
+const ReportOverlay = ({setReportOverlayIsOpen, reportOverlayIsOpen, user, setMessage, url}) => {
 	const [loading, setLoading] = useState(false)
 	const [formSent, setFormSent] = useState(false)
 	const { register, handleSubmit, errors} = useForm()
@@ -14,7 +14,7 @@ const ReportOverlay = ({setReportOverlayIsOpen, reportOverlayIsOpen, user, setMe
 			setLoading(true)
 			setFormSent(true)
 			if(reportOverlayIsOpen.type === 'post'){
-				fetch('https://jibjab.herokuapp.com/api/reportPost', {
+				fetch(`${url}/api/reportPost`, {
 					method: 'post',
 					headers: {
 						authorization: `Bearer ${accessToken}`,

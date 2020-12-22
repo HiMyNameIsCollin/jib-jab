@@ -7,7 +7,7 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const CommentFeed = ({pageContent, location, post, user, Link, handleCommentVote, setError, setPosts, setMessage}) => {
+const CommentFeed = ({pageContent, location, post, user, Link, handleCommentVote, setError, setPosts, setMessage, url}) => {
 
 	const SortComments = () => {
 		return(
@@ -124,7 +124,8 @@ const CommentFeed = ({pageContent, location, post, user, Link, handleCommentVote
 					setPosts={setPosts}
 					Link={Link}
 					setMessage={setMessage}
-					key={i}/>
+					key={i}
+					url={url}/>
 				)
 			}) 
 		}

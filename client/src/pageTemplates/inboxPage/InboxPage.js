@@ -5,7 +5,7 @@ import './_inboxPage.sass'
 import Loading from '../../components/loading/Loading'
 import timeDifference from '../../utils/timeDifference'
 
-const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay, pageType, setMessage, history}) => {
+const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay, pageType, setMessage, history, url}) => {
 
 	const InboxBtnsContainer= () => {
 		return(
@@ -78,7 +78,7 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 			if(formSent === false){
 			setFormSent(true)
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/message', {
+			fetch(`${url}/api/message`, {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -140,7 +140,7 @@ const InboxPage = ({ Link, user, setUser, windowWidth, overlayIsOpen, setOverlay
 
 	useEffect(() => {
   		const accessToken = window.localStorage.getItem('accessToken')
-		fetch(`https://jibjab.herokuapp.com/api/inbox/${inboxType}`, {
+		fetch(`${url}/api/inbox/${inboxType}`, {
 			headers: {
 				'authorization' : `Bearer ${accessToken}`,
 				'Content-Type' : 'application/json'

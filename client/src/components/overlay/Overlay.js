@@ -8,7 +8,7 @@ import ManageCommunity from './ManageCommunity'
 import Loading from '../loading/Loading'
 import './_overlay.sass'
 
-const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location, history}) => {
+const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location, history, url}) => {
 
 	const [loading, setLoading] = useState(false)
 
@@ -25,25 +25,29 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location
 		setOverlay={setOverlay} 
 		setLoading={setLoading} 
 		user={user} 
-		setUser={setUser} /> :
+		setUser={setUser}
+		url={url}  /> :
 		overlayIsOpen === 'register' ?
 		<Register 
 		setOverlay={setOverlay} 
-		setLoading={setLoading}/> :
+		setLoading={setLoading}
+		url={url} /> :
 		overlayIsOpen === 'submitPost' ?
 		<SubmitPost 
 		location={location}  
 		setOverlay={setOverlay} 
 		setLoading={setLoading} 
 		user={user} 
-		setMessage={setMessage}/> :
+		setMessage={setMessage}
+		url={url} /> :
 		overlayIsOpen === 'submitMessage' ?
 		<SubmitMessage 
 		location={location} 
 		setOverlay={setOverlay} 
 		setLoading={setLoading} 
 		user={user} 
-		setMessage={setMessage}/>:
+		setMessage={setMessage}
+		url={url} />:
 		overlayIsOpen === 'editProfile'?
 		<EditProfile 
 		setOverlay={setOverlay} 
@@ -51,7 +55,8 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location
 		user={user} 
 		loading={loading}
 		setLoading={setLoading}
-		history={history} />:
+		history={history}
+		url={url}  />:
 		overlayIsOpen === 'manageCommunity'?
 		<ManageCommunity
 		setOverlay={setOverlay} 
@@ -60,7 +65,8 @@ const Overlay = ({overlayIsOpen, setOverlay, user, setUser, setMessage, location
 		loading={loading}
 		setLoading={setLoading}
 		history={history} 
-		location={location}/>:
+		location={location}
+		url={url} />:
 		null
 	}
 		</div>

@@ -3,7 +3,7 @@ import SearchBar from '../../components/searchBar/SearchBar'
 import { useForm } from 'react-hook-form'
 
 
-const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link, setLoading }) => {
+const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link, setLoading, url }) => {
 
 	const [image, setImage] = useState('')
 	const [headerImg, setHeaderImg] = useState('https://source.unsplash.com/random/800x1200')
@@ -83,7 +83,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 					p.postStatus === 'active' ?
 					<button onClick={() =>{
 						const accessToken = window.localStorage.getItem('accessToken')
-						fetch('https://jibjab.herokuapp.com/api/mod/deletePost', {
+						fetch(`${url}/api/mod/deletePost`, {
 							method: 'post',
 							headers: {
 								'Content-Type' : 'application/json',
@@ -162,7 +162,7 @@ const ManageCommunity = ({setOverlay, user, location, setMessage, history, Link,
 			}
 			setLoading(true)
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch(`https://jibjab.herokuapp.com/api/manageCommunity/${community.communityNameLower}`, {
+			fetch(`${url}/api/manageCommunity/${community.communityNameLower}`, {
 				method: 'post',
 				headers: {
 				'Content-Type' : 'application/json',

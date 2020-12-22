@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PostMenu = ({post, Link, user, setReportOverlayIsOpen, pageContent, setMessage, setLoading, history}) => {
+const PostMenu = ({post, Link, user, setReportOverlayIsOpen, pageContent, setMessage, setLoading, history, url}) => {
 
 	const handleSharePost = () => {
 		console.log('handleSharePost')
@@ -9,7 +9,7 @@ const PostMenu = ({post, Link, user, setReportOverlayIsOpen, pageContent, setMes
 	const handleSavePost = () => {
 		const accessToken = window.localStorage.getItem('accessToken')
 		setLoading(true)
-		fetch('https://jibjab.herokuapp.com/api/savePost', {
+		fetch(`${url}/api/savePost`, {
 			method: 'post',
 			headers: {
 				'Content-Type' : 'application/json',
@@ -33,7 +33,7 @@ const PostMenu = ({post, Link, user, setReportOverlayIsOpen, pageContent, setMes
 	const handleDeletePost = () => {
 		setLoading(true)
 		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('https://jibjab.herokuapp.com/api/deletePost', {
+		fetch(`${url}/api/deletePost`, {
 			method: 'post',
 			headers: {
 				'Content-Type' : 'application/json',
@@ -60,7 +60,7 @@ const PostMenu = ({post, Link, user, setReportOverlayIsOpen, pageContent, setMes
 
 	const handleModRemovePost = () => {
 		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('https://jibjab.herokuapp.com/api/mod/deletePost', {
+		fetch(`${url}/api/mod/deletePost`, {
 			method: 'post',
 			headers: {
 				'Content-Type' : 'application/json',

@@ -5,13 +5,14 @@ import WidgetContainer from '../components/widgetContainer/WidgetContainer'
 import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
-const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setError, setReportOverlayIsOpen, setMessage, setLoading, history}) => {
+const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setError, setReportOverlayIsOpen, setMessage, setLoading, history, url}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
 
 	useEffect(() => {
-			fetch(`https://jibjab.herokuapp.com/api/`, {
+		console.log(`${url}/api/`)
+			fetch(`${url}/api/`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
@@ -29,7 +30,13 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 	if(pageContent && user) {
 	return(
 		<React.Fragment>
-			<Intro pageType={pageType} windowWidth={windowWidth} user={user} pageContent={pageContent} Link={Link}/>
+			<Intro 
+			pageType={pageType} 
+			windowWidth={windowWidth} 
+			user={user} 
+			pageContent={pageContent}
+			Link={Link} 
+			url={url}/>
 			{
 				windowWidth <= 920 ?
 				<div className='container mobileViewToggle'>
@@ -52,8 +59,14 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 					setReportOverlayIsOpen={setReportOverlayIsOpen}
 					setMessage={setMessage}
 					setLoading={setLoading}
-					history={history} />
-					<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
+					history={history} 
+					url={url}/>
+					<WidgetContainer 
+					url={url}
+					Link={Link} 
+					pageType={pageType} 
+					user={user} 
+					pageContent={pageContent}/> 
 				</React.Fragment> :
 				mobileViewIsFeed ?
 				<Feed 
@@ -67,8 +80,14 @@ const FrontPage = ({user, setUser, windowWidth, Link, location, pageType, setErr
 				setReportOverlayIsOpen={setReportOverlayIsOpen}
 				setMessage={setMessage}
 				setLoading={setLoading} 
-				history={history}/>:
-				<WidgetContainer Link={Link} pageType={pageType} user={user} pageContent={pageContent}/> 
+				history={history}
+				url={url}/>:
+				<WidgetContainer 
+				Link={Link} 
+				pageType={pageType} 
+				user={user} 
+				pageContent={pageContent} 
+				url={url}/> 
 			}
 
 			<Footer />

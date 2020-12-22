@@ -22,7 +22,7 @@ const initialUser = {
 	}
 }
 
-const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay, history}) => {
+const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay, history, url}) => {
 
 	const [headerIsSticky, setHeaderIsSticky] = useState(false)
 	const [userDropDownOpen, setUserDropDown] = useState(false)
@@ -84,7 +84,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 					To top
 				</span>
 			}
-				<SearchBar Link={Link} searchBarType='header' user={user}/>
+				<SearchBar Link={Link} searchBarType='header' user={user} url={url}/>
 
 				<Link to='/c/global' className='headerBtn link global'>
 					<i className="fas fa-globe-americas "></i>
@@ -145,7 +145,7 @@ const Header = ({navIsOpen, setNav, user, setUser, windowWidth, Link, setOverlay
 								onClick={() => {
 								const refreshToken = window.localStorage.getItem('refreshToken')
 								setNav(false)
-								fetch('https://jibjab.herokuapp.com/api/logout', {
+								fetch(`${url}/api/logout`, {
 									method: 'delete',
 									headers: {'Content-Type' : 'application/json'},
 									body: JSON.stringify({

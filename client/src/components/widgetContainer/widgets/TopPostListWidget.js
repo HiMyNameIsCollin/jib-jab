@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 
 
-const TopPostListWidget = ({pageContent, Link}) => {
+const TopPostListWidget = ({pageContent, Link, url}) => {
 
 	const TopPostListWidgetItem = ({post}) => {
 		return(
@@ -21,7 +21,7 @@ const TopPostListWidget = ({pageContent, Link}) => {
 	const [topPosts, setTopPosts] = useState(undefined)
 
 		useEffect(() => {
-			fetch(`https://jibjab.herokuapp.com/api/topPosts/${pageContent.communityNameLower}`)
+			fetch(`${url}/api/topPosts/${pageContent.communityNameLower}`)
 			.then(response => response.json())
 			.then(response => setTopPosts(response))
 			.catch(err => console.log(err))

@@ -9,7 +9,7 @@ const initialSort = {
 	sortOptionsContChoice: 'day'
 }
 
-const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setError, setMessage, setOverlay, setReportOverlayIsOpen, setLoading, history}) => {
+const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setError, setMessage, setOverlay, setReportOverlayIsOpen, setLoading, history, url}) => {
 
 	const [feedSort, setFeedSort] = useState(initialSort)
 	const [posts, setPosts] = useState(undefined)
@@ -30,7 +30,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 		if(pageType === 'profilePage') {
 			if(profileFeedChoice === 'soapBox'){
 				if(pageContent.soapBox.length > 0){
-				fetch(`https://jibjab.herokuapp.com/api/p/`,{
+				fetch(`${url}/api/p/`,{
 						method: 'post',
 						headers: {'Content-Type' : 'application/json'},
 						body: JSON.stringify({
@@ -46,7 +46,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 				}
 			}else {
 				if(pageContent.posts.length > 0){
-					fetch(`https://jibjab.herokuapp.com/api/p/`,{
+					fetch(`${url}/api/p/`,{
 					method: 'post',
 					headers: {'Content-Type' : 'application/json'},
 					body: JSON.stringify({
@@ -63,7 +63,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 			}
 		} else {
 			if(pageContent.posts.length > 0){
-				fetch(`https://jibjab.herokuapp.com/api/p/`, {
+				fetch(`${url}/api/p/`, {
 					method: 'post',
 					headers: {'Content-Type' : 'application/json'}, 
 					body: JSON.stringify({
@@ -110,7 +110,7 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 	const handleVote = (postID, postUserName,  request) => {
 		if(user.userName !== '') {
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/vote', {
+			fetch(`${url}/api/vote`, {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -154,7 +154,8 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 				user={user} 
 				feedSort={feedSort} 
 				setFeedSort={setFeedSort} 
-				setError={setError}/>
+				setError={setError}
+				url={url}/>
 			}
 			{
 				posts !== null && posts !== undefined ?
@@ -175,7 +176,8 @@ const Feed = ({user, setUser,  windowWidth, pageType, Link, pageContent, setErro
 							setMessage={setMessage}
 							setReportOverlayIsOpen={setReportOverlayIsOpen}
 							setLoading={setLoading}
-							history={history}/> 
+							history={history}
+							url={url}/> 
 						
 				}): 
 				<p style={{textAlign: 'center', padding: '1em'}}> 

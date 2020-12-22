@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import SearchBar from '../searchBar/SearchBar'
 import { useForm } from 'react-hook-form'
 
-const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
+const SubmitMessage = ({setOverlay, user, setMessage, location, url}) => {
 
 	const [formSent, setFormSent] = useState(false)
 	const { register, handleSubmit, errors} = useForm()
@@ -10,7 +10,7 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 
 	useEffect(() => {
 		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/c/'){
-			fetch('https://jibjab.herokuapp.com/api/search', {
+			fetch(`${url}/api/search`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
@@ -28,7 +28,7 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 			setFormSent(true)
 			if(targetCommunity !== undefined) {
 				const accessToken = window.localStorage.getItem('accessToken')
-				fetch('https://jibjab.herokuapp.com/api/message', {
+				fetch(`${url}/api/message`, {
 					method: 'post',
 					headers: {
 						authorization: `Bearer ${accessToken}`,
@@ -68,7 +68,7 @@ const SubmitMessage = ({setOverlay, user, setMessage, location}) => {
 			<span 
 			className='closeOverlay'
 			onClick={() => setOverlay(undefined)}> X </span>
-			<SearchBar searchBarType='submitMessage' user={user} setTargetCommunity={setTargetCommunity}/>
+			<SearchBar searchBarType='submitMessage' user={user} setTargetCommunity={setTargetCommunity} url={url}/>
 			{
 				targetCommunity !== undefined ?
 				<div className='targetCommunity container'>

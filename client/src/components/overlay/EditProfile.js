@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 
 
 
-const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, history}) => {
+const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, history, url}) => {
 	const HeaderExample = () => {
 	return(
 		<div className='communityHeader createCommunityPreview' style={{backgroundImage: `url(${headerImg}})` }}> 
@@ -31,7 +31,7 @@ const EditProfile = ({setOverlay, setMessage, loading,  setLoading, user, histor
 		if(!formSent){
 			setFormSent(true)
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/editProfile' ,{
+			fetch(`${url}/api/editProfile` ,{
 				method: 'post',
 				headers: {
 					'Content-Type': 'application/json',

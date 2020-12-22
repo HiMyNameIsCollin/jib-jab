@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import CommentForm from './CommentForm'
 import timeDifference from '../../utils/timeDifference'
 
-const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, Link, user, setUser, handleCommentVote, post, setMessage, setPosts, location}) => {
+const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, Link, user, setUser, handleCommentVote, post, setMessage, setPosts, location, url}) => {
 	const [commentFormOpen, setCommentFormOpen] = useState(false)
 	const [commentersImage, setCommentersImage] = useState(undefined)
 
 	useEffect(() => {
-		fetch(`https://jibjab.herokuapp.com/api/u/img/${comment.commentInfo.userName}`)
+		fetch(`${url}/api/u/img/${comment.commentInfo.userName}`)
 		.then(response => response.json())
 		.then(response => setCommentersImage(response))
 		.catch(err => console.log(err))
@@ -58,22 +58,22 @@ const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, L
 			{
 				comment.karma.upvotes.includes(user.userName) ?
 				<i 
-				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
+				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, comment.commentInfo.userName,  'upvote')}
 				className="fas fa-arrow-circle-up"
 				style={{color: 'blue'}}></i> :
 				<i 
-				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'upvote')}
+				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, comment.commentInfo.userName, 'upvote')}
 				className="fas fa-arrow-circle-up"></i>
 			}
 				<span>{comment.karma.upvotes.length - comment.karma.downvotes.length} </span>
 			{
 				comment.karma.downvotes.includes(user.userName) ?
 				<i 
-				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
+				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, comment.commentInfo.userName,  'downvote')}
 				className="fas fa-arrow-circle-down"
 				style={{color: 'red'}}></i> :
 				<i 
-				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, 'downvote')}
+				onClick={() => handleCommentVote(post.id, comment.commentInfo.id, comment.commentInfo.userName,  'downvote')}
 				className="fas fa-arrow-circle-down"></i> 
 			}
 			</div>
@@ -130,7 +130,8 @@ return(
 			comment={comment} 
 			func={setCommentFormOpen} 
 			value={commentFormOpen}
-			setMessage={setMessage} /> :
+			setMessage={setMessage}
+			url={url}  /> :
 			null
 		}
 	</div>

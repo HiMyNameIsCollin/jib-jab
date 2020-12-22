@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import SearchBar from '../searchBar/SearchBar'
 import { useForm } from 'react-hook-form'
 
-const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
+const SubmitPost = ({location, submitPost, setOverlay, user, setMessage, url}) => {
 
 	const [postType, setPostType] = useState('text')
 	const [formSent, setFormSent] = useState(false)
@@ -11,7 +11,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 
 	useEffect(() => {
 		if(location.pathname !== '/' && location.pathname.substr(0, 3) !== '/u/'){
-			fetch('https://jibjab.herokuapp.com/api/search', {
+			fetch(`${url}/api/search`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({
@@ -32,7 +32,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 				if(targetCommunity.type === 'community'){
 					if(postType=== 'image'){
 						const imageForm = document.getElementById('imageSubmissionForm')
-						fetch(`https://jibjab.herokuapp.com/api/c/${targetCommunity.name}/submit`, {
+						fetch(`${url}/api/c/${targetCommunity.name}/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,
@@ -52,7 +52,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 						})
 						.catch(err => console.log(err))
 					} else if (postType === 'text' || postType === 'link'){
-						fetch(`https://jibjab.herokuapp.com/api/c/${targetCommunity.name}/submit`, {
+						fetch(`${url}/api/c/${targetCommunity.name}/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,
@@ -82,7 +82,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 				} else if (targetCommunity.type === 'soapBox') {
 					if(postType=== 'image'){
 						const imageForm = document.getElementById('imageSubmissionForm')
-						fetch(`https://jibjab.herokuapp.com/api/u/submit`, {
+						fetch(`${url}/api/u/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,
@@ -105,7 +105,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 							setFormSent(false)
 						})
 					} else if (postType === 'text' || postType === 'link'){
-						fetch(`https://jibjab.herokuapp.com/api/u/submit`, {
+						fetch(`${url}/api/u/submit`, {
 							method: 'post',
 							headers: {
 								authorization: `Bearer ${accessToken}`,
@@ -143,7 +143,7 @@ const SubmitPost = ({location, submitPost, setOverlay, user, setMessage}) => {
 	return(
 		<div className='submitPost'>
 			<h3>Submit a post</h3>
-			<SearchBar setTargetCommunity={setTargetCommunity} user={user}  searchBarType='submitPost'/>
+			<SearchBar setTargetCommunity={setTargetCommunity} user={user}  searchBarType='submitPost' url={url}/>
 			<span 
 			onClick={() => setOverlay(undefined)}
 			className='closeOverlay'> X </span>

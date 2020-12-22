@@ -4,12 +4,12 @@ import Footer from '../components/footer/Footer'
 import PostExpanded from '../components/postExpanded/PostExpanded'
 import Loading from '../components/loading/Loading'
 
-const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay, location, pageType, setMessage, history, setReportOverlayIsOpen, setLoading}) => {
+const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay, location, pageType, setMessage, history, setReportOverlayIsOpen, setLoading, url}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 
 	useEffect(() => {
-				fetch(`https://jibjab.herokuapp.com/api${location.pathname.toLowerCase()}`)
+				fetch(`${url}/api${location.pathname.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
 
@@ -38,10 +38,17 @@ const PostPage = ({Link, user, setUser,  windowWidth, overlayIsOpen, setOverlay,
 					setMessage={setMessage}
 					history={history}
 					setReportOverlayIsOpen={setReportOverlayIsOpen}
-					setLoading={setLoading} />
+					setLoading={setLoading} 
+					url={url}/>
 					{
 						windowWidth > 920 ?
-						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent} user={user} setUser={setUser}/> :
+						<WidgetContainer 
+						Link={Link} 
+						pageType={pageType} 
+						pageContent={pageContent} 
+						user={user} 
+						setUser={setUser} 
+						url={url}/> :
 						null				
 					}
 

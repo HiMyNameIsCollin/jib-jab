@@ -6,7 +6,7 @@ import Footer from '../components/footer/Footer'
 import Loading from '../components/loading/Loading'
 
 
-const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType, setMessage, setOverlay, setReportOverlayIsOpen, setLoading}) => {
+const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pageType, setMessage, setOverlay, setReportOverlayIsOpen, setLoading, url}) => {
 
 	const [pageContent, setPageContent] = useState(undefined)
 	const [mobileViewIsFeed, setMobileView] = useState(true)
@@ -16,7 +16,7 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 		if(location.pathname.toLowerCase() === '/c/popular'){
 			history.push('/')
 		} else {
-			fetch(`https://jibjab.herokuapp.com/api${location.pathname.toLowerCase()}`)
+			fetch(`${url}/api${location.pathname.toLowerCase()}`)
 			.then(response => response.json())
 			.then(response => {
 					setPageContent(response)
@@ -38,7 +38,7 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 	if(pageContent){
 		return(
 			<React.Fragment>
-					<Intro pageType={pageType} windowWidth={windowWidth} pageContent={pageContent} user={user} setOverlay={setOverlay}/> 
+					<Intro pageType={pageType} windowWidth={windowWidth} pageContent={pageContent} user={user} setOverlay={setOverlay} url={url}/> 
 				{
 					windowWidth <= 920 ?
 					<div className='container mobileViewToggle'>
@@ -61,8 +61,9 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 						history={history} 
 						setOverlay={setOverlay}
 						setReportOverlayIsOpen={setReportOverlayIsOpen} 
-						setLoading={setLoading} />
-						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
+						setLoading={setLoading} 
+						url={url}/>
+						<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent} url={url}/> 
 					</React.Fragment> :
 					mobileViewIsFeed ?
 					<Feed 
@@ -74,8 +75,9 @@ const CommunityPage = ({user, setUser, windowWidth, Link, location, history, pag
 					pageContent={pageContent}
 					setMessage={setMessage}
 					setLoading={setLoading} 
-					history={history}/>:
-					<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent}/> 
+					history={history}
+					url={url}/>:
+					<WidgetContainer Link={Link} pageType={pageType} pageContent={pageContent} url={url}/> 
 				}
 
 				<Footer />

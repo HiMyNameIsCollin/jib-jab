@@ -9,7 +9,7 @@ import AppendixWidget from './widgets/AppendixWidget'
 import InteractionWidget from './widgets/InteractionWidget'
 import AnnouncementWidget from './widgets/AnnouncementWidget'
 import './_widgetContainer.sass'
-const WidgetContainer = ({pageType, Link, pageContent, user, setUser, setMessage, setOverlay}) => {
+const WidgetContainer = ({pageType, Link, pageContent, user, setUser, setMessage, setOverlay, url}) => {
 
 
 /*###########################TYPE OF MENU#######################################*/
@@ -17,7 +17,7 @@ const WidgetContainer = ({pageType, Link, pageContent, user, setUser, setMessage
 const FrontPageWidgets = () => {
 	return(
 		<React.Fragment>
-			<CommunityListWidget Link={Link} pageContent={pageContent} widgetContent={pageContent.configuration.widgets.communityListWidget} pageType={pageType} user={user}/>
+			<CommunityListWidget Link={Link} pageContent={pageContent} widgetContent={pageContent.configuration.widgets.communityListWidget} pageType={pageType} user={user} url={url} />
 			<AppendixWidget Link={Link}/>				
 		</React.Fragment>
 	)
@@ -43,7 +43,8 @@ const CommunityWidgets = ({pageContent}) => {
 			pageType={pageType} 
 			user={user} 
 			widgetContent={pageContent.configuration.widgets.communityListWidget}
-			pageContent={pageContent}/>  :
+			pageContent={pageContent}
+			url={url} />  :
 			null
 		}
 		{
@@ -59,11 +60,11 @@ const CommunityWidgets = ({pageContent}) => {
 		{
 			pageContent.communityName === 'Global' ?
 			<React.Fragment>
-				<TopPostListWidget pageContent={pageContent} Link={Link}/>
+				<TopPostListWidget pageContent={pageContent} Link={Link} url={url} />
 				<AppendixWidget Link={Link}/>
 			</React.Fragment> :
 			<React.Fragment>
-				<TopPostListWidget pageContent={pageContent} Link={Link}/>
+				<TopPostListWidget pageContent={pageContent} Link={Link} url={url} />
 				<ModeratorListWidget pageContent={pageContent} Link={Link} /> 
 				<AppendixWidget Link={Link}/>	
 			</React.Fragment>

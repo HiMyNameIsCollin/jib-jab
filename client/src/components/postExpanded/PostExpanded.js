@@ -5,14 +5,14 @@ import Loading from '../loading/Loading'
 import CommentForm from './CommentForm'
 import './_postExpanded.sass'
 
-const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setMessage, history, setReportOverlayIsOpen, setLoading}) => {
+const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent, pageType, overlayIsOpen, setOverlay, setMessage, history, setReportOverlayIsOpen, setLoading, url}) => {
 
 	const PostMenuBar = () => {
 
 		const handleSavePost = () => {
 			const accessToken = window.localStorage.getItem('accessToken')
 			setLoading(true)
-			fetch('https://jibjab.herokuapp.com/api/savePost', {
+			fetch(`${url}/api/savePost`, {
 				method: 'post',
 				headers: {
 					'Content-Type' : 'application/json',
@@ -36,7 +36,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 		const handleDeletePost = () => {
 			setLoading(true)
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/deletePost', {
+			fetch(`${url}/api/deletePost`, {
 				method: 'post',
 				headers: {
 					'Content-Type' : 'application/json',
@@ -63,7 +63,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 
 		const handleModRemovePost = () => {
 			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/mod/deletePost', {
+			fetch(`${url}/api/mod/deletePost`, {
 				method: 'post',
 				headers: {
 					'Content-Type' : 'application/json',
@@ -143,7 +143,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 		console.log(postID)
 		if(user.userName !== ''){
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/vote', {
+			fetch(`${url}/api/vote`, {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -176,10 +176,11 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 	}
 
 
-	const handleCommentVote = (postId, commentId, request) => {
+	const handleCommentVote = (postId, commentId, commenter, request) => {
 		if(user.userName !== '') {
+			console.log(commenter)
 	  		const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/comment/vote', {
+			fetch(`${url}/api/comment/vote`, {
 				method: 'post',
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -188,6 +189,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 				body: JSON.stringify({
 					postId,
 					commentId,
+					commenter, 
 					request,
 				})
 			})
@@ -213,7 +215,7 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 
 	useEffect(() => {
 			setPosts(undefined)
-			fetch('https://jibjab.herokuapp.com/api/p/', {
+			fetch(`${url}/api/p/`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'}, 
 				body: JSON.stringify({
@@ -271,7 +273,8 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 				post={posts[0]} 
 				handleVote={handleVote}
 				history={history}
-				setMessage={setMessage}/>
+				setMessage={setMessage}
+				url={url}/>
 				{
 					posts[0].postStatus === 'active' ?
 					<PostMenuBar /> :
@@ -295,7 +298,8 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 					value={mainCommentInFocus} 
 					post={posts[0]}
 					setPosts={setPosts}
-					setMessage={setMessage}/>
+					setMessage={setMessage}
+					url={url}/>
 
 				}
 				{
@@ -309,7 +313,8 @@ const PostExpanded = ({Link, location,  user, setUser, windowWidth, pageContent,
 					user={user}
 					setMessage={setMessage}
 					setPosts={setPosts}
-					Link={Link}/> :
+					Link={Link}
+					url={url}/> :
 					<p style={{padding: '1em'}}> Be the first to leave a comment! </p>
 				}
 

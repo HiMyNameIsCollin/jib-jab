@@ -3,7 +3,7 @@ import './_searchBar.sass'
 
 const initialResults = {communityArray: [], userArray: []}
 
-const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
+const SearchBar = ({Link, setTargetCommunity, searchBarType, user, url}) => {
 
 	const SearchResult = ({result}) => {
 
@@ -48,7 +48,7 @@ const SearchBar = ({Link, setTargetCommunity, searchBarType, user}) => {
 	const [searchResults, setSearchResults] = useState(() => initialResults)
 	const searchRef = useRef()
 	const handleSearch = (e) => {
-		fetch('https://jibjab.herokuapp.com/api/search', {
+		fetch(`${url}/api/search`, {
 			method: 'post',
 			headers: {'Content-Type' : 'application/json'},
 			body: JSON.stringify({

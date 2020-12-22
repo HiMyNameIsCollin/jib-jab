@@ -3,13 +3,13 @@ import timeDifference from '../../utils/timeDifference'
 import './_intro.sass'
 
 
-const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, location, setOverlay, setMessage}) => {
+const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, location, setOverlay, setMessage, url}) => {
 
 	const TrendingIntro = () => {
 		const [trendingPosts, setTrendingPosts] = useState(undefined)
 
 		useEffect(() => {
-			fetch('https://jibjab.herokuapp.com/api/p', {
+			fetch(`${url}/api/p`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'}, 
 				body: JSON.stringify({
@@ -88,7 +88,7 @@ const Intro = ({pageType, windowWidth, pageContent, user, setUser, Link, locatio
 		const handleFollow = (target, request) => {
 			if(user.userName !== '' && user.userName !== pageContent.userName){
 	  			const accessToken = window.localStorage.getItem('accessToken')
-				fetch('https://jibjab.herokuapp.com/api/u/subscribe', {
+				fetch(`${url}/api/u/subscribe`, {
 					method: 'post',
 					headers: {
 						authorization: `Bearer ${accessToken}`,

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { useForm } from 'react-hook-form'
 
-const Register = ({setOverlay, setLoading}) => {
+const Register = ({setOverlay, setLoading, url}) => {
 
 	const [formSent, setFormSent] = useState(false)
 	const [userNameTaken, setUserNameTaken] = useState(false)
@@ -14,7 +14,7 @@ const Register = ({setOverlay, setLoading}) => {
 			setFormSent(true)
 			setLoading(true)
 			setError(false)
-			fetch('https://jibjab.herokuapp.com/api/register', {
+			fetch(`${url}/api/register`, {
 				method: 'post',
 				headers: {'Content-Type' : 'application/json'},
 				body: JSON.stringify({

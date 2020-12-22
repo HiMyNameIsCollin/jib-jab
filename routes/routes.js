@@ -808,18 +808,19 @@ routes.post('/comment/vote', authenticateToken, async (req, res) => {
 		return output
 	}
 
-	const { postId, commentId, request } = req.body
+	const { postId, commentId, commenter,  request } = req.body
 	const post = await PostModel.findOne({id: postId})
-	const targetUser = await UserModel.findOne({userNameLower: post.userName.toLowerCase()})
+	const targetUser = await UserModel.findOne({userNameLower: commenter.toLowerCase()})
 	if(post, targetUser){
 		try{
 			if(request === 'upvote'){
 				deepUpvote(post.comments, req.user.userName, commentId)
-				targetUser.karma + 1
+				targetUser.karma = targetUser.karma + 1
 			} else if (request === 'downvote'){
 				deepDownvote(post.comments, req.user.userName, commentId)
-				targetUser.karma - 1
+				targetUser.karma = targetUser.karma - 1
 			}
+			console.log(targetUser)
 			targetUser.markModified('karma')
 			post.markModified('comments')
 			targetUser.save()

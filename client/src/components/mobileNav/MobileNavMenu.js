@@ -21,7 +21,7 @@ const initialUser = {
 }
 
 
-const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessage}) => {
+const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessage, url}) => {
 
 	const MobileNavCommunity = ({ listItem, Link}) => {
 
@@ -29,7 +29,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 
 		useEffect(() => {
 			let isMounted = true
-				fetch(`https://jibjab.herokuapp.com/api/c/img/${listItem.toLowerCase()}`)
+				fetch(`${url}/api/c/img/${listItem.toLowerCase()}`)
 				.then(response => response.json())
 				.then(response => {
 					if(isMounted) {
@@ -51,7 +51,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 	const handleFeedType = () => {
 		if(user.userName !== ''){
   			const accessToken = window.localStorage.getItem('accessToken')
-			fetch('https://jibjab.herokuapp.com/api/u/settings', {
+			fetch(`${url}/api/u/settings`, {
 				headers: {
 					authorization: `Bearer ${accessToken}`,
 					'Content-Type' : 'application/json'
@@ -143,7 +143,7 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 			<div onClick={() => {
 				const refreshToken = window.localStorage.getItem('refreshToken')
 				setNav(false)
-				fetch('https://jibjab.herokuapp.com/api/logout', {
+				fetch(`${url}/api/logout`, {
 					method: 'delete',
 					headers: {'Content-Type' : 'application/json'},
 					body: JSON.stringify({

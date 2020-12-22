@@ -3,7 +3,7 @@ import PostMenu from './PostMenu'
 import './_post.sass'
 import timeDifference from '../../utils/timeDifference'
 
-const Post = ({user, setUser, windowWidth, Link, postView, post, pageType, handleVote, setError, pageContent, setReportOverlayIsOpen, setMessage, setLoading, history}) => {
+const Post = ({user, setUser, windowWidth, Link, postView, post, pageType, handleVote, setError, pageContent, setReportOverlayIsOpen, setMessage, setLoading, history, url}) => {
 
 const PostInfo = () => {
 	return(
@@ -180,7 +180,7 @@ const InteractionWindow =() => {
 	const handleSubscription = (target, request, type) => {
 	const accessToken = window.localStorage.getItem('accessToken')
 	if(type === 'community'){
-		fetch('https://jibjab.herokuapp.com/api/c/subscribe', {
+		fetch(`${url}/api/c/subscribe`, {
 			method: 'post',
 			headers: {
 				authorization: `Bearer ${accessToken}`,
@@ -197,7 +197,7 @@ const InteractionWindow =() => {
 		})
 		.catch(err => console.log(err))
 	} else if(type === 'user'){
-		fetch('https://jibjab.herokuapp.com/api/u/subscribe', {
+		fetch(`${url}/api/u/subscribe`, {
 			method: 'post',
 			headers: {
 				authorization: `Bearer ${accessToken}`,
@@ -231,7 +231,8 @@ const InteractionWindow =() => {
 				setReportOverlayIsOpen={setReportOverlayIsOpen} 
 				pageContent={pageContent} 
 				setLoading={setLoading}
-				setMessage={setMessage}/> :
+				setMessage={setMessage}
+				url={url}/> :
 				<React.Fragment>
 					<PostContent Link={Link} enlargedImgOpen={enlargedImgOpen} openEnlargedWindow={openEnlargedWindow} user={user}/> 
 					<InteractionWindow />

@@ -1,32 +1,35 @@
   import React, { useState, useEffect } from 'react'
 
 
-const CommunityListWidgetItem = ({ listItem, Link}) => {
 
-	const [communityImg, setCommunityImg] = useState(undefined)
 
-	useEffect(() => {
-		let isMounted = true
-			fetch(`https://jibjab.herokuapp.com/api/c/img/${listItem.toLowerCase()}`)
-			.then(response => response.json())
-			.then(response => {
-				if(isMounted) {
-					setCommunityImg(response)
-				}})
-			.catch(err => console.log(err))
-			return () => { isMounted = false }
-	}, [])
-	return(
-		<li className='communityListWidgetItem'>
-			<Link to={`/c/${listItem}`} className='link' >
-				<img src={communityImg} alt=""/>
-				<span> {listItem} </span>
-			</Link>
-		</li>	
-		)
-}
+const CommunityListWidget = ({user, pageContent, widgetContent,  pageType, Link, url}) => {
 
-const CommunityListWidget = ({user, pageContent, widgetContent,  pageType, Link}) => {
+	const CommunityListWidgetItem = ({ listItem, Link}) => {
+
+		const [communityImg, setCommunityImg] = useState(undefined)
+
+		useEffect(() => {
+			console.log(`${url}/api/c/img/${listItem.toLowerCase()}`)
+			let isMounted = true
+				fetch(`${url}/api/c/img/${listItem.toLowerCase()}`)
+				.then(response => response.json())
+				.then(response => {
+					if(isMounted) {
+						setCommunityImg(response)
+					}})
+				.catch(err => console.log(err))
+				return () => { isMounted = false }
+		}, [])
+		return(
+			<li className='communityListWidgetItem'>
+				<Link to={`/c/${listItem}`} className='link' >
+					<img src={communityImg} alt=""/>
+					<span> {listItem} </span>
+				</Link>
+			</li>	
+			)
+	}
 return(
 	<React.Fragment>
 		<div className='communityListWidget'>

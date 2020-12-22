@@ -45,7 +45,7 @@ const initialPageTwo = {
 }
 
 
-const CreateCommunity = ({user, setMessage, history}) => {
+const CreateCommunity = ({user, setMessage, history, url}) => {
 
 
 
@@ -359,7 +359,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 									)
 								})
 							}
-							<SearchBar user={user}  searchBarType='submitPost' setTargetCommunity={handleCommunityWidgets}/>
+							<SearchBar user={user} url={url} searchBarType='submitPost' setTargetCommunity={handleCommunityWidgets}/>
 						</div>
 					{/*##############ANNOUNCMENT WIDGET FORM #######################*/}
 						<div>
@@ -442,7 +442,7 @@ const CreateCommunity = ({user, setMessage, history}) => {
 				<div className='moderatorSelection'>
 					<h3> Add some moderators</h3>
 					<p className='addModeratorBlurb'> Selected users will be invited to moderate your community alongside yourself.  </p>
-					<SearchBar user={user}  searchBarType='submitMessage' setTargetCommunity={handleModeratorInvites}/>
+					<SearchBar user={user} url={url} searchBarType='submitMessage' setTargetCommunity={handleModeratorInvites}/>
 					{
 						moderatorArray.map((m, i) => {
 							return(

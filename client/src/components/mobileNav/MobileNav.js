@@ -3,7 +3,7 @@ import './_mobileNav.sass'
 import MobileNavMenu from './MobileNavMenu'
 import SearchBar from '../searchBar/SearchBar'
 
-const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay, setMessage }) => {
+const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay, setMessage, url }) => {
 	const [commIsOpen, setComm]  = useState(false)
 	const [myCommIsOpen, setMyComm] = useState(false)
 	const [settingIsOpen, setSettings] = useState(false)
@@ -25,7 +25,7 @@ const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay,
 
 	return(
 		<nav className='container mobileNav'>
-			<SearchBar Link={Link} user={user} searchBarType='header'/>
+			<SearchBar Link={Link} user={user} searchBarType='header' url={url}/>
 			{
 				user.userName === '' ?
 				<div className='navItem container'>
@@ -70,7 +70,7 @@ const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay,
 			</div>
 			{
 				commIsOpen ?
-				<MobileNavMenu navType={'comm'} Link={Link} setNav={setNav} user={user} setMessage={setMessage}/> :
+				<MobileNavMenu navType={'comm'} Link={Link} setNav={setNav} user={user} setMessage={setMessage} url={url} /> :
 				null
 			}
 			<div className='navItem' onClick={() => setMyComm(!myCommIsOpen)}>
@@ -80,7 +80,7 @@ const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay,
 			</div>
 			{
 				myCommIsOpen ?
-				<MobileNavMenu navType={'myComm'} Link={Link} user={user} setMessage={setMessage}/> :
+				<MobileNavMenu navType={'myComm'} Link={Link} user={user} setMessage={setMessage} url={url} /> :
 				null
 			}
 			<div className='navItem' onClick={() => setSettings(!settingIsOpen)}>
@@ -90,7 +90,7 @@ const MobileNav = ({Link, history, navIsOpen, setNav, user, setUser, setOverlay,
 			</div>
 			{
 				settingIsOpen ?
-				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} Link={Link} setMessage={setMessage} history={history}/> :
+				<MobileNavMenu setUser={setUser} user={user} setNav={setNav} navType={'settings'} url={url} Link={Link} setMessage={setMessage} history={history}/> :
 				null
 			}
 			<Link to='/c/global' className='navItem link'>

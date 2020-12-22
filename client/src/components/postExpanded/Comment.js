@@ -3,7 +3,7 @@ import CommentBody from './CommentBody'
 
 
 
-const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMessage, location}) => {
+const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMessage, location, url}) => {
 
 	const [commentHidden, setCommentToHidden] = useState(false)
 
@@ -19,11 +19,35 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMes
 				{
 					comment.comments.map((c, i) => {
 						if(c.comments.length === 0) {
-							return <CommentBody location={location} handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} comment={c} key={i} setMessage={setMessage} user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/>
+							return <CommentBody 
+									location={location} 
+									handleCommentVote={handleCommentVote} 
+									post={post} 
+									setPosts={setPosts} 
+									comment={c} 
+									key={i} 
+									setMessage={setMessage} 
+									user={user} 
+									Link={Link} 
+									commentHidden={commentHidden} 
+									setCommentToHidden={setCommentToHidden}
+									url={url} />
 						} else {
 							return(
 								<React.Fragment> 
-									<CommentBody location={location}  handleCommentVote={handleCommentVote} post={post} setPosts={setPosts} comment={c} key={i} setMessage={setMessage} user={user} Link={Link} commentHidden={commentHidden} setCommentToHidden={setCommentToHidden}/>
+									<CommentBody 
+										location={location}  
+										handleCommentVote={handleCommentVote} 
+										post={post} 
+										setPosts={setPosts} 
+										comment={c} 
+										key={i} 
+										setMessage={setMessage} 
+										user={user} 
+										Link={Link} 
+										commentHidden={commentHidden} 
+										url={url}
+										setCommentToHidden={setCommentToHidden}/>
 									{renderComments(c, n)}
 								</React.Fragment>
 							)
@@ -53,7 +77,8 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMes
 					user={user} 
 					Link={Link} 
 					commentHidden={commentHidden} 
-					setCommentToHidden={setCommentToHidden}/> :
+					setCommentToHidden={setCommentToHidden}
+					url={url} /> :
 				<React.Fragment>
 				{
 					commentHidden ? 
@@ -67,7 +92,8 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMes
 						user={user} 
 						Link={Link} 
 						commentHidden={commentHidden} 
-						setCommentToHidden={setCommentToHidden}/> :
+						setCommentToHidden={setCommentToHidden}
+						url={url} /> :
 					<React.Fragment>
 					<CommentBody 
 						location={location} 
@@ -79,7 +105,8 @@ const Comment = ({comment, post, setPosts, handleCommentVote, user, Link, setMes
 						user={user} 
 						Link={Link} 
 						commentHidden={commentHidden} 
-						setCommentToHidden={setCommentToHidden}/>
+						setCommentToHidden={setCommentToHidden}
+						url={url} />
 						{renderComments(comment)}
 					</React.Fragment>
 				}

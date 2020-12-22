@@ -41,11 +41,22 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 	const [message, setMessage] = useState(undefined)
 	const [reportOverlayIsOpen, setReportOverlayIsOpen] = useState(undefined)
 	const [loading, setLoading] = useState(false)
+	const [url, setUrl] = useState(undefined)
 	const location = useLocation()
 	const history = useHistory()
 
+	useEffect(() => {
+		if(process.env.NODE_ENV === 'development'){
+			setUrl('http://localhost:3000')
+			tokenRefresh('http://localhost:3000')
+		} else{
+			setUrl('https://jibjab.herokuapp.com')
+			tokenRefresh('https://jibjab.herokuapp.com')
+		}
+	},[])
+
+
   	useEffect(() => {
-  		tokenRefresh()
   		setCurrentLocation(location.pathname)
 	    function handleResize() {
 	      setWindowWidth(window.innerWidth)
@@ -57,7 +68,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 
   	useEffect(() => {
   		if(currentLocation !== location.pathname){
-  			tokenRefresh()
+			if(process.env.NODE_ENV === 'development'){
+				tokenRefresh('http://localhost:3000')
+			} else{
+				tokenRefresh('https://jibjab.herokuapp.com')
+			}
 			document.body.scrollTop = 0
 			document.documentElement.scrollTop = 0	
 			setCurrentLocation(location.pathname)
@@ -85,9 +100,9 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
   		}
   	},[message])
 
-  	function tokenRefresh() {
+  	function tokenRefresh(url) {
   		const accessToken = window.localStorage.getItem('accessToken')
-		fetch('https://jibjab.herokuapp.com/api/refresh', {
+		fetch(`${url}/api/refresh`, {
 			headers: {
 				authorization: `Bearer ${accessToken}`,
 				'Content-Type' : 'application/json'
@@ -103,7 +118,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		})
 		.catch(err => {
 			const refreshToken = window.localStorage.getItem('refreshToken')
-			fetch('https://jibjab.herokuapp.com/api/token', {
+			fetch(`${url}/api/token`, {
 				method: 'post',
 				headers: { 'Content-Type' : 'application/json' },
 				body: JSON.stringify({
@@ -124,7 +139,7 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 
   	}
 
-  	if(user !== undefined){
+  	if(user !== undefined && url !== undefined){
   	return(
 		<div id='AppContainer'>
 			<Header 
@@ -136,7 +151,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 			setUser={setUser} 
 			windowWidth={windowWidth}
 			setOverlay={setOverlay}
-			history={history}/>
+			history={history}
+			url={url}/>
 			{
 				loading ?
 				<Loading /> :
@@ -151,7 +167,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				user={user}
 				setMessage={setMessage}
 				history={history}
-				location={location}/>
+				location={location}
+				url={url}/>
 				:
 				null
 			} 
@@ -165,7 +182,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 				location={location}
 				setReportOverlayIsOpen={setReportOverlayIsOpen}
 				reportOverlayIsOpen={reportOverlayIsOpen}
-				Link={Link}/> :
+				Link={Link}
+				url={url}/> :
 				null
 			}
 			{
@@ -186,7 +204,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					Link={Link}
 					setOverlay={setOverlay} 
 					setMessage={setMessage}
-					history={history}/>
+					history={history}
+					url={url}/>
 				</div> :
 				null
 			}
@@ -203,7 +222,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		setOverlay={setOverlay}
 		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
 		       		setLoading={setLoading}
-		       		history={history} />
+		       		history={history} 
+		       		url={url}/>
 		        </Route>
 		       	<Route exact path="/u/:userName">
 		        	<ProfilePage 
@@ -217,7 +237,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		history={history}
 		       		setOverlay={setOverlay}
 		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
-		       		setLoading={setLoading} />
+		       		setLoading={setLoading} 
+		       		url={url}/>
 		        </Route>
 		        <Route exact path="/c/:communityName">
 		        	<CommunityPage 
@@ -231,7 +252,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		setMessage={setMessage}
 		       		setOverlay={setOverlay}
 		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
-		       		setLoading={setLoading} />
+		       		setLoading={setLoading} 
+		       		url={url}/>
 		        </Route>
 		       	<Route exact path="/u/:userName/:postID/">
 		        	<PostPage 
@@ -246,7 +268,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		       		setMessage={setMessage}
 		       		history={history}
 		       		setReportOverlayIsOpen={setReportOverlayIsOpen}
-		       		setLoading={setLoading} />
+		       		setLoading={setLoading} 
+		       		url={url}/>
 		        </Route>
 		        <Route exact path='/c/:communityName/:postID'>
 		        	<PostPage 
@@ -261,7 +284,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					setMessage={setMessage}
 					history={history}
 					setReportOverlayIsOpen={setReportOverlayIsOpen}
-					setLoading={setLoading} />
+					setLoading={setLoading} 
+					url={url}/>
 		        </Route>
 		        <Route exact path='/c/:communityName/:postID/:commentID'>
 		        	<PostPage 
@@ -276,7 +300,8 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 					setMessage={setMessage}
 					history={history}
 					setReportOverlayIsOpen={setReportOverlayIsOpen}
-					setLoading={setLoading} />
+					setLoading={setLoading} 
+					url={url}/>
 		        </Route>
 		        <Route path='/inbox'>
 		        	<InboxPage 
@@ -289,10 +314,11 @@ const AppContainer = ({Link, Route, Switch, useLocation, useHistory}) => {
 		        	setOverlay={setOverlay}
 					pageType={'postPage'} 
 					history={history}
-					setReportOverlayIsOpen={setReportOverlayIsOpen}/>
+					setReportOverlayIsOpen={setReportOverlayIsOpen}
+					url={url}/>
 		        </Route>
 		        <Route path='/createCommunity'>
-		        	<CreateCommunity user={user} setMessage={setMessage} history={history} />
+		        	<CreateCommunity user={user} setMessage={setMessage} history={history} url={url}/>
 		        </Route>
 		        <Route exact path='/about'>
 		        	<AboutPage />
