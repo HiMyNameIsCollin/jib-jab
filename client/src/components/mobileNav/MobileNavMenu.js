@@ -68,7 +68,6 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 	if(navType === 'myComm'){
 	return(
 		<div className='mobileNavMenu'>
-			<div>
 			{
 				user.communities.length !== 0 ?
 				user.communities.map((c, i) => {
@@ -77,7 +76,6 @@ const MobileNavMenu = ({Link, navType, user, setUser, setNav, history, setMessag
 				<p style={{textAlign: 'center', paddingRight: '1em'}}> You are not subscribed to any communities </p>
 			}
 
-			</div>
 			<Link to ='/createCommunity'>
 				Create community
 			</Link>

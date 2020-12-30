@@ -82,7 +82,7 @@ const CommentBody = ({commentType, comment, commentHidden, setCommentToHidden, L
 
 
 return(
-	<div className={ commentType === 'parentComment' ? ' comment' : 'comment'}>
+	<div className={ commentType === 'parentComment' ? 'parentComment comment' : 'comment'}>
 	{
 		commentHidden ?
 		<React.Fragment>

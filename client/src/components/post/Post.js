@@ -30,10 +30,10 @@ const PostInfo = () => {
 			}
 
 			{
-				
+				windowWidth > 520 ?
 				post.communityName !== post.userName ?
 				<span className='postInfoUserName'><Link className='link' to={`/u/${post.userName}`}> /u/{post.userName} </Link></span> :
-				null
+				null : null
 			}
 			{
 				postView !== 'open' ?
